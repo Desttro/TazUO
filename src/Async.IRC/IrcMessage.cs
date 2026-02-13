@@ -54,7 +54,7 @@ public readonly struct IrcMessage
         // Skip extra spaces
         while (pos < span.Length && span[pos] == ' ') pos++;
 
-        var remaining = span[pos..];
+        ReadOnlySpan<char> remaining = span[pos..];
 
         // Find trailing parameter after " :"
         int trailingIdx = -1;

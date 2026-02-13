@@ -118,6 +118,13 @@ public sealed class IrcClient : IAsyncDisposable
         return SendRawAsync($"JOIN {channel}");
     }
 
+    public Task LeaveChannelAsync(string channel)
+    {
+        if (!channel.StartsWith('#') && !channel.StartsWith('&'))
+            channel = "#" + channel;
+        return SendRawAsync($"PART {channel}");
+    }
+
     /// <summary>Sends a PRIVMSG to a channel or user.</summary>
     public Task SendMessageAsync(string target, string message)
         => SendRawAsync($"PRIVMSG {target} :{message}");
@@ -270,6 +277,13 @@ public sealed class IrcClient : IAsyncDisposable
                     ChannelMessageReceived?.Invoke(this, args);
                 else
                     PrivateMessageReceived?.Invoke(this, args);
+                break;
+            }
+
+            case "433": // ERR_NICKNAMEINUSE
+            {
+                _nickname += Random.Shared.Next(999);
+                _ = SendRawAsync($"NICK {_nickname}");
                 break;
             }
         }

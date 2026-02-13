@@ -27,8 +27,10 @@ public class TazUOChatManager
 
     public void Init()
     {
+        if (_client != null)
+            Dispose();
+
         _client = new();
-        //_client.RawLineReceived += OnRawLine;
         _client.Connected += OnConnected;
         _client.ChannelJoined += ChannelJoined;
         _client.ChannelParted += ChannelParted;
@@ -45,17 +47,6 @@ public class TazUOChatManager
 
     private void OnConnectionFailed(object sender, IrcConnectionFailedEventArgs e) => Log.TraceDebug($"TazUO chat connection failed: {e.Exception.Message}");
 
-    private void OnRawLine(object sender, IrcRawLineEventArgs e)
-    {
-        if (!e.IsIncoming) return;
-        if (!e.Line.Contains("PRIVMSG")) return;
-        // Log raw bytes as hex so we can see exactly what delimiters arrive
-        System.Text.StringBuilder hex = new();
-        foreach (char c in e.Line)
-            hex.Append(c < 32 ? $"[{(int)c:X2}]" : c.ToString());
-        Log.TraceDebug($"[RAW] {hex}");
-    }
-
     private void PrivateMessageReceived(object sender, IrcMessageEventArgs e)
     {
         string formatted = FormatMessage(e.Source, e.Message);
@@ -71,7 +62,7 @@ public class TazUOChatManager
     }
 
     private static string FormatMessage(string nick, string message)
-    {        
+    {
         // CTCP ACTION with delimiters: \x01ACTION text\x01
         if (message.StartsWith("\u0001ACTION", StringComparison.Ordinal))
         {
@@ -107,6 +98,12 @@ public class TazUOChatManager
         _ = _client.JoinChannelAsync(channel);
     }
 
+    public void LeaveChannel(string channel)
+    {
+        if (_client == null || string.IsNullOrEmpty(channel)) return;
+        _ = _client.LeaveChannelAsync(channel);
+    }
+
     public void SendMessage(string target, string message)
     {
         if (_client == null || string.IsNullOrEmpty(target) || string.IsNullOrEmpty(message)) return;
@@ -126,10 +123,8 @@ public class TazUOChatManager
     private void ChannelParted(object sender, IrcChannelPartedEventArgs e)
     {
         GetOrCreateUsers(e.Channel).Remove(e.Nick);
-        string msg = string.IsNullOrEmpty(e.Reason)
-            ? $"*** {e.Nick} has left {e.Channel}"
-            : $"*** {e.Nick} has left {e.Channel} ({e.Reason})";
-        StoreMessage(e.Channel, msg);
+
+        ReceivedMessages.Remove(e.Channel);
     }
 
     private void UserQuit(object sender, IrcUserQuitEventArgs e)
@@ -181,10 +176,9 @@ public class TazUOChatManager
     }
 
     public async void Dispose()
-    {        
+    {
         if (_client == null) return;
 
-        //_client.RawLineReceived -= OnRawLine;
         _client.Connected -= OnConnected;
         _client.ChannelJoined -= ChannelJoined;
         _client.ChannelParted -= ChannelParted;
@@ -196,6 +190,10 @@ public class TazUOChatManager
         _client.ConnectionFailed -= OnConnectionFailed;
 
         await _client.DisposeAsync();
+
+        ReceivedMessages.Clear();
+        ChannelUsers.Clear();
+        TotalMessageCount = 0;
 
         _client = null;
     }

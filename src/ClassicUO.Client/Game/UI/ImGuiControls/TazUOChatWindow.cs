@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using ClassicUO.Game.Managers;
@@ -22,9 +23,7 @@ public class TazUOChatWindow : SingletonImGuiWindow<TazUOChatWindow>
     private TazUOChatManager manager = TazUOChatManager.Instance;
 
     private TazUOChatWindow() : base("TazUO Chat")
-    {
-        WindowFlags = ImGuiWindowFlags.NoCollapse;
-    }
+    { }
 
     public override void DrawContent()
     {
@@ -36,12 +35,14 @@ public class TazUOChatWindow : SingletonImGuiWindow<TazUOChatWindow>
                 manager.Dispose();
                 manager.Init();
             }
+
+            return;
         }
 
         RefreshChannelList(manager);
 
         Vector2 available = ImGui.GetContentRegionAvail();
-        float childHeight = available.Y - INPUT_ROW_HEIGHT;
+        float childHeight = Math.Max(available.Y - INPUT_ROW_HEIGHT, 300);
 
         // Left: channel list
         ImGui.BeginChild("##chat_channels", new Vector2(CHANNEL_PANEL_WIDTH, childHeight), ImGuiChildFlags.Borders);
@@ -54,11 +55,17 @@ public class TazUOChatWindow : SingletonImGuiWindow<TazUOChatWindow>
                 string channel = _channelSnapshot[i];
                 bool selected = channel == _selectedChannel;
 
-                string label = selected ? $"> {channel}" : $"  {channel}";
-                if (ImGui.Selectable(label, selected, ImGuiSelectableFlags.None, new Vector2(CHANNEL_PANEL_WIDTH - 8f, 0)))
+                string label = selected ? $"[{channel}]" : $"{channel}";
+                if (ImGui.Selectable(label, selected, ImGuiSelectableFlags.None, new Vector2(CHANNEL_PANEL_WIDTH - 42f, 0)))
                 {
                     _selectedChannel = channel;
                     _lastKnownMessageCount = -1; // force scroll on channel switch
+                }
+
+                ImGui.SameLine();
+                if (ImGui.Button($"X##{channel}"))
+                {
+                    TazUOChatManager.Instance.LeaveChannel(channel);
                 }
             }
 
