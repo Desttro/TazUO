@@ -18,7 +18,7 @@ public sealed class IrcClient : IAsyncDisposable
     private readonly SemaphoreSlim _writeLock = new(1, 1);
 
     private string _nickname = "User";
-    private bool _connected;
+    private volatile bool _connected;
 
     // ── Events ──────────────────────────────────────────────────────────────
 
@@ -168,6 +168,7 @@ public sealed class IrcClient : IAsyncDisposable
         _writer = null;
         _reader = null;
         _tcpClient = null;
+        _readLoopCts?.Dispose();
         _readLoopCts = null;
         _readLoopTask = null;
         _connected = false;

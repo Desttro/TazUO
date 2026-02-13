@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Async.IRC;
 using ClassicUO.Configuration;
 using ClassicUO.Utility.Logging;
@@ -13,10 +16,10 @@ public class TazUOChatManager
     private IrcClient _client;
 
     /// <summary>Messages received, keyed by source (nick/channel).</summary>
-    public Dictionary<string, List<string>> ReceivedMessages { get; } = [];
+    public ConcurrentDictionary<string, List<string>> ReceivedMessages { get; } = [];
 
     /// <summary>Users present in each channel, keyed by channel name.</summary>
-    public Dictionary<string, HashSet<string>> ChannelUsers { get; } = [];
+    public ConcurrentDictionary<string, HashSet<string>> ChannelUsers { get; } = [];
 
     /// <summary>Incremented each time a message is stored. Used by the UI to detect new messages.</summary>
     public int TotalMessageCount { get; private set; }
@@ -27,6 +30,8 @@ public class TazUOChatManager
 
     public void Init()
     {
+        if (IsConnected) return;
+
         if (_client != null)
             Dispose();
 
@@ -41,7 +46,10 @@ public class TazUOChatManager
         _client.Disconnected += OnDisconnected;
         _client.ConnectionFailed += OnConnectionFailed;
 
-        _ = _client.ConnectAsync("irc.tazuo.org", 6697, ProfileManager.CurrentProfile.CharacterName, useSsl: true);
+        string nick = new(ProfileManager.CurrentProfile.CharacterName.Where(c => char.IsLetterOrDigit(c) || c == '_' || c == '-').ToArray());
+        if (string.IsNullOrEmpty(nick)) nick = "User";
+
+        _ = _client.ConnectAsync("irc.tazuo.org", 6697, nick, useSsl: true);
         Log.TraceDebug($"Connecting to TazUO chat...");
     }
 
@@ -124,7 +132,10 @@ public class TazUOChatManager
     {
         GetOrCreateUsers(e.Channel).Remove(e.Nick);
 
-        ReceivedMessages.Remove(e.Channel);
+        if (string.Equals(e.Nick, _client?.Nickname, StringComparison.OrdinalIgnoreCase))
+            ReceivedMessages.TryRemove(e.Channel, out _);
+        else
+            StoreMessage(e.Channel, $"*** {e.Nick} has left {e.Channel}");
     }
 
     private void UserQuit(object sender, IrcUserQuitEventArgs e)
@@ -166,19 +177,19 @@ public class TazUOChatManager
     private void OnConnected(object sender, EventArgs e)
     {
         Log.TraceDebug("Connected!");
-        _client.JoinChannelAsync("#tazuo");
+        _ = _client.JoinChannelAsync("#tazuo");
     }
 
     private void OnDisconnected(object sender, EventArgs e)
     {
         Log.TraceDebug("Disconnected");
-        Dispose();
+        UnSubEvents();
+        ClearMessages();
+        _client = null;
     }
 
-    public async void Dispose()
+    private void UnSubEvents()
     {
-        if (_client == null) return;
-
         _client.Connected -= OnConnected;
         _client.ChannelJoined -= ChannelJoined;
         _client.ChannelParted -= ChannelParted;
@@ -188,13 +199,22 @@ public class TazUOChatManager
         _client.PrivateMessageReceived -= PrivateMessageReceived;
         _client.Disconnected -= OnDisconnected;
         _client.ConnectionFailed -= OnConnectionFailed;
+    }
 
-        await _client.DisposeAsync();
-
+    private void ClearMessages()
+    {
         ReceivedMessages.Clear();
         ChannelUsers.Clear();
         TotalMessageCount = 0;
+    }
 
+    public void Dispose()
+    {
+        if (_client == null) return;
+
+        UnSubEvents();
+        _client.DisposeAsync();
+        ClearMessages();
         _client = null;
     }
 }

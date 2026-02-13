@@ -93,10 +93,10 @@ public class TazUOChatWindow : SingletonImGuiWindow<TazUOChatWindow>
                     ImGui.TextWrapped(messages[i]);
                 }
 
-                if (_lastKnownMessageCount != manager.TotalMessageCount)
+                if (_lastKnownMessageCount != messages.Count)
                 {
                     ImGui.SetScrollHereY(1.0f);
-                    _lastKnownMessageCount = manager.TotalMessageCount;
+                    _lastKnownMessageCount = messages.Count;
                 }
             }
             else if (!string.IsNullOrEmpty(_selectedChannel))
