@@ -16,6 +16,7 @@ All notable changes to TazUO will be recorded here.
 - Added skills tab to Legion Assistant - Coryigon
 - Organizer tab now shows graphic when hovering over the graphic art
 - Add Mobile outline option - Highlighting mobiles by notoriety
+- Added TazUO chat(Top menu -> More -> TazUO Chat)
 
 ### Other
 - Move automatic py doc gen to tool usage
