@@ -103,7 +103,7 @@ public class TazUOChatManager
     private static string FormatMessage(string nick, string message)
     {
         // CTCP ACTION with delimiters: \x01ACTION text\x01
-        if (message.StartsWith("\u0001ACTION", StringComparison.Ordinal))
+        if (message.StartsWith("\u0001ACTION ", StringComparison.Ordinal))
         {
             int textStart = 8; // past \x01ACTION + space
             int end = message.LastIndexOf('\u0001');
@@ -125,7 +125,8 @@ public class TazUOChatManager
                 ReceivedMessages[source] = list;
             }
             list.Add(message);
-            TotalMessageCount++;
+
+            Interlocked.Increment(ref TotalMessageCount);
 
             while (list.Count > 200)
                 list.RemoveAt(0);
@@ -162,7 +163,8 @@ public class TazUOChatManager
         lock (_usersLock)
             GetOrCreateUsers(e.Channel).Add(e.Nick);
         StoreMessage(e.Channel, $"*** {e.Nick} has joined {e.Channel}");
-        TotalChannelCount++;
+
+        Interlocked.Increment(ref TotalChannelCount);
     }
 
     private void ChannelParted(object sender, IrcChannelPartedEventArgs e)
@@ -178,7 +180,7 @@ public class TazUOChatManager
         else
             StoreMessage(e.Channel, $"*** {e.Nick} has left {e.Channel}");
 
-        TotalChannelCount--;
+        Interlocked.Decrement(ref TotalChannelCount);
     }
 
     private void UserQuit(object sender, IrcUserQuitEventArgs e)
@@ -264,7 +266,8 @@ public class TazUOChatManager
         lock (_messagesLock)
         {
             ReceivedMessages.Clear();
-            TotalMessageCount = 0;
+            Interlocked.Exchange(ref TotalMessageCount, 0);
+            Interlocked.Exchange(ref TotalChannelCount, 0);
         }
         lock (_usersLock)
             ChannelUsers.Clear();
