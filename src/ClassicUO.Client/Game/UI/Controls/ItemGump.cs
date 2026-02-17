@@ -314,11 +314,11 @@ namespace ClassicUO.Game.UI.Controls
                         centerY - (Mouse.Position.Y - ScreenCoordinateY)
                     );
 
-                    GameActions.PickUp(_gump.World, LocalSerial, centerX, centerY, offset: p, is_gump: _is_gump);
+                    GameActions.PickUp(_gump.World, LocalSerial, centerX, centerY, offset: p, isGump: _is_gump);
                 }
                 else
                 {
-                    GameActions.PickUp(_gump.World, LocalSerial, centerX, centerY, is_gump: _is_gump);
+                    GameActions.PickUp(_gump.World, LocalSerial, centerX, centerY, isGump: _is_gump);
                 }
             }
         }

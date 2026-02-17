@@ -21,7 +21,7 @@ You can now type `-updateapi` in game to download the latest API.py file.
 
 [Additional notes](../notes/)  
 
-*This was generated on `2/15/26`.*
+*This was generated on `2/16/26`.*
 
 ## Properties
 ### `JournalEntries`
@@ -665,6 +665,55 @@ You can now type `-updateapi` in game to download the latest API.py file.
 | `OSI` | `bool` | ✅ Yes | True if you are playing OSI |
 
 **Return Type:** `void` *(Does not return anything)*
+
+---
+
+### PickUpToCursor
+`(serial, amt)`
+ Picks up an item from the game world and places it onto the mouse cursor.
+
+
+**Parameters:**
+
+| Name | Type | Optional | Description |
+| --- | --- | --- | --- |
+| `serial` | `uint` | ✅ Yes | The serial of the item to pick up. |
+| `amt` | `int` | ✅ Yes | The amount of the item to pick up.  
+         If 0, the full stack will be picked up (if stackable). |
+
+**Return Type:** `void` *(Does not return anything)*
+
+---
+
+### DropFromCursor
+`(serial, x, y, z, container)`
+ Drops an item currently held by the mouse cursor into a container or on the ground at a specified position.
+
+
+**Parameters:**
+
+| Name | Type | Optional | Description |
+| --- | --- | --- | --- |
+| `serial` | `uint` | ✅ Yes | The unique serial identifier of the item to drop. |
+| `x` | `int` | ✅ Yes | The X coordinate of the ground drop location, or the X position inside a container if a container is specified.  
+         If not specified, defaults to the player's current X position. |
+| `y` | `int` | ✅ Yes | The Y coordinate of the ground drop location, or the X position inside a container if a container is specified.  
+         If not specified, defaults to the player's current Y position. |
+| `z` | `int` | ✅ Yes | The Z coordinate (elevation) of the ground drop location. Unused if dropping into container.  
+         If not specified, defaults to the Z value of the static or map land at (x, y) if x and y are specified. |
+| `container` | `uint` | ✅ Yes | The serial of the container to drop the item into.  
+         If unspecified, the item will be dropped on the ground. |
+
+**Return Type:** `void` *(Does not return anything)*
+
+---
+
+### GetHeldItem
+
+ Retrieves data of the currently held item on the game cursor.
+
+
+**Return Type:** `uint`
 
 ---
 

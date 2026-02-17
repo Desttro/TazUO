@@ -800,7 +800,8 @@ internal static class GameActions
         int y,
         int amount = -1,
         Point? offset = null,
-        bool is_gump = false
+        bool isGump = false,
+        bool skipQueue = false
     )
     {
         if (world.Player.IsDead || Client.Game.UO.GameCursor.ItemHold.Enabled)
@@ -846,9 +847,9 @@ internal static class GameActions
 
         Client.Game.UO.GameCursor.ItemHold.Clear();
         Client.Game.UO.GameCursor.ItemHold.Set(item, (ushort)amount, offset);
-        Client.Game.UO.GameCursor.ItemHold.IsGumpTexture = is_gump;
+        Client.Game.UO.GameCursor.ItemHold.IsGumpTexture = isGump;
 
-        if (!ProfileManager.CurrentProfile.QueueManualItemMoves)
+        if (!ProfileManager.CurrentProfile.QueueManualItemMoves && !skipQueue)
             Socket.Send_PickUpRequest(item, (ushort)amount);
 
         ScriptingInfoGump.AddOrUpdateInfo("Last Picked Up Item", $"0x{item.Serial:X}");

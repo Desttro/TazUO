@@ -1475,6 +1475,27 @@ def MoveItemOffset(serial: "int", amt: "int" = 0, x: "int" = 0, y: "int" = 0, z:
     """
     pass
 
+def PickUpToCursor(serial: "int" = 0, amt: "int" = 0) -> None:
+    """
+     Picks up an item from the game world and places it onto the mouse cursor.
+    
+    """
+    pass
+
+def DropFromCursor(serial: "int" = 0, x: "int" = 1337, y: "int" = 1337, z: "int" = sbyte.MaxValue, container: "int" = 1337) -> None:
+    """
+     Drops an item currently held by the mouse cursor into a container or on the ground at a specified position.
+    
+    """
+    pass
+
+def GetHeldItem() -> "int":
+    """
+     Retrieves data of the currently held item on the game cursor.
+    
+    """
+    pass
+
 def UseSkill(skillName: "str") -> None:
     """
      Use a skill.

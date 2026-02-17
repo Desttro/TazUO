@@ -1,7 +1,9 @@
 # Changelog
 All notable changes to TazUO will be recorded here.
 
-## In Development (dev branch)
+## In Development
+`dev channel / branch`
+
 ### Misc
 - This changelog
 - Add auto-loot priority tiers (High/Normal/Low) - Coryigon
@@ -12,14 +14,15 @@ All notable changes to TazUO will be recorded here.
 - Added `API.ScriptName` and `API.ScriptPath`
 - Updated PSL browser UI and backend
 - Add .IsHidden to PyMobile in API
-- 
+- Added `API.PickUpToCursor`, `API.DropFromCursor` and `API.GetHeldItem`
+
 ### Assistant
 - Added skills tab to Legion Assistant - Coryigon
 - Organizer tab now shows graphic when hovering over the graphic art
 - Add Mobile outline option - Highlighting mobiles by notoriety
 - Added TazUO chat(Top menu -> More -> TazUO Chat)
 - ItemDatabase search now defaults to not only "this character"
-- 
+
 ### Other
 - Move automatic py doc gen to tool usage
 - Added ibm-plex font to embedded fonts
