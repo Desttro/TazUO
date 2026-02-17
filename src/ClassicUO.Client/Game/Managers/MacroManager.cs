@@ -2339,6 +2339,11 @@ namespace ClassicUO.Game.Managers
 
                     GameActions.CastSpell(mspell);
                     break;
+
+                case MacroType.ToggleAutoLoot:
+                    ProfileManager.CurrentProfile.EnableAutoLoot = !ProfileManager.CurrentProfile.EnableAutoLoot;
+                    if (!ProfileManager.CurrentProfile.EnableAutoLoot) AutoLootManager.Instance.ClearActiveLootQueue();
+                    break;
             }
 
             return result;
@@ -2978,7 +2983,8 @@ namespace ClassicUO.Game.Managers
         ClearHands,
         EquipHands,
         UseType,
-        CastMasterySpell
+        CastMasterySpell,
+        ToggleAutoLoot
     }
 
     public enum MacroSubType

@@ -81,6 +81,22 @@ description:  Represents a Python-accessible mobile (NPC, creature, or player ch
 
 **Type:** `bool`
 
+### `IsGargoyle`
+
+**Type:** `bool`
+
+### `IsMounted`
+
+**Type:** `bool`
+
+### `IsDrivingBoat`
+
+**Type:** `bool`
+
+### `IsRunning`
+
+**Type:** `bool`
+
 ### `Notoriety`
 
 **Type:** `Notoriety`

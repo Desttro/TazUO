@@ -861,6 +861,10 @@ class PyMobile(PyEntity):
     IsHuman: bool = None
     IsYellowHits: bool = None
     IsHidden: bool = None
+    IsGargoyle: bool = None
+    IsMounted: bool = None
+    IsDrivingBoat: bool = None
+    IsRunning: bool = None
     Notoriety: Notoriety = None
     InWarMode: bool = None
     Backpack: PyItem = None

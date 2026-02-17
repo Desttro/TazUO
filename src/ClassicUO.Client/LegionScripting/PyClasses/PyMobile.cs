@@ -29,6 +29,10 @@ public class PyMobile : PyEntity
     public bool IsHuman => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsHuman ?? false);
     public bool IsYellowHits => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsYellowHits ?? false);
     public bool IsHidden => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsHidden ?? false);
+    public bool IsGargoyle => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsGargoyle ?? false);
+    public bool IsMounted => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsMounted ?? false);
+    public bool IsDrivingBoat => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsDrivingBoat ?? false);
+    public bool IsRunning => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsRunning ?? false);
     public Notoriety Notoriety => MainThreadQueue.InvokeOnMainThread(() =>
     {
         Mobile mob = GetMobileUnsafe();

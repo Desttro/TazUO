@@ -165,7 +165,7 @@ namespace ClassicUO.Game.Managers
 
             for (LinkedObject i = corpse.Items; i != null; i = i.Next)
                 CheckAndLoot((Item)i);
-            
+
             if(ProfileManager.CurrentProfile.HueCorpseAfterAutoloot)
                 corpse.Hue = 73;
         }
@@ -432,39 +432,9 @@ namespace ClassicUO.Game.Managers
                 catch (Exception e) { Console.WriteLine(e.ToString()); }
         }
 
-        public void ExportToFile(string filePath)
+        public void ClearActiveLootQueue()
         {
-            try
-            {
-                string fileData = JsonSerializer.Serialize(_autoLootItems, AutoLootJsonContext.Default.ListAutoLootConfigEntry);
-                File.WriteAllText(filePath, fileData);
-                GameActions.Print($"Autoloot configuration exported to: {filePath}", 0x48);
-            }
-            catch (Exception e)
-            {
-                GameActions.Print($"Error exporting autoloot configuration: {e.Message}", Constants.HUE_ERROR);
-            }
-        }
-
-        public void ImportFromFile(string filePath)
-        {
-            try
-            {
-                if (!File.Exists(filePath))
-                {
-                    GameActions.Print($"File not found: {filePath}", Constants.HUE_ERROR);
-                    return;
-                }
-
-                string data = File.ReadAllText(filePath);
-                List<AutoLootConfigEntry> importedItems = JsonSerializer.Deserialize(data, AutoLootJsonContext.Default.ListAutoLootConfigEntry);
-
-                if (importedItems != null) ImportEntries(importedItems, $"file: {filePath}");
-            }
-            catch (Exception e)
-            {
-                GameActions.Print($"Error importing autoloot configuration: {e.Message}", Constants.HUE_ERROR);
-            }
+            while (_lootItems.TryDequeue(out _));
         }
 
         public void ImportFromOtherCharacter(string characterName, List<AutoLootConfigEntry> entries)
