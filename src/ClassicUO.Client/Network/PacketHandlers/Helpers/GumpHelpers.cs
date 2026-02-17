@@ -53,7 +53,7 @@ internal static class GumpHelpers
         string[] lines
     )
     {
-        ScriptRecorder.Instance.RecordWaitForGump(gumpID.ToString());
+        ScriptRecorder.Instance.RecordWaitForGump(gumpID);
         ScriptingInfoGump.AddOrUpdateInfo("Last Gump Opened", $"0x{gumpID:X}");
 
         if (string.IsNullOrEmpty(layout))

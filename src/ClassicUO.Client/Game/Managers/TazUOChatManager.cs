@@ -246,6 +246,8 @@ public class TazUOChatManager
 
     private void UnSubEvents()
     {
+        if (_client is null) return;
+        
         _client.Connected -= OnConnected;
         _client.ChannelJoined -= ChannelJoined;
         _client.ChannelParted -= ChannelParted;

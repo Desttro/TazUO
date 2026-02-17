@@ -282,7 +282,7 @@ namespace ClassicUO.LegionScripting
 
         public void RecordVirtue(string virtue) => RecordAction("virtue", new Dictionary<string, object> { { "virtue", virtue } });
 
-        public void RecordWaitForGump(string gumpid) => RecordAction("waitforgump", new Dictionary<string, object> { { "id", gumpid } });
+        public void RecordWaitForGump(uint gumpid) => RecordAction("waitforgump", new Dictionary<string, object> { { "id", gumpid } });
 
         public List<RecordedAction> GetRecordedActions()
         {
