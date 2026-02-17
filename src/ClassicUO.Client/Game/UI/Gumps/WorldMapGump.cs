@@ -394,7 +394,7 @@ public class WorldMapGump : ResizableGump
         {
             ProfileManager.CurrentProfile.WebMapAutoStart = !ProfileManager.CurrentProfile.WebMapAutoStart;
             if (!MapWebServerManager.Instance.IsRunning)
-                MapWebServerManager.Instance.Start();
+                _ = MapWebServerManager.Instance.Start();
 
         }, true, ProfileManager.CurrentProfile.WebMapAutoStart);
 
@@ -901,7 +901,7 @@ public class WorldMapGump : ResizableGump
 
             try
             {
-                stream.Read(buffer, 0, buffer.Length);
+                stream.ReadExactly(buffer, 0, buffer.Length);
 
                 var reader = new StackDataReader(buffer.AsSpan(0, (int)stream.Length));
 

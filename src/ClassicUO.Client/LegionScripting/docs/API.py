@@ -39,137 +39,6 @@ class PyAlphaBlendControl(PyBaseControl):
         """
         pass
 
-class PyBaseControl:
-    ""
-    CanMove: bool = None
-    IsVisible: bool = None
-    IsDisposed: bool = None
-
-    def Add(self, childControl: "Any") -> None:
-        """
-         Adds a child control to this control. Works with gumps too (gump.Add(control)).
-         Used in python API
-        
-        """
-        pass
-
-    def GetX(self) -> "int":
-        """
-         Returns the control's X position.
-         Used in python API
-        
-        """
-        pass
-
-    def GetY(self) -> "int":
-        """
-         Returns the control's Y position.
-         Used in python API
-        
-        """
-        pass
-
-    def SetX(self, x: "int") -> "PyBaseControl":
-        """
-         Sets the control's X position.
-         Used in python API
-        
-        """
-        pass
-
-    def SetY(self, y: "int") -> "PyBaseControl":
-        """
-         Sets the control's Y position.
-         Used in python API
-        
-        """
-        pass
-
-    def SetPos(self, x: "int", y: "int") -> "PyBaseControl":
-        """
-         Sets the control's X and Y positions.
-         Used in python API
-        
-        """
-        pass
-
-    def GetWidth(self) -> "int":
-        pass
-
-    def GetHeight(self) -> "int":
-        pass
-
-    def SetWidth(self, width: "int") -> "PyBaseControl":
-        """
-         Sets the control's width.
-         Used in python API
-        
-        """
-        pass
-
-    def SetHeight(self, height: "int") -> "PyBaseControl":
-        """
-         Sets the control's height.
-         Used in python API
-        
-        """
-        pass
-
-    def SetRect(self, x: "int", y: "int", width: "int", height: "int") -> "PyBaseControl":
-        """
-         Sets the control's position and size in one operation.
-         Used in python API
-        
-        """
-        pass
-
-    def CenterXInViewPort(self) -> "PyBaseControl":
-        """
-         Centers a GUMP horizontally in the viewport. Only works on Gump instances.
-         Used in python API
-        
-        """
-        pass
-
-    def CenterYInViewPort(self) -> "PyBaseControl":
-        """
-         Centers a GUMP vertically in the viewport. Only works on Gump instances.
-         Used in python API
-        
-        """
-        pass
-
-    def GetAlpha(self) -> "float":
-        """
-         Returns the control's Alpha value.
-         Used in python API
-        
-        """
-        pass
-
-    def SetAlpha(self, alpha: "float") -> "PyBaseControl":
-        """
-         Sets the control's Alpha value.
-         Used in python API
-        
-        """
-        pass
-
-    def Clear(self) -> "PyBaseControl":
-        """
-         Clears all child controls from this control.
-         Used in python API
-        
-        """
-        pass
-
-    def Dispose(self) -> None:
-        """
-         Close/Destroy the control
-        
-        """
-        pass
-
 class PyBaseGump(PyBaseControl, IPyGump):
     ""
     IsDisposed: bool = None
@@ -1117,6 +986,137 @@ class PySoundEntry:
     X: int = None
     Y: int = None
     Time: datetime = None
+
+class PyBaseControl:
+    ""
+    CanMove: bool = None
+    IsVisible: bool = None
+    IsDisposed: bool = None
+
+    def Add(self, childControl: "Any") -> None:
+        """
+         Adds a child control to this control. Works with gumps too (gump.Add(control)).
+         Used in python API
+        
+        """
+        pass
+
+    def GetX(self) -> "int":
+        """
+         Returns the control's X position.
+         Used in python API
+        
+        """
+        pass
+
+    def GetY(self) -> "int":
+        """
+         Returns the control's Y position.
+         Used in python API
+        
+        """
+        pass
+
+    def SetX(self, x: "int") -> "PyBaseControl":
+        """
+         Sets the control's X position.
+         Used in python API
+        
+        """
+        pass
+
+    def SetY(self, y: "int") -> "PyBaseControl":
+        """
+         Sets the control's Y position.
+         Used in python API
+        
+        """
+        pass
+
+    def SetPos(self, x: "int", y: "int") -> "PyBaseControl":
+        """
+         Sets the control's X and Y positions.
+         Used in python API
+        
+        """
+        pass
+
+    def GetWidth(self) -> "int":
+        pass
+
+    def GetHeight(self) -> "int":
+        pass
+
+    def SetWidth(self, width: "int") -> "PyBaseControl":
+        """
+         Sets the control's width.
+         Used in python API
+        
+        """
+        pass
+
+    def SetHeight(self, height: "int") -> "PyBaseControl":
+        """
+         Sets the control's height.
+         Used in python API
+        
+        """
+        pass
+
+    def SetRect(self, x: "int", y: "int", width: "int", height: "int") -> "PyBaseControl":
+        """
+         Sets the control's position and size in one operation.
+         Used in python API
+        
+        """
+        pass
+
+    def CenterXInViewPort(self) -> "PyBaseControl":
+        """
+         Centers a GUMP horizontally in the viewport. Only works on Gump instances.
+         Used in python API
+        
+        """
+        pass
+
+    def CenterYInViewPort(self) -> "PyBaseControl":
+        """
+         Centers a GUMP vertically in the viewport. Only works on Gump instances.
+         Used in python API
+        
+        """
+        pass
+
+    def GetAlpha(self) -> "float":
+        """
+         Returns the control's Alpha value.
+         Used in python API
+        
+        """
+        pass
+
+    def SetAlpha(self, alpha: "float") -> "PyBaseControl":
+        """
+         Sets the control's Alpha value.
+         Used in python API
+        
+        """
+        pass
+
+    def Clear(self) -> "PyBaseControl":
+        """
+         Clears all child controls from this control.
+         Used in python API
+        
+        """
+        pass
+
+    def Dispose(self) -> None:
+        """
+         Close/Destroy the control
+        
+        """
+        pass
 
 JournalEntries = None
 SoundEntries = None

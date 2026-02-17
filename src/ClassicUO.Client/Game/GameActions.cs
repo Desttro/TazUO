@@ -400,7 +400,7 @@ internal static class GameActions
         MapWebServerManager server = MapWebServerManager.Instance;
 
         if (!server.IsRunning)
-            server.Start();
+            _ = server.Start();
 
         // Open browser
         try

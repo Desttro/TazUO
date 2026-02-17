@@ -202,7 +202,7 @@ namespace ClassicUO.Game.UI.Controls
             }
         }
 
-        public int Alpha
+        public new int Alpha
         {
             get => _alpha;
             set

@@ -28,6 +28,7 @@ All notable changes to TazUO will be recorded here.
 ### Other
 - Move automatic py doc gen to tool usage
 - Added ibm-plex font to embedded fonts
+- Clean up a bunch of compile-time warnings
 
 ### Bugs
 - Fixed healthbar collector occasionally becoming unresponsive to targeting/clicks

@@ -62,7 +62,7 @@ namespace ClassicUO.Game
         public Pathfinder(World world)
         {
             _world = world;
-            Client.Settings.GetAsyncOnMainThread(SettingsScope.Global, Constants.SqlSettings.USE_LONG_DISTANCE_PATHING, false, (b) => UseLongDistancePathfinding = b);
+            _ = Client.Settings.GetAsyncOnMainThread(SettingsScope.Global, Constants.SqlSettings.USE_LONG_DISTANCE_PATHING, false, (b) => UseLongDistancePathfinding = b);
         }
 
         public static bool ObjectBlocksLOS(GameObject obj, int losMinZ, int losMaxZ)

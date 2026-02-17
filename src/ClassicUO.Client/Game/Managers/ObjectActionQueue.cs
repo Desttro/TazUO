@@ -59,9 +59,9 @@ public class ObjectActionQueueItem(Action action, Action<ObjectActionQueueItem> 
             moveRequest.Execute();
         });
 
-    public static ObjectActionQueueItem? QuickLoot(uint serial) => World.Instance.Items.TryGetValue(serial, out Item item) ? QuickLoot(item) : null;
+    public static ObjectActionQueueItem QuickLoot(uint serial) => World.Instance.Items.TryGetValue(serial, out Item item) ? QuickLoot(item) : null;
 
-    public static ObjectActionQueueItem? QuickLoot(Item item)
+    public static ObjectActionQueueItem QuickLoot(Item item)
     {
         if (item == null) return null;
         MoveRequest? moveRequest = item.ToLootBag();
@@ -72,7 +72,7 @@ public class ObjectActionQueueItem(Action action, Action<ObjectActionQueueItem> 
         return null;
     }
 
-    public static ObjectActionQueueItem? EquipItem(uint serial, Layer layer)
+    public static ObjectActionQueueItem EquipItem(uint serial, Layer layer)
     {
         MoveRequest? moveRequest = MoveRequest.EquipItem(serial, layer);
 
@@ -82,7 +82,7 @@ public class ObjectActionQueueItem(Action action, Action<ObjectActionQueueItem> 
         return null;
     }
 
-    public static ObjectActionQueueItem? DoubleClick(uint serial, bool ignoreWarMode = false)
+    public static ObjectActionQueueItem DoubleClick(uint serial, bool ignoreWarMode = false)
     {
         if(serial == 0) return null;
 

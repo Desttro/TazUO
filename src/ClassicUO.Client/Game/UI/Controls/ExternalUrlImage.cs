@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ClassicUO.Renderer;
 
@@ -47,8 +48,8 @@ namespace ClassicUO.Game.UI.Controls
 
             try
             {
-                using var client = new WebClient();
-                byte[] data = client.DownloadData(url);
+                using var client = new HttpClient();
+                byte[] data = client.GetByteArrayAsync(new Uri(url)).Result;
 
                 using var ms = new MemoryStream(data);
                 var texture = Texture2D.FromStream(Client.Game.GraphicsDevice, ms);

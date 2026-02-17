@@ -12,7 +12,6 @@ public class NineSliceButton : NineSliceControl
     private readonly Texture2D _textureDown;
     private readonly int _borderSizeDown;
     private readonly ushort _hoverHue;
-    private bool _hover;
     private ushort _oldHue;
 
     /// <summary>

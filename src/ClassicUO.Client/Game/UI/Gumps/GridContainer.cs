@@ -2126,8 +2126,6 @@ namespace ClassicUO.Game.UI.Gumps
             public int ScrollMinValue => _scrollBar.MinValue;
             public int ScrollMaxValue => _scrollBar.MaxValue;
 
-            public Rectangle ScissorRectangle;
-
             public override void Update()
             {
                 base.Update();
@@ -2168,7 +2166,7 @@ namespace ClassicUO.Game.UI.Gumps
             {
                 _scrollBar.Draw(batcher, x + _scrollBar.X, y + _scrollBar.Y);
 
-                if (batcher.ClipBegin(x + ScissorRectangle.X, y + ScissorRectangle.Y, Width - 14 + ScissorRectangle.Width, Height + ScissorRectangle.Height))
+                if (batcher.ClipBegin(x, y, Width - 14, Height))
                 {
                     for (int i = 1; i < Children.Count; i++)
                     {
@@ -2179,7 +2177,7 @@ namespace ClassicUO.Game.UI.Gumps
                             continue;
                         }
 
-                        int finalY = y + child.Y - _scrollBar.Value + ScissorRectangle.Y;
+                        int finalY = y + child.Y - _scrollBar.Value;
 
                         child.Draw(batcher, x + child.X, finalY);
                     }
@@ -2251,7 +2249,7 @@ namespace ClassicUO.Game.UI.Gumps
 
                 int width = Math.Abs(startX) + Math.Abs(endX);
                 int height = Math.Abs(startY) + Math.Abs(endY) - _scrollBar.Height;
-                height = Math.Max(0, height - (-ScissorRectangle.Y + ScissorRectangle.Height));
+                height = Math.Max(0, height);
 
                 if (height > 0)
                 {
@@ -2271,7 +2269,7 @@ namespace ClassicUO.Game.UI.Gumps
 
                 for (int i = 1; i < Children.Count; i++)
                 {
-                    Children[i].UpdateOffset(0, -_scrollBar.Value + ScissorRectangle.Y);
+                    Children[i].UpdateOffset(0, -_scrollBar.Value);
                 }
             }
         }

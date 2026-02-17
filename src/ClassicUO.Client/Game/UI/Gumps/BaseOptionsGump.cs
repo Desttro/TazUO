@@ -2405,7 +2405,7 @@ public class BaseOptionsGump : Gump
                     }
 
                     public bool DrawBackgroundCurrentIndex = true;
-                    public bool IsSelected, ForceHover;
+                    public bool IsSelected;
 
                     public Color Hue;
 
@@ -2419,7 +2419,7 @@ public class BaseOptionsGump : Gump
                                 _label.FontColor = Hue;
                             }
                         }
-                        else if (MouseIsOver || ForceHover)
+                        else if (MouseIsOver)
                         {
                             if (Hue != _overHue)
                             {

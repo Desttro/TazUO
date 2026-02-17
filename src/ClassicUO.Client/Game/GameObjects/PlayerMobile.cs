@@ -47,7 +47,7 @@ namespace ClassicUO.Game.GameObjects
             IsPlayer = true;
         }
 
-        public bool IsVisible { get; set; } = true;
+        public new bool IsVisible { get; set; } = true;
 
         public Skill[] Skills { get; }
         public override bool InWarMode { get; set; }

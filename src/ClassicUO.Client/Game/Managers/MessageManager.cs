@@ -49,10 +49,7 @@ namespace ClassicUO.Game.Managers
 
         public PromptData PromptData { get; set; }
 
-        public event EventHandler<MessageEventArgs> MessageReceived;
-
         public event EventHandler<MessageEventArgs> LocalizedMessageReceived;
-
 
         public void HandleMessage
         (

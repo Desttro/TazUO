@@ -8,10 +8,6 @@ public class TestWindow : SingletonImGuiWindow<TestWindow>
 {
     public static string TestMessage = string.Empty;
 
-    private int _currency = 0;
-    private string _formattedCurrency = string.Empty;
-    private string _formattedAsInt = string.Empty;
-
     //This is intended for testing purposes, if you need a quick ui to debug something feel free to edit this as needed.
     public TestWindow() : base("Test Window")
     {

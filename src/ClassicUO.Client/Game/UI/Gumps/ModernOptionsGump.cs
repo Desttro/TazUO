@@ -1447,7 +1447,7 @@ namespace ClassicUO.Game.UI.Gumps
         private void BuildInfoBar()
         {
             var content = new mainScrollArea(MainContent.RightWidth, MainContent.Height, (int)(MainContent.RightWidth * 1.0));
-            int page = ((int)PAGE.InfoBar + 1000);
+            //int page = ((int)PAGE.InfoBar + 1000);
 
             #region Active Info Bar
 
@@ -4552,21 +4552,10 @@ namespace ClassicUO.Game.UI.Gumps
 
         private class mainScrollArea : Control
         {
-            private ScrollArea left, right;
-            private int leftY, rightY = ThemeSettings.TOP_PADDING, leftX, rightX;
+            private ScrollArea left;
+            private int leftY, rightY = ThemeSettings.TOP_PADDING, leftX = 0, rightX;
 
             public ScrollArea LeftArea => left;
-            public ScrollArea RightArea => right;
-
-            public new int ActivePage
-            {
-                get => base.ActivePage;
-                set
-                {
-                    base.ActivePage = value;
-                    right.ActivePage = value;
-                }
-            }
 
             public mainScrollArea(int width, int height, int leftWidth, int page = 0)
             {
@@ -4656,7 +4645,7 @@ namespace ClassicUO.Game.UI.Gumps
                     {
                         ((SearchableOption)button).OnSearchMatch();
                         int p = Parent == null ? Page : Parent.Page;
-                        ModernOptionsGump.SetParentsForMatchingSearch(this, p);
+                        SetParentsForMatchingSearch(this, p);
                     }
                 }
             }

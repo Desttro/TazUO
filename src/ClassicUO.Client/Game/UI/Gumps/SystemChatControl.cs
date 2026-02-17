@@ -44,7 +44,7 @@ namespace ClassicUO.Game.UI.Gumps
         private const int MAX_MESSAGE_LENGHT = 100;
         private const int CHAT_X_OFFSET = 3;
         private const int CHAT_HEIGHT = 15;
-        private static readonly List<Tuple<ChatMode, string>> _messageHistory = new List<Tuple<ChatMode, string>>();
+        private static readonly List<Tuple<ChatMode, string>> _messageHistory = new();
         private static int _messageHistoryIndex = -1;
 
         private readonly Label _currentChatModeLabel;
@@ -55,7 +55,6 @@ namespace ClassicUO.Game.UI.Gumps
         private readonly WorldViewportGump _gump;
         private readonly LinkedList<ChatLineTime> _textEntries;
         private readonly AlphaBlendControl _trans;
-        private int lastAutoCompleteIndex = 0;
         private string command = string.Empty;
 
         public SystemChatControl(WorldViewportGump gump, int x, int y, int w, int h)
@@ -115,8 +114,6 @@ namespace ClassicUO.Game.UI.Gumps
             );
 
             WantUpdateSize = false;
-
-            _gump.World.MessageManager.MessageReceived += ChatOnMessageReceived;
 
             EventSink.MessageReceived += ChatOnMessageReceived;
             Mode = ChatMode.Default;
@@ -305,8 +302,6 @@ namespace ClassicUO.Game.UI.Gumps
 
         public override void Dispose()
         {
-                        _gump.World.MessageManager.MessageReceived -= ChatOnMessageReceived;
-
             EventSink.MessageReceived -= ChatOnMessageReceived;
             base.Dispose();
         }
