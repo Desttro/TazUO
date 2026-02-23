@@ -22,16 +22,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using ClassicUO.Network.PacketHandlers;
 using ImGuiNET;
+using Myra;
 using SDL3;
 using static SDL3.SDL;
 using Keyboard = ClassicUO.Input.Keyboard;
 using Mouse = ClassicUO.Input.Mouse;
+using ClassicUO.Game.UI.MyraWindows;
 
 namespace ClassicUO
 {
@@ -163,6 +164,10 @@ namespace ClassicUO
         protected override void LoadContent()
         {
             base.LoadContent();
+
+            MyraEnvironment.Game = this;
+            MyraEnvironment.SetMouseCursorFromWidget = false;
+            MyraStyle.SetDefault();
 
             Fonts.Initialize(GraphicsDevice);
             SolidColorTextureCache.Initialize(GraphicsDevice);
@@ -781,7 +786,7 @@ namespace ClassicUO
                             }
                             else if (UIManager.MouseOverControl != null && UIManager.MouseOverControl.IsVisible)
                             {
-                                Control c = UIManager.MouseOverControl.RootParent;
+                                IGui c = UIManager.MouseOverControl.RootParent;
                                 if (c != null)
                                 {
                                     ClipboardScreenshot(c.Bounds, GraphicsDevice);

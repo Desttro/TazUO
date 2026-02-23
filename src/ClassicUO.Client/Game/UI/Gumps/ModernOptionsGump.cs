@@ -2259,10 +2259,7 @@ namespace ClassicUO.Game.UI.Gumps
                             profile.ContainersScale = (byte)i;
                             UIManager.ContainerScale = (byte)i / 100f;
 
-                            foreach (ContainerGump resizableGump in UIManager.Gumps.OfType<ContainerGump>())
-                            {
-                                resizableGump.RequestUpdateContents();
-                            }
+                            UIManager.ForEach<ContainerGump>(c => c.RequestUpdateContents());
                         }
                     ), MainContent.RightWidth, (int)PAGE.Containers
                 )
@@ -4530,7 +4527,7 @@ namespace ClassicUO.Game.UI.Gumps
                 {
                     for (int i = 0; i < Children.Count; i++)
                     {
-                        Control c = Children[i];
+                        IGui c = Children[i];
 
                         if (c.IsDisposed)
                         {

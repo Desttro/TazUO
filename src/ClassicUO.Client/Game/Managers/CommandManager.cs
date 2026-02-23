@@ -12,6 +12,7 @@ using ClassicUO.Game.Data;
 using ClassicUO.Game.UI.Gumps;
 using ClassicUO.Configuration;
 using ClassicUO.Game.UI;
+using ClassicUO.Game.UI.Controls;
 using ClassicUO.Game.UI.ImGuiControls;
 using ClassicUO.LegionScripting;
 
@@ -250,13 +251,13 @@ namespace ClassicUO.Game.Managers
 
             Register("setinscreen", (s) =>
             {
-                for (LinkedListNode<Gump> last = UIManager.Gumps.Last; last != null; last = last.Previous)
+                for (LinkedListNode<IGui> last = UIManager.Gumps.Last; last != null; last = last.Previous)
                 {
-                    Gump c = last.Value;
+                    IGui c = last.Value;
 
-                    if (!c.IsDisposed)
+                    if (!c.IsDisposed && c is Gump g)
                     {
-                        c.SetInScreen();
+                        g.SetInScreen();
                     }
                 }
             });
@@ -283,11 +284,20 @@ namespace ClassicUO.Game.Managers
             Register("organizer", (s) => OrganizerAgent.Instance?.OrganizerCommand(s));
             Register("organizerlist", (s) => OrganizerAgent.Instance?.ListOrganizers());
 
+            Register("myra", (s) =>
+            {
+                //ImGuiManager.AddWindow(new TestWindow());
+
+                UIManager.Add(new UI.MyraWindows.AssistantWindow());
+            });
+
 #if DEBUG
 
             Register("test", (s) =>
             {
-                ImGuiManager.AddWindow(new TestWindow());
+                //ImGuiManager.AddWindow(new TestWindow());
+
+                UIManager.Add(new UI.MyraWindows.AssistantWindow());
             });
 
 #endif

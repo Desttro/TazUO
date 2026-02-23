@@ -12,6 +12,7 @@ using ClassicUO.Game.Data;
 using ClassicUO.Game.GameObjects;
 using ClassicUO.Game.Managers;
 using ClassicUO.Game.Managers.Structs;
+using ClassicUO.Game.UI;
 using ClassicUO.Game.UI.Controls;
 using ClassicUO.Game.UI.Gumps;
 using ClassicUO.LegionScripting.ApiClasses;
@@ -2690,7 +2691,7 @@ namespace ClassicUO.LegionScripting
         /// Gets all currently open server-side gumps.
         /// </summary>
         /// <returns>A list containing all open server gumps, or null if none are open</returns>
-        public IList<Gump> GetAllGumps() =>
+        public IList<IGui> GetAllGumps() =>
             MainThreadQueue.InvokeOnMainThread(() => UIManager.Gumps.Where(g => g.ServerSerial > 0).ToList());
 
 

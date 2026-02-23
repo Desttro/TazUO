@@ -147,7 +147,13 @@ namespace ClassicUO.Game.UI.Gumps
                 Y = 1,
                 FontCenter = true
             }, 1);
-            assistant.MouseUp += (s, e) => { AssistantWindow.Show(); };
+            assistant.MouseUp += (s, e) =>
+            {
+                AssistantWindow.Show();
+                #if DEBUG
+                UIManager.Add(new MyraWindows.AssistantWindow());
+                #endif
+            };
             startX += largeWidth + 1;
 
             RighClickableButton lscript;
@@ -252,13 +258,13 @@ namespace ClassicUO.Game.UI.Gumps
             submenu.Add(new ContextMenuItemEntry("Healthbar Collector", () => { UIManager.Add(new HealthbarCollectorGump(World) { X = 100, Y = 100 }); }));
             submenu.Add(new ContextMenuItemEntry("Retrieve gumps", () =>
             {
-                for (LinkedListNode<Gump> last = UIManager.Gumps.Last; last != null; last = last.Previous)
+                for (LinkedListNode<IGui> last = UIManager.Gumps.Last; last != null; last = last.Previous)
                 {
-                    Gump c = last.Value;
+                    IGui c = last.Value;
 
-                    if (!c.IsDisposed)
+                    if (!c.IsDisposed && c is Gump g)
                     {
-                        c.SetInScreen();
+                        g.SetInScreen();
                     }
                 }
             }));
@@ -378,7 +384,7 @@ namespace ClassicUO.Game.UI.Gumps
             }
         }
 
-        protected override void OnMouseUp(int x, int y, MouseButtonType button)
+        public override void OnMouseUp(int x, int y, MouseButtonType button)
         {
             if (button == MouseButtonType.Right && (X != 0 || Y != 0))
             {
@@ -471,7 +477,7 @@ namespace ClassicUO.Game.UI.Gumps
 
             public RighClickableButton(List<string> parts) : base(parts) { }
 
-            protected override void OnMouseUp(int x, int y, MouseButtonType button)
+            public override void OnMouseUp(int x, int y, MouseButtonType button)
             {
                 base.OnMouseUp(x, y, button);
                 Parent?.InvokeMouseUp(new Point(x, y), button);
