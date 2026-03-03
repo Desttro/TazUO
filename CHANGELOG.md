@@ -37,6 +37,7 @@ All notable changes to TazUO will be recorded here.
 * Added `API.GetPartyLeader()` - ([bittiez](https://github.com/bittiez))
 * Added optional entries tuple to `ReplyGump` - ([bittiez](https://github.com/bittiez))
 * Fixed QueueMoveItem* methods defaulting to 1 item from the stack instead of the entire stack - ([bittiez](https://github.com/bittiez))
+* Added `ApiItem.OnGround` to see if an item is on the ground or not - ([bittiez](https://github.com/bittiez))
 
 ### Assistant
 
@@ -45,6 +46,7 @@ All notable changes to TazUO will be recorded here.
 * Added Mobile outline option - Highlighting mobiles by notoriety - ([bittiez](https://github.com/bittiez))
 * Added TazUO chat (Top menu -> More -> TazUO Chat) - ([bittiez](https://github.com/bittiez))
 * ItemDatabase search now defaults to not only "this character" - ([bittiez](https://github.com/bittiez))
+* Allow bandage agent threshold to range from 1-99(Previously 10-95) - ([bittiez](https://github.com/bittiez))
 
 
 ### Fixes
@@ -54,7 +56,9 @@ All notable changes to TazUO will be recorded here.
 * Fixed a reliability issue with `API.OnHotKey` - [P.R 365](https://github.com/PlayTazUO/TazUO/pull/365) ([fpw](https://github.com/fpw))
 * Fixed healthbar collector occasionally becoming unresponsive to targeting/clicks - ([bittiez](https://github.com/bittiez))
 * Fixed a rare crash when removing messages from system chat - ([bittiez](https://github.com/bittiez))
-* Fixed a crash with invalid macros on creation
+* Fixed a crash with invalid macros on creation - ([bittiez](https://github.com/bittiez))
+* Fixed a race condition crash when attacking a mobile during logout - ([bittiez](https://github.com/bittiez))
+* Added a few missing keys to imgui assistant hotkey listener - ([bittiez](https://github.com/bittiez))
 
 ### Misc
 

@@ -745,7 +745,14 @@ namespace ClassicUO.Game.UI.ImGuiControls
             { ImGuiKey._7, SDL.SDL_Keycode.SDLK_7 },
             { ImGuiKey._8, SDL.SDL_Keycode.SDLK_8 },
             { ImGuiKey._9, SDL.SDL_Keycode.SDLK_9 },
-            { ImGuiKey._0, SDL.SDL_Keycode.SDLK_0 }
+            { ImGuiKey._0, SDL.SDL_Keycode.SDLK_0 },
+            { ImGuiKey.Delete, SDL.SDL_Keycode.SDLK_DELETE },
+            { ImGuiKey.ScrollLock, SDL.SDL_Keycode.SDLK_SCROLLLOCK },
+            { ImGuiKey.End, SDL.SDL_Keycode.SDLK_END },
+            { ImGuiKey.Insert, SDL.SDL_Keycode.SDLK_INSERT },
+            { ImGuiKey.PageDown, SDL.SDL_Keycode.SDLK_PAGEDOWN },
+            { ImGuiKey.PageUp, SDL.SDL_Keycode.SDLK_PAGEUP },
+            { ImGuiKey.Space, SDL.SDL_Keycode.SDLK_SPACE },
         };
 
         private static Dictionary<ImGuiKey, SDL.SDL_Keycode> _keypadMap = new()
@@ -759,7 +766,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             { ImGuiKey.Keypad7, SDL.SDL_Keycode.SDLK_KP_7 },
             { ImGuiKey.Keypad8, SDL.SDL_Keycode.SDLK_KP_8 },
             { ImGuiKey.Keypad9, SDL.SDL_Keycode.SDLK_KP_9 },
-            { ImGuiKey.Keypad0, SDL.SDL_Keycode.SDLK_KP_0 }
+            { ImGuiKey.Keypad0, SDL.SDL_Keycode.SDLK_KP_0 },
         };
 
         private void CaptureCurrentInput()

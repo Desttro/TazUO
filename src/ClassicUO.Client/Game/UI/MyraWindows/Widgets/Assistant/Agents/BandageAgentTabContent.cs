@@ -69,7 +69,7 @@ public static class BandageAgentTabContent
             "HP percentage threshold",
             out _,
             v => profile.BandageAgentHPPercentage = (int)v,
-            10, 95,
+            1, 99,
             profile.BandageAgentHPPercentage));
 
         root.Widgets.Add(MyraCheckButton.CreateWithCallback(

@@ -25,6 +25,10 @@ description:  Represents a Python-accessible item in the game world.  Inherits e
 
 **Type:** `uint`
 
+### `OnGround`
+
+**Type:** `bool`
+
 ### `RootEntity`
 
 **Type:** `ApiEntity`

@@ -77,7 +77,7 @@ namespace ClassicUO.Game.UI.ImGuiControls
             ImGuiComponents.Tooltip("Use the dex formula instead of a set delay");
 
             // HP percentage threshold slider
-            if (ImGui.SliderInt("HP percentage threshold", ref hpPercentage, 10, 95))
+            if (ImGui.SliderInt("HP percentage threshold", ref hpPercentage, 1, 99))
             {
                 profile.BandageAgentHPPercentage = hpPercentage;
             }

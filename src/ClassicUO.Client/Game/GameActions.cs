@@ -550,7 +550,7 @@ internal static class GameActions
 
     internal static void Attack(World world, uint serial)
     {
-        if (ProfileManager.CurrentProfile.EnabledCriminalActionQuery)
+        if (ProfileManager.CurrentProfile is { EnabledCriminalActionQuery:true })
         {
             Mobile m = world.Mobiles.Get(serial);
 
@@ -574,9 +574,9 @@ internal static class GameActions
             }
         }
 
-            // Record action for script recording
-            ScriptRecorder.Instance.RecordAttack(serial);
-            ScriptingInfoGump.AddOrUpdateInfo("Last Attacked", $"0x{serial:X}");
+        // Record action for script recording
+        ScriptRecorder.Instance.RecordAttack(serial);
+        ScriptingInfoGump.AddOrUpdateInfo("Last Attacked", $"0x{serial:X8}");
 
         world.TargetManager.NewTargetSystemSerial = serial;
         world.TargetManager.LastAttack = serial;
