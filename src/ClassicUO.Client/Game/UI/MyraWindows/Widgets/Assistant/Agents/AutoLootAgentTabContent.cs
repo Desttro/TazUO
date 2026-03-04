@@ -40,7 +40,8 @@ public static class AutoLootAgentTabContent
         root.Widgets.Add(topRow);
 
         // Options
-        root.Widgets.Add(new MyraLabel("Options:", MyraLabel.Style.H3));
+        root.Widgets.Add(new MyraSpacer(15, 5));
+        root.Widgets.Add(new MyraLabel("Options:", MyraLabel.Style.H2));
 
         var optRow1 = new HorizontalStackPanel { Spacing = 8 };
         optRow1.Widgets.Add(MyraCheckButton.CreateWithCallback(
@@ -69,7 +70,8 @@ public static class AutoLootAgentTabContent
         root.Widgets.Add(optRow2);
 
         // Entries section
-        root.Widgets.Add(new MyraLabel("Entries:", MyraLabel.Style.H3));
+        root.Widgets.Add(new MyraSpacer(15, 5));
+        root.Widgets.Add(new MyraLabel("Entries:", MyraLabel.Style.H2));
 
         var entriesPanel = new VerticalStackPanel { Spacing = 4 };
 

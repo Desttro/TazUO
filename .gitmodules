@@ -9,7 +9,7 @@
 	url = https://github.com/SirCxyrtyx/FileEmbed.git
 [submodule "external/Myra"]
 	path = external/Myra
-	url = https://github.com/rds1983/Myra.git
+	url = https://github.com/bittiez/Myra.git
 [submodule "external/FontStashSharp"]
 	path = external/FontStashSharp
 	url = https://github.com/FontStashSharp/FontStashSharp.git

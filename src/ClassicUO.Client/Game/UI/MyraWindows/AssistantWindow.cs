@@ -13,6 +13,9 @@ public class AssistantWindow : MyraControl
 {
     public AssistantWindow() : base("Legion Assistant")
     {
+        #if DEBUG
+        MyraStyle.SetDefault();
+        #endif
         Build();
         CenterInViewPort();
     }

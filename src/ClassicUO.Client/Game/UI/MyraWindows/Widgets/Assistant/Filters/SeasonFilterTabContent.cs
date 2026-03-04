@@ -33,7 +33,7 @@ public static class SeasonFilterTabContent
 
         root.Widgets.Add(new MyraLabel(
             "Override seasons sent by the server. For example, if the server sends Winter, you can display Fall instead.",
-            MyraLabel.Style.P));
+            MyraLabel.Style.P) { MaxWidth = 500 });
 
         // Collect BuildCycleBtn delegates so Clear can refresh all wrappers
         var rebuildActions = new System.Collections.Generic.List<System.Action>();

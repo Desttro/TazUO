@@ -99,6 +99,7 @@ public static class SpellBarTabContent
             "Display hotkeys on spellbar", "Show hotkey assignments on the spell bar buttons"));
 
         // Row management
+        leftCol.Widgets.Add(new MyraSpacer(15, 5));
         leftCol.Widgets.Add(new MyraLabel("Row Management", MyraLabel.Style.H2));
         var rowBtns = new HorizontalStackPanel { Spacing = 4 };
         rowBtns.Widgets.Add(new MyraButton("Add Row", () =>
@@ -115,6 +116,7 @@ public static class SpellBarTabContent
         leftCol.Widgets.Add(rowBtns);
 
         // Preset management
+        leftCol.Widgets.Add(new MyraSpacer(15, 5));
         leftCol.Widgets.Add(new MyraLabel("Preset Management", MyraLabel.Style.H2));
 
         var presetSavePanel = new VerticalStackPanel { Spacing = 4, Visible = false };

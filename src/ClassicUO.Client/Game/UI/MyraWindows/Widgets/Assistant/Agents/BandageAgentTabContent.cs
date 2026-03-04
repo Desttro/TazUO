@@ -16,27 +16,27 @@ public static class BandageAgentTabContent
         if (profile == null)
             return new MyraLabel("Profile not loaded", MyraLabel.Style.P);
 
-        var root = new VerticalStackPanel { Spacing = 6 };
+        var root = new VerticalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
 
         root.Widgets.Add(new MyraLabel(
             "Automatically use bandages to heal when HP drops below threshold.",
             MyraLabel.Style.P));
 
-        var enableRow = new HorizontalStackPanel { Spacing = 8 };
+        var enableRow = new HorizontalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
         enableRow.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.EnableBandageAgent,
             b => profile.EnableBandageAgent = b,
-            "Enable Bandage Agent"));
+            "Enable bandage agent"));
         enableRow.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentBandageFriends,
             b => profile.BandageAgentBandageFriends = b,
-            "Bandage Friends"));
+            "Bandage friends"));
         root.Widgets.Add(enableRow);
 
-        root.Widgets.Add(MyraCheckButton.CreateWithCallback(
+        enableRow.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentDisableSelfHeal,
             b => profile.BandageAgentDisableSelfHeal = b,
-            "Disable Self Heal",
+            "Disable self heal",
             "When enabled, bandage agent will only heal friends and not yourself"));
 
         // Delay
@@ -54,16 +54,22 @@ public static class BandageAgentTabContent
                 delayBox.Text = profile.BandageAgentDelay.ToString();
             }
         };
-        var delayRow = new HorizontalStackPanel { Spacing = 4 };
+        var delayRow = new HorizontalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
         delayRow.Widgets.Add(delayBox);
         delayRow.Widgets.Add(new MyraLabel("Delay (ms)", MyraLabel.Style.P));
+        root.Widgets.Add(new MyraSpacer(15, 1));
         root.Widgets.Add(delayRow);
 
         root.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentUseDexFormula,
             b => profile.BandageAgentUseDexFormula = b,
-            "Use Dex Formula",
+            "Use dex formula",
             "Use the dex formula instead of a set delay"));
+
+        root.Widgets.Add(MyraCheckButton.CreateWithCallback(
+            profile.BandageAgentCheckForBuff,
+            b => profile.BandageAgentCheckForBuff = b,
+            "Use bandaging buff", "Use bandaging buff instead of delay"));
 
         root.Widgets.Add(MyraHSlider.SliderWithLabel(
             "HP percentage threshold",
@@ -72,11 +78,7 @@ public static class BandageAgentTabContent
             1, 99,
             profile.BandageAgentHPPercentage));
 
-        root.Widgets.Add(MyraCheckButton.CreateWithCallback(
-            profile.BandageAgentCheckForBuff,
-            b => profile.BandageAgentCheckForBuff = b,
-            "Use bandaging buff instead of delay"));
-
+        root.Widgets.Add(new MyraSpacer(15, 1));
         root.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentUseNewPacket,
             b => profile.BandageAgentUseNewPacket = b,
@@ -85,17 +87,17 @@ public static class BandageAgentTabContent
         root.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentCheckPoisoned,
             b => profile.BandageAgentCheckPoisoned = b,
-            "Bandage if Poisoned"));
+            "Bandage if poisoned"));
 
         root.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentCheckHidden,
             b => profile.BandageAgentCheckHidden = b,
-            "Skip Bandage if Hidden"));
+            "Skip bandage if hidden"));
 
         root.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentCheckInvul,
             b => profile.BandageAgentCheckInvul = b,
-            "Skip Bandage if yellow hits"));
+            "Skip bandage if yellow hits"));
 
         // Bandage graphic
         var graphicBox = new TextBox
@@ -109,7 +111,7 @@ public static class BandageAgentTabContent
             if (TryParseBandageGraphic(graphicBox.Text, out ushort graphic))
                 profile.BandageAgentGraphic = graphic;
         };
-        var graphicRow = new HorizontalStackPanel { Spacing = 4 };
+        var graphicRow = new HorizontalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
         graphicRow.Widgets.Add(new MyraLabel("Bandage graphic ID:", MyraLabel.Style.P));
         graphicRow.Widgets.Add(graphicBox);
         root.Widgets.Add(graphicRow);

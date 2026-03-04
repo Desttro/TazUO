@@ -32,6 +32,7 @@ public static class TitleBarTabContent
             }, "Enable title bar stats"));
 
         // Display mode
+        outer.Widgets.Add(new MyraSpacer(15, 5));
         outer.Widgets.Add(new MyraLabel("Display Mode", MyraLabel.Style.H2));
 
         var previewLabel = new MyraLabel(TitleBarStatsManager.GetPreviewText(), MyraLabel.Style.P);
@@ -74,6 +75,7 @@ public static class TitleBarTabContent
         outer.Widgets.Add(radioGroup);
 
         // Preview
+        outer.Widgets.Add(new MyraSpacer(15, 5));
         outer.Widgets.Add(new MyraLabel("Preview", MyraLabel.Style.H2));
         outer.Widgets.Add(previewLabel);
 

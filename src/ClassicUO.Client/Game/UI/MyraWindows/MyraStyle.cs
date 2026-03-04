@@ -9,8 +9,7 @@ namespace ClassicUO.Game.UI.MyraWindows;
 
 public static class MyraStyle
 {
-    public static SolidBrush CheckedBackground = new(new Color(0, 105, 0, 155));
-    public static SolidBrush UncheckedBackground = new(new Color(105, 0, 0, 155));
+    public const int STANDARD_SPACING = 3;
     public static Color GridBorderColor { get; } = Color.Gray;
 
     private static Color TazUO_Orange = new(0.667f, 0.412f, 0.051f, 1f);
@@ -46,12 +45,21 @@ public static class MyraStyle
         tabItemStyle.BorderThickness = new Thickness(1);
 
         //HSlider
-        Stylesheet.Current.HorizontalSliderStyle.Background = new SolidBrush(new Color(50, 49, 56, 50));
-        Stylesheet.Current.HorizontalSliderStyle.Width = 100;
-        Stylesheet.Current.HorizontalSliderStyle.Height = 20;
+        SliderStyle sStyle = Stylesheet.Current.HorizontalSliderStyle;
+        sStyle.Background = new SolidBrush(new Color(50, 49, 56, 50));
+        sStyle.OverBackground = new SolidBrush(new Color(50, 49, 56, 150));
+        sStyle.KnobStyle.ImageStyle.Background = new SolidBrush(TazUO_Orange);
+        sStyle.KnobStyle.ImageStyle.OverBackground = new SolidBrush(TazUO_Orange);
+        sStyle.KnobStyle.ImageStyle.FocusedBackground = new SolidBrush(TazUO_Orange);
+
+        sStyle.KnobStyle.ImageStyle.PressedImage = null;
+        sStyle.KnobStyle.ImageStyle.Image = null;
+        sStyle.Width = 100;
+        sStyle.Height = 20;
 
         //Button
         ButtonStyle s = Stylesheet.Current.ButtonStyle;
+        s.Background = new SolidBrush(TazUO_Orange);
         s.MinWidth = 1;
         s.MinHeight = 1;
         s.Padding = new Thickness(5);

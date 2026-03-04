@@ -9,6 +9,7 @@ public class MyraLabel : Label
 {
     public MyraLabel(string text, int fontSize)
     {
+        Wrap = true;
         Text = text;
 
         Font = TrueTypeLoader.Instance.GetFont(TrueTypeLoader.EMBEDDED_FONT, fontSize);
@@ -16,6 +17,7 @@ public class MyraLabel : Label
 
     public MyraLabel(string text, Style style)
     {
+        Wrap = true;
         Text = text;
 
         var styleSheet = Stylesheet.Current.LabelStyle.Clone() as LabelStyle;

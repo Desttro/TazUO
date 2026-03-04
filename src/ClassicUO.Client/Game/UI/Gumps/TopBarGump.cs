@@ -150,9 +150,7 @@ namespace ClassicUO.Game.UI.Gumps
             assistant.MouseUp += (s, e) =>
             {
                 AssistantWindow.Show();
-                #if DEBUG
                 UIManager.Add(new MyraWindows.AssistantWindow());
-                #endif
             };
             startX += largeWidth + 1;
 

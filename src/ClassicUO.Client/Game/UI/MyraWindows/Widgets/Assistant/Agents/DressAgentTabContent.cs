@@ -143,6 +143,7 @@ public static class DressAgentTabContent
             rightPanel.Widgets.Add(actionRow);
 
             // KR Equip Packet
+            rightPanel.Widgets.Add(new MyraSpacer(15, 1));
             rightPanel.Widgets.Add(MyraCheckButton.CreateWithCallback(
                 selectedConfig.UseKREquipPacket,
                 b => { selectedConfig.UseKREquipPacket = b; DressAgentManager.Instance.Save(); },
@@ -150,6 +151,7 @@ public static class DressAgentTabContent
                 "Uses KR equip/unequip packets for faster operation"));
 
             // Undress bag
+            rightPanel.Widgets.Add(new MyraSpacer(15, 1));
             rightPanel.Widgets.Add(new MyraLabel("Undress Bag Settings", MyraLabel.Style.H3));
             var undressBagRow = new HorizontalStackPanel { Spacing = 4 };
             undressBagRow.Widgets.Add(new MyraButton("Set Undress Bag", () =>
@@ -182,6 +184,7 @@ public static class DressAgentTabContent
             rightPanel.Widgets.Add(undressBagRow);
 
             // Items section
+            rightPanel.Widgets.Add(new MyraSpacer(15, 1));
             rightPanel.Widgets.Add(new MyraLabel("Items to Dress/Undress", MyraLabel.Style.H3));
             var itemsPanel = new VerticalStackPanel { Spacing = 2 };
             var itemActionRow = new HorizontalStackPanel { Spacing = 4 };

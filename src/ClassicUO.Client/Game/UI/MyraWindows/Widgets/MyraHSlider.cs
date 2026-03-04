@@ -40,6 +40,18 @@ public class MyraHSlider : Grid
         }
     }
 
+    public float WheelStep
+    {
+        get
+        {
+            return _slider.WheelStep;
+        }
+        set
+        {
+            _slider.WheelStep = value;
+        }
+    }
+
     public event EventHandler<ValueChangedEventArgs<float>> ValueChangedByUser
     {
         add => _slider.ValueChangedByUser += value;
@@ -49,18 +61,6 @@ public class MyraHSlider : Grid
     public MyraHSlider()
     {
         Build();
-    }
-
-    protected override bool AcceptsMouseWheel => true;
-
-    public override void OnMouseWheel(float delta)
-    {
-        base.OnMouseWheel(delta);
-
-        if (delta < 0)
-            Value -= 1;
-        else
-            Value += 1;
     }
 
     private float ValidateValues(float value)
@@ -83,6 +83,8 @@ public class MyraHSlider : Grid
         _valueLabel.VerticalAlignment = VerticalAlignment.Center;
         _valueLabel.Font = TrueTypeLoader.Instance.GetFont(TrueTypeLoader.EMBEDDED_FONT, 12);
 
+        _slider.WheelAdjustment = true;
+        _slider.WheelStep = 1f;
         _slider.ValueChangedByUser += (_, _) => _valueLabel.Text = FormatValue(_slider.Value);
         _slider.ValueChanged += (sender, args) =>
         {

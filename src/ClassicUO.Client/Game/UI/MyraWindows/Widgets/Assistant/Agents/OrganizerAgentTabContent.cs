@@ -236,7 +236,8 @@ public static class OrganizerAgentTabContent
             rightPanel.Widgets.Add(actionRow);
 
             // Container settings
-            rightPanel.Widgets.Add(new MyraLabel("Container Settings:", MyraLabel.Style.H3));
+            rightPanel.Widgets.Add(new MyraSpacer(5, 1));
+            rightPanel.Widgets.Add(new MyraLabel("Container Settings:", MyraLabel.Style.H2));
             var contRow = new HorizontalStackPanel { Spacing = 4 };
             contRow.Widgets.Add(new MyraButton("Set Source Container", () =>
             {
@@ -284,7 +285,8 @@ public static class OrganizerAgentTabContent
             rightPanel.Widgets.Add(contInfoRow);
 
             // Items section
-            rightPanel.Widgets.Add(new MyraLabel("Items to Organize:", MyraLabel.Style.H3));
+            rightPanel.Widgets.Add(new MyraSpacer(5, 1));
+            rightPanel.Widgets.Add(new MyraLabel("Items to Organize:", MyraLabel.Style.H2));
 
             var itemsPanel = new VerticalStackPanel { Spacing = 2 };
 
@@ -351,13 +353,13 @@ public static class OrganizerAgentTabContent
             rightPanel.Widgets.Add(addEntryPanel);
 
             BuildItemsGrid(itemsPanel);
-            rightPanel.Widgets.Add(new ScrollViewer { Height = 250, Content = itemsPanel });
+            rightPanel.Widgets.Add(new ScrollViewer { MaxHeight = 250, Content = itemsPanel });
         }
 
         BuildConfigList();
         BuildConfigDetails();
 
-        var root = new HorizontalStackPanel { Spacing = 8 };
+        var root = new HorizontalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
         root.Widgets.Add(new ScrollViewer { Width = 160, Content = leftPanel });
         root.Widgets.Add(rightPanel);
         return root;
