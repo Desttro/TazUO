@@ -283,24 +283,6 @@ namespace ClassicUO.Game.Managers
             Register("organize", (s) => OrganizerAgent.Instance?.OrganizerCommand(s));
             Register("organizer", (s) => OrganizerAgent.Instance?.OrganizerCommand(s));
             Register("organizerlist", (s) => OrganizerAgent.Instance?.ListOrganizers());
-
-            Register("myra", (s) =>
-            {
-                //ImGuiManager.AddWindow(new TestWindow());
-
-                UIManager.Add(new UI.MyraWindows.AssistantWindow());
-            });
-
-#if DEBUG
-
-            Register("test", (s) =>
-            {
-                //ImGuiManager.AddWindow(new TestWindow());
-
-                UIManager.Add(new UI.MyraWindows.AssistantWindow());
-            });
-
-#endif
         }
 
 

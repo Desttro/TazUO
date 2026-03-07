@@ -1,5 +1,4 @@
 #nullable enable
-using ClassicUO.Configuration;
 using ClassicUO.Game.Managers;
 using ClassicUO.Game.UI.Controls;
 using ClassicUO.Game.UI.MyraWindows.Widgets;
@@ -32,6 +31,16 @@ public class TazUOChatWindow : MyraControl
     private VerticalStackPanel? _usersPanel;
     private ScrollViewer?       _messageScroll;
     private TextBox?            _chatInput;
+    private MyraLabel?          _titleNickName;
+    private string _nickName
+    {
+        get;
+        set
+        {
+            field = value;
+            _titleNickName?.Text = "/c[green]" + value;
+        }
+    }
 
     public TazUOChatWindow() : base("TazUO Chat")
     {
@@ -39,6 +48,11 @@ public class TazUOChatWindow : MyraControl
         _wasConnected = _manager.IsConnected;
         RebuildContent();
         CenterInViewPort();
+
+        _titleNickName = new MyraLabel("", MyraLabel.Style.H3);
+        _rootWindow.TitlePanel.Widgets.Insert(1, _titleNickName);
+
+        _nickName = _manager.CurrentNick;
     }
 
     public static void Show()
@@ -72,6 +86,9 @@ public class TazUOChatWindow : MyraControl
             RebuildMessages();
             _pendingScroll = true;
         }
+
+        if(_manager.CurrentNick != _nickName)
+            _nickName =  _manager.CurrentNick;
 
         if (_pendingScroll && _messageScroll != null)
         {
