@@ -109,8 +109,13 @@ public class MyraControl : IGui
     private void DesktopOnTouchUp(object sender, EventArgs e) => OnMouseUp(Mouse.Position.X, Mouse.Position.Y, MouseButtonType.Left);
 
     private void DesktopOnTouchDown(object sender, EventArgs e) => OnMouseDown(Mouse.Position.X, Mouse.Position.Y, MouseButtonType.Left);
-    private void DesktopOnWidgetGotKeyboardFocus(object sender, GenericEventArgs<Widget> e) => SetKeyboardFocus();
-#endregion
+    private void DesktopOnWidgetGotKeyboardFocus(object sender, GenericEventArgs<Widget> e)
+    {
+        if(e.Data.AcceptsKeyboardFocus)
+            SetKeyboardFocus();
+    }
+
+    #endregion
 
 #region Fields
     protected Rectangle _bounds = new();
@@ -297,7 +302,11 @@ public class MyraControl : IGui
 
     public virtual void OnFocusEnter() => IsFocused = true;
 
-    public virtual void OnFocusLost() => IsFocused = false;
+    public virtual void OnFocusLost()
+    {
+        IsFocused = false;
+        _desktop.FocusedKeyboardWidget = null;
+    }
 
     #region Invokations
     /// <summary>This is not in use here. Use _rootWindow events instead.</summary>

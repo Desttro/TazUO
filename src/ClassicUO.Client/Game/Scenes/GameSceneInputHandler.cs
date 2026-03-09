@@ -16,6 +16,7 @@ using SDL3;
 using MathHelper = ClassicUO.Utility.MathHelper;
 using ClassicUO.Assets;
 using ClassicUO.Game.UI;
+using ClassicUO.Game.UI.Controls;
 using ClassicUO.Utility.Logging;
 using ImGuiNET;
 
@@ -474,6 +475,9 @@ namespace ClassicUO.Game.Scenes
                     _isMouseLeftDown = true;
                     _holdMouse2secOverItemTime = Time.Ticks;
                 }
+
+                if (UIManager.TopMostControl is MyraControl)
+                    UIManager.TopMostControl = null;
             }
 
             return true;

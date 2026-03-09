@@ -35,7 +35,7 @@ public readonly struct MoveRequest
 
         if (Amount == 0)
         {
-            var item = World.Instance.Items.Get(Serial);
+            Item item = World.Instance.Items.Get(Serial);
             if (item != null)
                 Amount = item.Amount;
         }

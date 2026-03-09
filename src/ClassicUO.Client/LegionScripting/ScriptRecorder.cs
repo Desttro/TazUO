@@ -478,8 +478,8 @@ namespace ClassicUO.LegionScripting
                             string entries = "";
                             if (hasEntries)
                             {
-                                var tuples = entriesValue.ToString().Split(';')
-                                    .Select(p => { var kv = p.Split(':', 2); return kv.Length == 2 ? $"({kv[0]}, \"{kv[1]}\")" : null; })
+                                IEnumerable<string> tuples = entriesValue.ToString().Split(';')
+                                    .Select(p => { string[] kv = p.Split(':', 2); return kv.Length == 2 ? $"({kv[0]}, \"{kv[1]}\")" : null; })
                                     .Where(t => t != null);
                                 entries = ", [" + string.Join(", ", tuples) + "]";
                             }
