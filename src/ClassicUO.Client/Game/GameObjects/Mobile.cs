@@ -733,7 +733,21 @@ namespace ClassicUO.Game.GameObjects
                     }
 
                     int delay = (int)Time.Ticks - (int)LastStepTime;
-                    int maxDelay = (step.TimeDiff > 0 ? step.TimeDiff : MovementSpeed.TimeToCompleteMovement(step.Run, IsMounted || IsFlying)) - (int)Client.Game.FrameDelay[1];
+                    int maxDelay;
+
+                    if (Serial == World.Player)
+                    {
+                        bool mounted =
+                            IsMounted
+                            || SpeedMode == CharacterSpeedType.FastUnmount
+                            || SpeedMode == CharacterSpeedType.FastUnmountAndCantRun
+                            || IsFlying;
+                        maxDelay = MovementSpeed.TimeToCompleteMovement(step.Run, mounted) - (int)Client.Game.FrameDelay[1];
+                    }
+                    else
+                    {
+                        maxDelay = (step.TimeDiff > 0 ? step.TimeDiff : MovementSpeed.TimeToCompleteMovement(step.Run, IsMounted || IsFlying)) - (int)Client.Game.FrameDelay[1];
+                    }
 
                     bool removeStep = delay >= maxDelay;
                     bool directionChange = false;
