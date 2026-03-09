@@ -54,6 +54,13 @@ namespace ClassicUO
         private static Vector3 bgHueShader = new(0, 0, 0.3f);
         private bool drawScene;
 
+#if DEBUG
+        static GameController()
+        {
+            RegisterFnaLoggerListeners();
+        }
+#endif
+
         public GameController(IPluginHost pluginHost)
         {
             GraphicManager = new GraphicsDeviceManager(this);
@@ -1216,6 +1223,29 @@ namespace ClassicUO
                     GameActions.Print(UO.World, message, 0x44, MessageType.System);
                 }
             }
+        }
+
+        private static void FnaLogInfo(string message)=> Log.Info(message);
+
+        private static void FnaLogWarn(string message)
+        {
+            {
+                // This message spams the console and is generally unhelpful.
+                if (message == null || message.StartsWith("Scissor rect and viewport"))
+                    return;
+
+                Log.Warn(message);
+            }
+        }
+
+        private static void FnaLogError(string message) => Log.Error(message);
+
+
+        private static void RegisterFnaLoggerListeners()
+        {
+            FNALoggerEXT.LogInfo += FnaLogInfo;
+            FNALoggerEXT.LogWarn += FnaLogWarn;
+            FNALoggerEXT.LogError += FnaLogError;
         }
     }
 }
