@@ -783,8 +783,11 @@ namespace ClassicUO.Game.GameObjects
                             float steps = maxDelay / (float)Constants.CHARACTER_ANIMATION_DELAY;
                             float x = delay / (float)Constants.CHARACTER_ANIMATION_DELAY;
                             float y = x;
-                            Offset.Z = (sbyte)((step.Z - Z) * x * (4.0f / steps));
-                            MovementSpeed.GetPixelOffset(step.Direction, ref x, ref y, steps);
+                            if (steps > 0)
+                            {
+                                Offset.Z = (sbyte)((step.Z - Z) * x * (4.0f / steps));
+                                MovementSpeed.GetPixelOffset(step.Direction, ref x, ref y, steps);
+                            }
                             Offset.X = (sbyte)x;
                             Offset.Y = (sbyte)y;
                         }
