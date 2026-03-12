@@ -344,14 +344,13 @@ public class MyraControl : IGui
 
     public virtual void HitTest(Point position, ref IGui res)
     {
-        if (!IsVisible || !IsEnabled || IsDisposed) return;
+        if (!IsVisible || !IsEnabled || IsDisposed || !AcceptMouseInput) return;
 
-        if (Bounds.Contains(position.X, position.Y))
-            if (AcceptMouseInput)
-            {
-                res = this;
-                OnHitTestSuccess(position.X, position.Y, ref res);
-            }
+        if (Bounds.Contains(position.X, position.Y) || Contains(position.X, position.Y))
+        {
+            res = this;
+            OnHitTestSuccess(position.X, position.Y, ref res);
+        }
     }
 
     public void HitTest(int x, int y, ref IGui res) => HitTest(new Point(x, y), ref res);
@@ -365,7 +364,17 @@ public class MyraControl : IGui
     {
         if(_desktop == null) return false;
 
-        return Bounds.Contains(x + ParentX, y + ParentY);
+        if (Bounds.Contains(x + ParentX, y + ParentY))
+            return true;
+
+        if (_desktop.ContextMenu is { Visible: true } contextMenu)
+        {
+            var realBounds = new Rectangle(contextMenu.Left, contextMenu.Top,
+                contextMenu.Bounds.Width, contextMenu.Bounds.Height);
+            if(realBounds.Contains(x + ParentX, y + ParentY)) return true;
+        }
+
+        return false;
     }
 
 #region OnEventOccured

@@ -115,8 +115,8 @@ public class ScriptManagerWindow : MyraControl
     public override void Save(XmlTextWriter xml)
     {
         base.Save(xml);
-        xml.WriteAttributeString("width",  (Width).ToString());
-        xml.WriteAttributeString("height", (Height).ToString());
+        xml.WriteAttributeString("width",  (_mainGrid.Width).ToString());
+        xml.WriteAttributeString("height", (_mainGrid.Height).ToString());
     }
 
     public override void Load(XmlElement xml)
@@ -188,7 +188,7 @@ public class ScriptManagerWindow : MyraControl
             ("Scripting Info",             ScriptingInfoGump.Show),
             ("Persistent Variables",       PersistentVarsWindow.Show),
             ("Running Scripts",            RunningScriptsWindow.Show),
-            ($"Disable Module Cache: {(cacheDisabled ? "ON" : "OFF")}", () =>
+            (ContextMenuLabelToggle(cacheDisabled, "Disable module cache"), () =>
                 LegionScripting.LegionScripting.LScriptSettings.DisableModuleCache = !cacheDisabled)
         );
     }
@@ -356,12 +356,12 @@ public class ScriptManagerWindow : MyraControl
                 if (!FileSystemHelper.OpenLocation(script.FullPath))
                     GameActions.PrintUserWarn(World.Instance, string.Format(Language.Instance.Scripting.OpenLocationFailed, script.FullPath));
             }),
-            ($"Autostart All: {(globalAuto ? "ON" : "OFF")}", () =>
+            (ContextMenuLabelToggle(globalAuto, "Autostart on all chars"), () =>
             {
                 LegionScripting.LegionScripting.SetAutoPlay(script, true, !globalAuto);
                 RebuildScriptList();
             }),
-            ($"Autostart Char: {(charAuto ? "ON" : "OFF")}", () =>
+            (ContextMenuLabelToggle(charAuto, "Autostart for this char"), () =>
             {
                 LegionScripting.LegionScripting.SetAutoPlay(script, false, !charAuto);
                 RebuildScriptList();
