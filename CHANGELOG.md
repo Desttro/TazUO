@@ -40,6 +40,7 @@ All notable changes to TazUO will be recorded here.
 * Added `ApiItem.OnGround` to see if an item is on the ground or not - ([bittiez](https://github.com/bittiez))
 * Generate py builtins file when updating API to negate the need for import API - ([bittiez](https://github.com/bittiez))
 * `ApiGameObject` position(X, Y, Z) are now pulled directly to reflect live changes - ([bittiez](https://github.com/bittiez))
+* Incorporate cancellation token to avoid continueing to process api calls after a script has stopped. - ([bittiez](https://github.com/bittiez))
 
 ### Assistant
 
