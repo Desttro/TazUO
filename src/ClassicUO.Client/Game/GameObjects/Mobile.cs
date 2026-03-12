@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 
 using System;
+using System.Runtime.CompilerServices;
 using ClassicUO.Configuration;
 using ClassicUO.Game.Data;
 using ClassicUO.Game.Managers;
@@ -113,6 +114,42 @@ namespace ClassicUO.Game.GameObjects
         }
 
         public Mobile(World world) : base(world, 0) { }
+
+        private readonly Item[] _equippedLayers = new Item[30];
+
+        public override void PushToBack(LinkedObject item)
+        {
+            base.PushToBack(item);
+            if (item is Item it)
+            {
+                byte index = (byte)it.Layer;
+                if (index > 0 && index < _equippedLayers.Length)
+                    _equippedLayers[index] = it;
+            }
+        }
+
+        public override void Remove(LinkedObject item)
+        {
+            if (item is Item it)
+            {
+                byte index = (byte)it.Layer;
+                if (index > 0 && index < _equippedLayers.Length && _equippedLayers[index] == it)
+                    _equippedLayers[index] = null;
+            }
+            base.Remove(item);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override Item FindItemByLayer(Layer layer)
+        {
+            byte index = (byte)layer;
+            if (index > 0 && index < _equippedLayers.Length)
+            {
+                Item cached = _equippedLayers[index];
+                return cached != null && !cached.IsDestroyed ? cached : null;
+            }
+            return null;
+        }
 
         public Item Backpack => FindItemByLayer(Layer.Backpack);
         public bool IsVisible { get; set; } = true;
@@ -1097,6 +1134,7 @@ namespace ClassicUO.Game.GameObjects
             uint serial = Serial & 0x3FFFFFFF;
 
             ClearSteps();
+            Array.Clear(_equippedLayers, 0, _equippedLayers.Length);
 
             base.Destroy();
 
