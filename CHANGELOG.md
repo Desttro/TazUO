@@ -66,6 +66,7 @@ All notable changes to TazUO will be recorded here.
 * Added a few missing keys to imgui assistant hotkey listener - ([bittiez](https://github.com/bittiez))
 * Fixed a crash when resetting map cache before folder exists - ([bittiez](https://github.com/bittiez))
 * Fixed a bug in housing customization that places two tiles - ([bittiez](https://github.com/bittiez))
+* Fix improved buff bar creeping up the screen on logins when logging out with buffs active - ([bittiez](https://github.com/bittiez))
 
 ### Misc
 
