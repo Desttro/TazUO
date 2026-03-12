@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +14,6 @@ using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using ClassicUO.Game.UI;
 using ClassicUO.Game.UI.MyraWindows;
 using ClassicUO.LegionScripting.ApiClasses;
 using ClassicUO.Utility;
@@ -406,9 +404,9 @@ namespace ClassicUO.LegionScripting
 
                 // Route to correct executor based on script type
                 if (script.Type == ScriptFile.ScriptType.CSharp)
-                    script.ScriptThread = new Thread(() => ExecuteCSharpScript(script));
+                    script.ScriptThread = new Thread(() => ExecuteCSharpScript(script)) { Name = $"Legion: {script.FileName}" };
                 else
-                    script.ScriptThread = new Thread(() => ExecutePythonScript(script));
+                    script.ScriptThread = new Thread(() => ExecutePythonScript(script)) { Name = $"Legion: {script.FileName}" };
 
                 if(!PyThreads.TryAdd(script.ScriptThread.ManagedThreadId, script))
                     PyThreads[script.ScriptThread.ManagedThreadId] = script;
@@ -514,8 +512,8 @@ namespace ClassicUO.LegionScripting
                     string fileName = Path.GetFileName(filePath);
                     string lineContent = "";
 
-                    if (TryReadFileLines(filePath, out string[] fileLines))
-                        lineContent = GetContents(fileLines, first? lineNumber + 1 : lineNumber); //Offset for removal of import API line
+                    if (filePath.TryReadFileLines(out string[] fileLines))
+                        lineContent = GetContents(fileLines, first? lineNumber - 1 : lineNumber);
 
                     errorLocations.Add(new ScriptErrorLocation(fileName, filePath, lineNumber, lineContent));
 
@@ -534,34 +532,29 @@ namespace ClassicUO.LegionScripting
                 ShowScriptError(script, e.InnerException);
         }
 
-        private static string GetContents(string[] lines, int line, int outerLines = 1)
+        /// <summary>
+        /// Get file line + <paramref name="context"/> lines before and after for error line indication.
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="index"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        private static string GetContents(string[] lines, int index, int context = 1)
         {
-            var sb = new StringBuilder();
-            int errorIndex = line - 1;
+            // Clamp the range to stay within the array bounds
+            int start = Math.Max(0, index - context);
+            int end = Math.Min(lines.Length - 1, index + context);
 
-            for (int i = errorIndex - outerLines; i <= errorIndex + outerLines; i++)
+            var result = new List<string>();
+
+            for (int i = start; i <= end; i++)
             {
-                if (i < 0 || i >= lines.Length)
-                    continue;
-
-                sb.AppendLine(i == errorIndex ? lines[i] + "  <-- Error line" : lines[i]);
+                string text = lines[i];
+                if (i == index) text += "  <-- Error line";
+                result.Add(text);
             }
 
-            return sb.ToString();
-        }
-
-        private static bool TryReadFileLines(string filePath, out string[] lines)
-        {
-            try
-            {
-                lines = File.ReadAllText(filePath).Split("\n");
-                return true;
-            }
-            catch
-            {
-                lines = null;
-                return false;
-            }
+            return string.Join(Environment.NewLine, result);
         }
 
         private static void ShowCSharpCompilationError(ScriptFile script, CompilationErrorException e)
@@ -580,7 +573,7 @@ namespace ClassicUO.LegionScripting
                 int lineNumber = lineSpan.StartLinePosition.Line - script.UserCodeStartLine;
 
                 string lineContent = "";
-                if (TryReadFileLines(script.FullPath, out string[] fileLines))
+                if (script.FullPath.TryReadFileLines(out string[] fileLines))
                     lineContent = GetContents(fileLines, lineNumber);
 
                 errorLocations.Add(new ScriptErrorLocation(
@@ -637,7 +630,7 @@ namespace ClassicUO.LegionScripting
                     continue;
 
                 string lineContent = "";
-                if (TryReadFileLines(fileName, out string[] fileLines))
+                if (fileName.TryReadFileLines(out string[] fileLines))
                     lineContent = GetContents(fileLines, lineNumber);
 
                 errorLocations.Add(new ScriptErrorLocation(
@@ -693,6 +686,9 @@ namespace ClassicUO.LegionScripting
             }
         }
 
+        /// <summary>
+        /// Download the latest API.py file for legion scripting.
+        /// </summary>
         public static void DownloadApiPy() => Task.Run
             (() =>
                 {
