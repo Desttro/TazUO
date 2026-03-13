@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.Json;
 using ClassicUO.Configuration;
 using ClassicUO.Game.GameObjects;
+using ClassicUO.Game.UI.Gumps;
 using ClassicUO.Network;
 using ClassicUO.Utility.Logging;
 
@@ -345,7 +346,8 @@ namespace ClassicUO.Game.Managers
 
             AsyncNetClient.Socket.Send_SellRequest(vendorSerial, sellList.ToArray());
             GameActions.Print(Client.Game.UO.World, $"Sold {total_count} items for {val} gold.");
-            UIManager.GetGump(vendorSerial)?.Dispose();
+            UIManager.ForEach<ModernShopGump>(g => g.Dispose(), vendorSerial);
+            UIManager.ForEach<ShopGump>(g => g.Dispose(), vendorSerial);
         }
     }
 

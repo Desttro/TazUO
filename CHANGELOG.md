@@ -67,6 +67,7 @@ All notable changes to TazUO will be recorded here.
 * Fixed a crash when resetting map cache before folder exists - ([bittiez](https://github.com/bittiez))
 * Fixed a bug in housing customization that places two tiles - ([bittiez](https://github.com/bittiez))
 * Fix improved buff bar creeping up the screen on logins when logging out with buffs active - ([bittiez](https://github.com/bittiez))
+* Fix vendor nameplates closing when auto sell agent sell something - ([bittiez](https://github.com/bittiez))
 
 ### Misc
 
