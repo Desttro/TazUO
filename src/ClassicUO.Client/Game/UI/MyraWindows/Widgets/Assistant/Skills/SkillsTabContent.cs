@@ -5,6 +5,7 @@ using System.Text;
 using ClassicUO.Game.Data;
 using ClassicUO.Game.GameObjects;
 using ClassicUO.Game.Managers;
+using ClassicUO.Game.UI.Gumps;
 using ClassicUO.Network;
 using ClassicUO.Utility;
 using Myra.Graphics2D.UI;
@@ -63,7 +64,14 @@ public static class SkillsTabContent
                     row, 0);
             }
 
-            grid.AddWidget(new MyraLabel(skill.Name, MyraLabel.Style.P), row, 1);
+            var name = new MyraLabel(skill.Name, MyraLabel.Style.P);
+            if (skill.IsClickable)
+            {
+                name.TouchDoubleClick += (_, _) => UIManager.Add(new SkillButtonGump(World.Instance, skill,
+                    Input.Mouse.Position.X, Input.Mouse.Position.Y));
+                name.Tooltip = $"Double click to create a skill button for {skill.Name}";
+            }
+            grid.AddWidget(name, row, 1);
             grid.AddWidget(new MyraLabel(skill.Value.ToString("F1"), MyraLabel.Style.P), row, 2);
             grid.AddWidget(new MyraLabel(skill.Base.ToString("F1"), MyraLabel.Style.P), row, 3);
             grid.AddWidget(new MyraLabel(skill.Cap.ToString("F1"), MyraLabel.Style.P), row, 4);
