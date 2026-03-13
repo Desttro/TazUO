@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml;
 using ClassicUO.Game.Managers;
 using ClassicUO.Game.UI.MyraWindows;
+using ClassicUO.Game.UI.MyraWindows.Widgets;
 using ClassicUO.Input;
 using ClassicUO.Renderer;
 using Microsoft.Xna.Framework;
@@ -30,28 +31,17 @@ public class MyraControl : IGui
     {
         _rootWindow = new Window { Title = title };
         _rootWindow.Closed += OnRootWindowOnClosed;
-        _rootWindow.TitlePanel.TouchDoubleClick += (sender, args) =>
-        {
-            if (_rootWindow.Content == null)
-            {
-                if (_minimizedContent != null)
-                {
-                    _rootWindow.Content = _minimizedContent;
-                    _minimizedContent = null;
-                }
-                return;
-            }
-
-            _minimizedContent = _rootWindow.Content;
-            _rootWindow.Content = null;
-            _rootWindow.Width = null;
-            _rootWindow.Height = null;
-            //_rootWindow.Content?.Visible = !_rootWindow.Content.Visible;
-            UpdateBoundsToContents();
-        };
+        _rootWindow.TitlePanel.TouchDoubleClick += (_, _) => { MinMaximize(); };
         _rootWindow.TitlePanel.Background = new SolidBrush(new Color(0, 0, 0, 75));
         _rootWindow.TitlePanel.Border = new SolidBrush(new Color(0, 0, 0, MyraStyle.STANDARD_BORDER_ALPHA));
         _rootWindow.TitlePanel.BorderThickness = new Thickness(1);
+
+        MyraStyle.ApplyButtonDangerStyle(_rootWindow.CloseButton);
+
+        var minButton = new Myra.Graphics2D.UI.Button { Content = new MyraLabel("^", 16), Tooltip = "Minimize or maximize this window."};
+        minButton.TouchDown += (_, _) => MinMaximize();
+        _rootWindow.TitlePanel.Widgets.Insert(0, minButton);
+
         _desktop.Root = _rootWindow;
 
         _desktop.WidgetGotKeyboardFocus += DesktopOnWidgetGotKeyboardFocus;
@@ -166,6 +156,26 @@ public class MyraControl : IGui
     public bool HasKeyboardFocus => UIManager.KeyboardFocusControl == this;
     public bool ModalClickOutsideAreaClosesThisControl { get; } = true;
 #endregion
+
+protected void MinMaximize()
+{
+    if (_rootWindow.Content == null)
+    {
+        if (_minimizedContent != null)
+        {
+            _rootWindow.Content = _minimizedContent;
+            _minimizedContent = null;
+        }
+        return;
+    }
+
+    _minimizedContent = _rootWindow.Content;
+    _rootWindow.Content = null;
+    _rootWindow.Width = null;
+    _rootWindow.Height = null;
+    //_rootWindow.Content?.Visible = !_rootWindow.Content.Visible;
+    UpdateBoundsToContents();
+}
 
     protected void SetRootContent(Widget widget)
     {
