@@ -408,7 +408,7 @@ namespace ClassicUO.Game.Managers
 
                 Item currentlyEquipped = World.Instance.Player?.FindItemByLayer((Layer)layer);
                 if (currentlyEquipped != null && !config.Contains(currentlyEquipped.Serial))
-                    ObjectActionQueue.Instance.Enqueue(new MoveRequest(currentlyEquipped, undressBag).ToObjectActionQueueItem(), ActionPriority.MoveItem);
+                    ObjectActionQueue.Instance.Enqueue(new MoveRequest(currentlyEquipped, undressBag).ToObjectActionQueueItem(), ActionPriority.UnequipItem);
             }
         }
 
@@ -419,7 +419,7 @@ namespace ClassicUO.Game.Managers
             if (item != null && item.Container == World.Instance.Player?.Serial)
             {
                 uint undressBag = GetUndressBag(config);
-                ObjectActionQueue.Instance.Enqueue(new MoveRequest(item, undressBag).ToObjectActionQueueItem(), ActionPriority.MoveItem);
+                ObjectActionQueue.Instance.Enqueue(new MoveRequest(item, undressBag).ToObjectActionQueueItem(), ActionPriority.UnequipItem);
             }
         }
 
@@ -436,7 +436,7 @@ namespace ClassicUO.Game.Managers
                 if (currentlyEquipped == null) continue;
 
                 if(!kr)
-                    ObjectActionQueue.Instance.Enqueue(new MoveRequest(currentlyEquipped, undressBag).ToObjectActionQueueItem(), ActionPriority.MoveItem);
+                    ObjectActionQueue.Instance.Enqueue(new MoveRequest(currentlyEquipped, undressBag).ToObjectActionQueueItem(), ActionPriority.UnequipItem);
                 else
                     toUnequip.Add((Layer)layer);
             }
