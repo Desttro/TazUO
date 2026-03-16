@@ -25,19 +25,12 @@ public static class HudTabContent
 
         foreach (HideHudFlags flag in regularFlags)
         {
-            if(flag == HideHudFlags.All) continue;
-            checkButtons[flag] = MyraCheckButton.CreateWithCallback(ByteFlagHelper.HasFlag(profile.HideHudGumpFlags,  (ulong)flag),
+            checkButtons[flag] = MyraCheckButton.CreateWithCallback(ByteFlagHelper.HasFlag(profile.HideHudGumpFlags, (ulong)flag),
                 b =>
                 {
                     profile.HideHudGumpFlags = b ? ByteFlagHelper.AddFlag(profile.HideHudGumpFlags, (ulong)flag) : ByteFlagHelper.RemoveFlag(profile.HideHudGumpFlags, (ulong)flag);
                 }, HideHudManager.GetFlagName(flag), GetTooltip(flag));
         }
-
-
-        var allCb = MyraCheckButton.CreateWithCallback(ByteFlagHelper.HasFlag(profile.HideHudGumpFlags,  (ulong)HideHudFlags.All),
-            b => { SetAllChecked(checkButtons, profile, b); }, HideHudManager.GetFlagName(HideHudFlags.All), GetTooltip(HideHudFlags.All));
-
-        checkButtons[HideHudFlags.All] = allCb;
 
         var outerStack = new VerticalStackPanel { Spacing = 6 };
 
@@ -68,9 +61,6 @@ public static class HudTabContent
             if (!leftCol) row++;
             leftCol = !leftCol;
         }
-
-        //All button at the end
-        grid.AddWidget(allCb, row, leftCol ? 0 : 2);
 
         outerStack.Widgets.Add(grid);
         return outerStack;
@@ -122,6 +112,7 @@ public static class HudTabContent
         HideHudFlags.Mouse => "Mouse cursor",
         HideHudFlags.HealthBarCollector => "Health bar collector window",
         HideHudFlags.AbilityButtons => "Ability button windows",
+        HideHudFlags.DebugGump => "Debug information window",
         _ => null
     };
 }
