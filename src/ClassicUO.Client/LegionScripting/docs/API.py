@@ -1522,7 +1522,7 @@ def GetAvailableDressOutfits() -> "list[str]":
     """
     pass
 
-def DressItems(serials: "list[int]", kr: "bool" = True) -> None:
+def DressItems(serials: "list[int]", kr: "bool" = False) -> None:
     """
      Dress items by serial
      example:
