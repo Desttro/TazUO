@@ -21,7 +21,7 @@ You can now type `-updateapi` in game to download the latest API.py file.
 
 [Additional notes](../notes/)  
 
-*This was generated on `3/12/26`.*
+*This was generated on `3/17/26`.*
 
 ## Properties
 ### `Events`
@@ -827,6 +827,27 @@ You can now type `-updateapi` in game to download the latest API.py file.
 
 
 **Return Type:** `IList<string>`
+
+---
+
+### DressItems
+`(serials, kr)`
+ Dress items by serial
+ example:
+ ```py
+ serials = [0xabc, 0xdef]
+ API.DressItems(serials, kr=True)
+ ```
+
+
+**Parameters:**
+
+| Name | Type | Optional | Description |
+| --- | --- | --- | --- |
+| `serials` | `IList<int>` | ❌ No | The list of serials to dress |
+| `kr` | `bool` | ✅ Yes | True to use the faster KR packet (not supported everywhere) |
+
+**Return Type:** `void` *(Does not return anything)*
 
 ---
 
@@ -2014,7 +2035,7 @@ You can now type `-updateapi` in game to download the latest API.py file.
 
 | Name | Type | Optional | Description |
 | --- | --- | --- | --- |
-| `serials` | `IList<uint>` | ❌ No | A list of object serials to request OPL data for |
+| `serials` | `IList<int>` | ❌ No | A list of object serials to request OPL data for |
 
 **Return Type:** `void` *(Does not return anything)*
 

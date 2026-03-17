@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -1046,6 +1046,37 @@ namespace ClassicUO.LegionScripting
         public IList<string> GetAvailableDressOutfits() => OnMain(() =>
         {
             return DressAgentManager.Instance?.CurrentPlayerConfigs?.Select((cfg) => cfg.Name)?.ToList() ?? [];
+        });
+
+        /// <summary>
+        /// Dress items by serial
+        /// example:
+        /// ```py
+        /// serials = [0xabc, 0xdef]
+        /// API.DressItems(serials, kr=True)
+        /// ```
+        /// </summary>
+        /// <param name="serials">The list of serials to dress</param>
+        /// <param name="kr">True to use the faster KR packet (not supported everywhere)</param>
+        public void DressItems(IList<int> serials, bool kr = false) => OnMain(() =>
+        {
+            if (serials == null || serials.Count == 0) return;
+
+            var config = new DressConfig
+            {
+                UseKREquipPacket = kr,
+                Items = serials
+                    .Where(s => s > 0)
+                    .Select(s => (serial: (uint)s, item: World.Items.Get((uint)s)))
+                    .Where(t => t.item != null)
+                    .Select(t => new DressItem
+                    {
+                        Serial = t.serial,
+                        Layer = t.item.ItemData.Layer,
+                    }).ToList()
+            };
+
+            DressAgentManager.Instance.DressFromConfig(config);
         });
 
         /// <summary>
@@ -2437,7 +2468,7 @@ namespace ClassicUO.LegionScripting
         /// OPL consists of item name and tooltip text(properties).
         /// </summary>
         /// <param name="serials">A list of object serials to request OPL data for</param>
-        public void RequestOPLData(IList<uint> serials) => OnMain(() =>
+        public void RequestOPLData(IList<int> serials) => OnMain(() =>
         {
             foreach (uint s in serials)
                 World.OPL.Contains(s); //Check if it already exists, if not request it
