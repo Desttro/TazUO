@@ -53,6 +53,7 @@ All notable changes to TazUO will be recorded here.
 * Add adjustment for pathfinding max z level difference - ([bittiez](https://github.com/bittiez))
 * Auto sell now has Add from container and Clear all buttons - ([bittiez](https://github.com/bittiez))
 * Allow setting custom item names via the item database - ([bittiez](https://github.com/bittiez))
+* Added an option to auto bandage ally's in bandage manager - ([bittiez](https://github.com/bittiez))
 
 ### Fixes
 
@@ -68,6 +69,10 @@ All notable changes to TazUO will be recorded here.
 * Fixed a bug in housing customization that places two tiles - ([bittiez](https://github.com/bittiez))
 * Fix improved buff bar creeping up the screen on logins when logging out with buffs active - ([bittiez](https://github.com/bittiez))
 * Fix vendor nameplates closing when auto sell agent sell something - ([bittiez](https://github.com/bittiez))
+* Fix cursor alignment when using a char offset - ([bittiez](https://github.com/bittiez))
+* Various bug fixes from CUO
+* Bulletin board now only shows 9 messages instead of 11
+* Fixes for Hide Hud feature(ImGui -> Myra) - ([bittiez](https://github.com/bittiez))
 
 ### Misc
 
