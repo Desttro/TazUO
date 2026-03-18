@@ -630,6 +630,7 @@ namespace ClassicUO.Configuration
             public string VoiceStatusNotInitialized { get; set; } = "Not initialized - set model path first";
             public string VoiceStatusListening { get; set; } = "Listening...";
             public string VoiceApplyModel { get; set; } = "Apply model path";
+            public string VoiceCreateMacro { get; set; } = "Create macro button";
             #endregion
 
             #region VisibileLayers

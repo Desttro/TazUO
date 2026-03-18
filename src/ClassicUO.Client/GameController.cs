@@ -196,7 +196,6 @@ namespace ClassicUO
             Audio.Initialize();
 
             VoiceRecognitionManager.Instance.TextRecognized += OnVoiceTextRecognized;
-            VoiceRecognitionManager.Instance.StatusMessage += msg => GameActions.Print(msg);
 
             Settings.GlobalSettings.Encryption = (byte)AsyncNetClient.Load(UO.FileManager.Version, (EncryptionType)Settings.GlobalSettings.Encryption);
 
@@ -210,7 +209,7 @@ namespace ClassicUO
 
         private void OnVoiceTextRecognized(string text)
         {
-            var chat = UIManager.SystemChat;
+            SystemChatControl chat = UIManager.SystemChat;
             if (chat == null || chat.IsDisposed)
                 return;
 
@@ -446,13 +445,9 @@ namespace ClassicUO
             Time.Ticks = (uint)gameTime.TotalGameTime.TotalMilliseconds;
             Time.Delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            Profiler.EnterContext("Mouse");
             Mouse.Update();
-            Profiler.ExitContext("Mouse");
 
-            Profiler.EnterContext("Packets");
             ProcessNetworkPackets();
-            Profiler.ExitContext("Packets");
 
             if(_pluginsInitialized)
                 Plugin.Tick();
@@ -464,15 +459,9 @@ namespace ClassicUO
                 Profiler.ExitContext("Update");
             }
 
-            Profiler.EnterContext("UI Update");
             UIManager.Update();
-            Profiler.ExitContext("UI Update");
 
-            VoiceRecognitionManager.Instance.Update();
-
-            Profiler.EnterContext("MTQ");
             MainThreadQueue.ProcessQueue();
-            Profiler.ExitContext("MTQ");
 
             _totalElapsed += gameTime.ElapsedGameTime.TotalMilliseconds;
             _currentFpsTime += gameTime.ElapsedGameTime.TotalMilliseconds;

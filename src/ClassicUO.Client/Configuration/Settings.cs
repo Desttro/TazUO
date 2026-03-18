@@ -147,13 +147,6 @@ namespace ClassicUO.Configuration
                 CustomServerSettings.GetCustomAnimPath = () => Path.Combine(Path.GetFullPath(UltimaOnlineDirectory), "Anims" );
                 return;
             }
-
-            #if DEBUG
-            if (IP == "127.0.0.1" || IP == "localhost")
-            {
-                CustomServer = CustomServers.LOCAL_SERVER;
-            }
-            #endif
         }
 
         public enum CustomServers

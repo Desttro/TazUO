@@ -31,11 +31,7 @@ namespace ClassicUO.Game.Managers
         private volatile bool _initialized;
         private volatile bool _initializing;
 
-        private readonly ConcurrentQueue<string> _recognizedTexts = new();
-        private readonly ConcurrentQueue<string> _statusMessages = new();
-
         public event Action<string> TextRecognized;
-        public event Action<string> StatusMessage;
         public event Action InitializationComplete;
 
         public bool IsListening => _isListening;
@@ -163,7 +159,7 @@ namespace ClassicUO.Game.Managers
 
                 SDL.SDL_ResumeAudioStreamDevice(_audioStream);
                 _isListening = true;
-                _statusMessages.Enqueue("[Voice] Listening...");
+                MainThreadQueue.InvokeOnMainThread(() => GameActions.Print("[Voice] Listening..."));
                 Log.Info("[VoiceRecognition] Started listening");
             }
             catch (Exception ex)
@@ -200,7 +196,7 @@ namespace ClassicUO.Game.Managers
                     string finalResult = _recognizer.FinalResult();
                     string text = ExtractText(finalResult, "text");
                     if (!string.IsNullOrWhiteSpace(text))
-                        _recognizedTexts.Enqueue(text);
+                        TextRecognized?.Invoke(text);
                 }
                 catch { }
             }
@@ -309,7 +305,7 @@ namespace ClassicUO.Game.Managers
                     string result = _recognizer.Result();
                     string text = ExtractText(result, "text");
                     if (!string.IsNullOrWhiteSpace(text))
-                        _recognizedTexts.Enqueue(text);
+                        TextRecognized?.Invoke(text);
                 }
             }
             catch (Exception ex)
@@ -330,16 +326,6 @@ namespace ClassicUO.Game.Managers
             }
             catch { }
             return null;
-        }
-
-        // Call from main thread each frame
-        public void Update()
-        {
-            while (_statusMessages.TryDequeue(out string msg))
-                StatusMessage?.Invoke(msg);
-
-            while (_recognizedTexts.TryDequeue(out string text))
-                TextRecognized?.Invoke(text);
         }
 
         public void Dispose()
