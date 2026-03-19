@@ -31,7 +31,12 @@ namespace ClassicUO.Game.Managers
         public ContainerManager(World world)
         {
             _world = world;
-            BuildContainerFile(false);
+
+            if (Settings.GlobalSettings.UltimaOnlineDirectory.NotNullNotEmpty())
+                BuildContainerFile(false, Path.GetFullPath(Settings.GlobalSettings.UltimaOnlineDirectory)); //Use UO folder for containers.txt if it exists
+
+            if(_data.IsEmpty) //Only use default if uo folder doesn't have containers.txt
+                BuildContainerFile(false);
         }
 
         public int DefaultX { get; } = DEFAULT_CONTAINER_OFFSET;
@@ -232,20 +237,19 @@ namespace ClassicUO.Game.Managers
             }
         }
 
-        public void BuildContainerFile(bool force)
+        public void BuildContainerFile(bool force, string? fromPath = null)
         {
             string path = Path.Combine(CUOEnviroment.ExecutablePath, "Data", "Client");
 
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
+            if (fromPath == null && !Directory.Exists(path)) Directory.CreateDirectory(path); //Only create default dir, not custom fromPath dir.
 
-            path = Path.Combine(path, "containers.txt");
+            path = fromPath != null ? Path.Combine(fromPath, "containers.txt") : Path.Combine(path, "containers.txt");
 
             // If file doesn't exist or force rebuild, create default data and write to file
             if (!File.Exists(path) || force)
             {
+                if (fromPath != null) return;//Return early, we don't want the default containers file in other locations.
+
                 MakeDefault();
 
                 try
