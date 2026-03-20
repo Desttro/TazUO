@@ -15,7 +15,6 @@ using Microsoft.Xna.Framework;
 using Myra.Graphics2D;
 using Myra.Graphics2D.Brushes;
 using Myra.Graphics2D.UI;
-using TextBox = Myra.Graphics2D.UI.TextBox;
 
 namespace ClassicUO.Game.UI.MyraWindows;
 
@@ -168,7 +167,7 @@ public class ScriptManagerWindow : MyraControl
         bar.Widgets.Add(new MyraButton("Menu", ShowMainMenu));
         bar.Widgets.Add(new MyraButton("Add +", ShowAddMenu));
 
-        var searchBox = new TextBox { HintText = "Search...", Width = 180 };
+        var searchBox = new MyraInputBox { HintText = "Search...", Width = 180 };
         searchBox.TextChangedByUser += (_, _) =>
         {
             _searchFilter = searchBox.Text ?? "";
@@ -253,7 +252,7 @@ public class ScriptManagerWindow : MyraControl
         var groupRow = new HorizontalStackPanel { Spacing = 4, VerticalAlignment = VerticalAlignment.Center };
 
         if (!string.IsNullOrEmpty(indent))
-            groupRow.Widgets.Add(new MyraLabel(indent, MyraLabel.Style.P));
+            groupRow.Widgets.Add(new MyraLabel(indent, MyraLabel.TextStyle.P));
 
         groupRow.Widgets.Add(new MyraButton(isCollapsed ? "[+]" : "[-]", () =>
         {
@@ -261,7 +260,7 @@ public class ScriptManagerWindow : MyraControl
             RebuildScriptList();
         }));
 
-        var groupLabel = new MyraLabel(groupName, MyraLabel.Style.P);
+        var groupLabel = new MyraLabel(groupName, MyraLabel.TextStyle.P);
         groupLabel.TouchDown += (s, e) =>
         {
             ToggleGroupState(isCollapsed, fullGroupPath, normalizedParentGroup, normalizedGroupName);
@@ -295,7 +294,7 @@ public class ScriptManagerWindow : MyraControl
         var row = new HorizontalStackPanel { Spacing = 4, VerticalAlignment = VerticalAlignment.Center };
 
         if (!string.IsNullOrEmpty(indent))
-            row.Widgets.Add(new MyraLabel(indent, MyraLabel.Style.P));
+            row.Widgets.Add(new MyraLabel(indent, MyraLabel.TextStyle.P));
 
         row.Widgets.Add(new MyraButton("...", () => ShowScriptContextMenu(script)));
 
@@ -316,7 +315,7 @@ public class ScriptManagerWindow : MyraControl
 
         if (hasGlobal || hasChar)
         {
-            row.Widgets.Add(new MyraLabel(hasGlobal ? "[G]" : "[C]", MyraLabel.Style.P)
+            row.Widgets.Add(new MyraLabel(hasGlobal ? "[G]" : "[C]", MyraLabel.TextStyle.P)
             {
                 TextColor = hasGlobal ? Color.Gold : new Color(0, 204, 255, 255),
                 Tooltip = hasGlobal ? "Autostart: All characters" : "Autostart: This character"
@@ -328,7 +327,7 @@ public class ScriptManagerWindow : MyraControl
         if (dot != -1) displayName = displayName.Substring(0, dot);
 
         MyraLabel displayLabel;
-        row.Widgets.Add(displayLabel = new MyraLabel(displayName, MyraLabel.Style.P) { Tooltip = script.FileName });
+        row.Widgets.Add(displayLabel = new MyraLabel(displayName, MyraLabel.TextStyle.P) { Tooltip = script.FileName });
 
         if (isPlaying)
         {
@@ -414,9 +413,9 @@ public class ScriptManagerWindow : MyraControl
 
     private void ShowNewScriptDialog(string contextGroup, string contextSubGroup)
     {
-        var nameBox = new TextBox { HintText = "script_name", Width = 220 };
+        var nameBox = new MyraInputBox { HintText = "script_name", Width = 220 };
         var content = new VerticalStackPanel { Spacing = 4 };
-        content.Widgets.Add(new MyraLabel("Enter a name for this script:", MyraLabel.Style.P));
+        content.Widgets.Add(new MyraLabel("Enter a name for this script:", MyraLabel.TextStyle.P));
         content.Widgets.Add(nameBox);
 
         new MyraDialog("New Script", content, ok =>
@@ -430,9 +429,9 @@ public class ScriptManagerWindow : MyraControl
 
     private void ShowNewGroupDialog()
     {
-        var nameBox = new TextBox { HintText = "group_name", Width = 220 };
+        var nameBox = new MyraInputBox { HintText = "group_name", Width = 220 };
         var content = new VerticalStackPanel { Spacing = 4 };
-        content.Widgets.Add(new MyraLabel("Enter a name for this group:", MyraLabel.Style.P));
+        content.Widgets.Add(new MyraLabel("Enter a name for this group:", MyraLabel.TextStyle.P));
         content.Widgets.Add(nameBox);
 
         new MyraDialog("New Group", content, ok =>
@@ -448,9 +447,9 @@ public class ScriptManagerWindow : MyraControl
         int dot = displayName.LastIndexOf('.');
         if (dot != -1) displayName = displayName.Substring(0, dot);
 
-        var nameBox = new TextBox { Text = displayName, Width = 220 };
+        var nameBox = new MyraInputBox { Text = displayName, Width = 220 };
         var content = new VerticalStackPanel { Spacing = 4 };
-        content.Widgets.Add(new MyraLabel($"New name for '{displayName}':", MyraLabel.Style.P));
+        content.Widgets.Add(new MyraLabel($"New name for '{displayName}':", MyraLabel.TextStyle.P));
         content.Widgets.Add(nameBox);
 
         new MyraDialog("Rename Script", content, ok =>
@@ -461,9 +460,9 @@ public class ScriptManagerWindow : MyraControl
 
     private void ShowRenameGroupDialog(string groupName, string parentGroup)
     {
-        var nameBox = new TextBox { Text = groupName, Width = 220 };
+        var nameBox = new MyraInputBox { Text = groupName, Width = 220 };
         var content = new VerticalStackPanel { Spacing = 4 };
-        content.Widgets.Add(new MyraLabel($"New name for group '{groupName}':", MyraLabel.Style.P));
+        content.Widgets.Add(new MyraLabel($"New name for group '{groupName}':", MyraLabel.TextStyle.P));
         content.Widgets.Add(nameBox);
 
         new MyraDialog("Rename Group", content, ok =>
@@ -474,7 +473,7 @@ public class ScriptManagerWindow : MyraControl
 
     private void ShowDeleteConfirm(string title, string message, Action onConfirm)
     {
-        var label = new MyraLabel(message, MyraLabel.Style.P) { TextColor = Color.OrangeRed };
+        var label = new MyraLabel(message, MyraLabel.TextStyle.P) { TextColor = Color.OrangeRed };
         new MyraDialog(title, label, ok => { if (ok) onConfirm(); });
     }
 

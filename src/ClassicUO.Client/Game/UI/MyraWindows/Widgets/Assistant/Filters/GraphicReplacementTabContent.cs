@@ -5,7 +5,6 @@ using ClassicUO.Game.GameObjects;
 using ClassicUO.Game.Managers;
 using ClassicUO.Utility;
 using Myra.Graphics2D.UI;
-using TextBox = Myra.Graphics2D.UI.TextBox;
 
 namespace ClassicUO.Game.UI.MyraWindows.Widgets.Assistant.Filters;
 
@@ -22,7 +21,7 @@ public static class GraphicReplacementTabContent
 
         root.Widgets.Add(new MyraLabel(
             "Replace graphics with other graphics. Mobile = animations, Land = terrain tiles, Static = items/statics.",
-            MyraLabel.Style.P));
+            MyraLabel.TextStyle.H3));
 
         var filtersPanel = new VerticalStackPanel { Spacing = 2 };
 
@@ -33,25 +32,19 @@ public static class GraphicReplacementTabContent
 
             if (filters.Count == 0)
             {
-                filtersPanel.Widgets.Add(new MyraLabel("No replacements configured.", MyraLabel.Style.P));
+                filtersPanel.Widgets.Add(new MyraLabel("No replacements configured.", MyraLabel.TextStyle.H3));
                 return;
             }
 
             var grid = new MyraGrid();
-            grid.AddColumn(new Proportion(ProportionType.Auto));  // Original
-            grid.AddColumn(new Proportion(ProportionType.Auto));  // Type
-            grid.AddColumn(new Proportion(ProportionType.Auto));  // Replacement
-            grid.AddColumn(new Proportion(ProportionType.Auto));  // Preview
-            grid.AddColumn(new Proportion(ProportionType.Auto));  // New Hue
-            grid.AddColumn(new Proportion(ProportionType.Auto));  // Del
-            MyraStyle.ApplyStandardGridStyling(grid);
-
-            grid.AddWidget(new MyraLabel("Original", MyraLabel.Style.H3), 0, 0);
-            grid.AddWidget(new MyraLabel("Type", MyraLabel.Style.H3), 0, 1);
-            grid.AddWidget(new MyraLabel("Replacement", MyraLabel.Style.H3), 0, 2);
-            grid.AddWidget(new MyraLabel("Preview", MyraLabel.Style.H3), 0, 3);
-            grid.AddWidget(new MyraLabel("New Hue", MyraLabel.Style.H3), 0, 4);
-            grid.AddWidget(new MyraLabel("Del", MyraLabel.Style.H3), 0, 5);
+            grid.SetupWithHeaders(
+                GridColumnInfo.Auto("Original"),
+                GridColumnInfo.Auto("Type"),
+                GridColumnInfo.Fill("Replacement"),
+                GridColumnInfo.Fill("Preview"),
+                GridColumnInfo.Fill("New Hue"),
+                GridColumnInfo.Auto("Actions")
+            );
 
             var filterList = filters.Values.ToList();
             int dataRow = 1;
@@ -60,14 +53,14 @@ public static class GraphicReplacementTabContent
                 GraphicChangeFilter filter = filterList[i];
 
                 // Original — show as label (changing original = key change, use delete+re-add)
-                grid.AddWidget(new MyraLabel($"0x{filter.OriginalGraphic:X4}", MyraLabel.Style.P), dataRow, 0);
+                grid.AddWidget(new MyraLabel($"0x{filter.OriginalGraphic:X4}", MyraLabel.TextStyle.P, MyraLabel.AlignMode.Right), dataRow, 0);
 
                 // Type — cycle button using wrapper panel (key change requires rebuild)
                 var typeWrapper = new HorizontalStackPanel();
                 void BuildTypeBtn()
                 {
                     typeWrapper.Widgets.Clear();
-                    typeWrapper.Widgets.Add(new MyraButton(GetTypeName(filter.OriginalType), () =>
+                    var btn = new MyraButton(GetTypeName(filter.OriginalType), () =>
                     {
                         int idx = System.Array.IndexOf(TypeValues, filter.OriginalType);
                         byte newType = TypeValues[(idx + 1) % TypeValues.Length];
@@ -77,7 +70,9 @@ public static class GraphicReplacementTabContent
                             filter.ReplacementGraphic, newType,
                             filter.NewHue);
                         BuildFilterList();
-                    }) { Tooltip = "Click to cycle: Mobile / Land / Static" });
+                    }) { Tooltip = "Click to cycle: Mobile / Land / Static", MinWidth = 65 };
+                    btn.Content.HorizontalAlignment = HorizontalAlignment.Center;
+                    typeWrapper.Widgets.Add(btn);
                 }
                 BuildTypeBtn();
                 grid.AddWidget(typeWrapper, dataRow, 1);
@@ -90,20 +85,20 @@ public static class GraphicReplacementTabContent
                     if (filter.OriginalType == 3)
                     {
                         previewWrapper.Widgets.Add(new MyraArtTexture(filter.OriginalGraphic));
-                        previewWrapper.Widgets.Add(new MyraLabel("→", MyraLabel.Style.P));
+                        previewWrapper.Widgets.Add(new MyraLabel("→", MyraLabel.TextStyle.P));
                         previewWrapper.Widgets.Add(new MyraArtTexture(filter.ReplacementGraphic));
                     }
                     else
                     {
                         previewWrapper.Widgets.Add(new MyraLabel(
-                            $"0x{filter.OriginalGraphic:X4} → 0x{filter.ReplacementGraphic:X4}", MyraLabel.Style.P));
+                            $"0x{filter.OriginalGraphic:X4} → 0x{filter.ReplacementGraphic:X4}", MyraLabel.TextStyle.P));
                     }
                 }
                 BuildPreview();
                 grid.AddWidget(previewWrapper, dataRow, 3);
 
                 // Replacement Graphic — inline edit, immediate commit + preview update
-                var replacementBox = new TextBox { Text = $"0x{filter.ReplacementGraphic:X4}", Width = 90 };
+                var replacementBox = new MyraInputBox { Text = $"0x{filter.ReplacementGraphic:X4}" };
                 replacementBox.TextChangedByUser += (_, _) =>
                 {
                     string txt = replacementBox.Text ?? "";
@@ -117,26 +112,18 @@ public static class GraphicReplacementTabContent
                 grid.AddWidget(replacementBox, dataRow, 2);
 
                 // Hue — inline edit, immediate commit
-                var hueBox = new TextBox
-                {
-                    Text = filter.NewHue == ushort.MaxValue ? "-1" : filter.NewHue.ToString(),
-                    Width = 60,
-                    Tooltip = "-1 will not change the hue"
-                };
+                var hueBox = MyraInputBox.Hue(filter.NewHue);
                 hueBox.TextChangedByUser += (_, _) =>
                 {
-                    string txt = hueBox.Text ?? "";
-                    if (txt == "-1")
-                        filter.NewHue = ushort.MaxValue;
-                    else if (ushort.TryParse(txt, out ushort newHue))
-                        filter.NewHue = newHue;
+                    if (MyraInputBox.TryParseHue(hueBox.Text, out ushort hue))
+                        filter.NewHue = hue;
                 };
                 grid.AddWidget(hueBox, dataRow, 4);
 
                 // Delete
                 ushort capturedOrigGraphic = filter.OriginalGraphic;
                 byte capturedOrigType = filter.OriginalType;
-                grid.AddWidget(MyraStyle.ApplyButtonDangerStyle(new MyraButton("X", () =>
+                grid.AddWidget(MyraStyle.ApplyButtonDangerStyle(new MyraButton("Delete", () =>
                 {
                     GraphicsReplacement.DeleteFilter(capturedOrigGraphic, capturedOrigType);
                     BuildFilterList();
@@ -150,13 +137,13 @@ public static class GraphicReplacementTabContent
 
         // Add entry panel
         var addEntryPanel = new VerticalStackPanel { Visible = false, Spacing = 4 };
-        var newOriginalBox = new TextBox { HintText = "Original graphic (e.g. 0x0EED)", Width = 170 };
-        var newReplacementBox = new TextBox { HintText = "Replacement graphic", Width = 170 };
-        var newHueBox = new TextBox { HintText = "Hue (-1 = unchanged)", Width = 120 };
+        var newOriginalBox = new MyraInputBox { HintText = "Original graphic (e.g. 0x0EED)", Width = 170 };
+        var newReplacementBox = new MyraInputBox { HintText = "Replacement graphic", Width = 170 };
+        var newHueBox = MyraInputBox.Hue(ushort.MaxValue, 120, "Hue (-1 = unchanged)");
         int[] newTypeIndex = { 2 }; // Default: Static
 
         var newTypeWrapper = new HorizontalStackPanel();
-        var validationLabel = new MyraLabel("", MyraLabel.Style.P) { Visible = false };
+        var validationLabel = new MyraLabel("", MyraLabel.TextStyle.P) { Visible = false };
 
         void BuildNewTypeBtn()
         {
@@ -179,16 +166,16 @@ public static class GraphicReplacementTabContent
                 !StringHelper.TryParseInt(replText, out int replGraphic))
                 return;
 
-            ushort hue = ushort.MaxValue;
-            string hueText = newHueBox.Text ?? "";
-            if (!string.IsNullOrEmpty(hueText) && hueText != "-1")
+            if (!MyraInputBox.TryParseHue(newHueBox.Text, out ushort hue))
             {
-                if (!ushort.TryParse(hueText, out hue))
+                if (!string.IsNullOrEmpty(newHueBox.Text))
                 {
-                    validationLabel.Text = $"Invalid hue: '{hueText}'. Must be 0-65535 or -1";
+                    validationLabel.Text = $"Invalid hue: '{newHueBox.Text}'. Must be 0-65535, 0x hex, or -1";
                     validationLabel.Visible = true;
                     return;
                 }
+
+                hue = ushort.MaxValue;
             }
 
             validationLabel.Visible = false;
@@ -213,18 +200,18 @@ public static class GraphicReplacementTabContent
         }));
 
         var addFieldsRow1 = new HorizontalStackPanel { Spacing = 4 };
-        addFieldsRow1.Widgets.Add(new MyraLabel("Original:", MyraLabel.Style.P));
+        addFieldsRow1.Widgets.Add(new MyraLabel("Original:", MyraLabel.TextStyle.P));
         addFieldsRow1.Widgets.Add(newOriginalBox);
-        addFieldsRow1.Widgets.Add(new MyraLabel("Replacement:", MyraLabel.Style.P));
+        addFieldsRow1.Widgets.Add(new MyraLabel("Replacement:", MyraLabel.TextStyle.P));
         addFieldsRow1.Widgets.Add(newReplacementBox);
 
         var addFieldsRow2 = new HorizontalStackPanel { Spacing = 4 };
-        addFieldsRow2.Widgets.Add(new MyraLabel("Type:", MyraLabel.Style.P));
+        addFieldsRow2.Widgets.Add(new MyraLabel("Type:", MyraLabel.TextStyle.P));
         addFieldsRow2.Widgets.Add(newTypeWrapper);
-        addFieldsRow2.Widgets.Add(new MyraLabel("New Hue:", MyraLabel.Style.P));
+        addFieldsRow2.Widgets.Add(new MyraLabel("New Hue:", MyraLabel.TextStyle.P));
         addFieldsRow2.Widgets.Add(newHueBox);
 
-        addEntryPanel.Widgets.Add(new MyraLabel("New Entry:", MyraLabel.Style.H3));
+        addEntryPanel.Widgets.Add(new MyraLabel("New Entry:", MyraLabel.TextStyle.H3));
         addEntryPanel.Widgets.Add(addFieldsRow1);
         addEntryPanel.Widgets.Add(addFieldsRow2);
         addEntryPanel.Widgets.Add(validationLabel);
@@ -282,7 +269,7 @@ public static class GraphicReplacementTabContent
 
         root.Widgets.Add(actionRow);
         root.Widgets.Add(addEntryPanel);
-        root.Widgets.Add(new MyraLabel("Current Graphic Replacements:", MyraLabel.Style.H3));
+        root.Widgets.Add(new MyraLabel("Current Graphic Replacements:", MyraLabel.TextStyle.H3));
         BuildFilterList();
         root.Widgets.Add(new ScrollViewer { Height = 300, Content = filtersPanel });
 

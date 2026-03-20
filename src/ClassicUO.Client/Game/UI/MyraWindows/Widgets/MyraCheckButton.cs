@@ -15,7 +15,7 @@ public class MyraCheckButton : CheckButton
     public MyraCheckButton(string text, bool isChecked = false)
     {
         IsChecked = isChecked;
-        Content = new MyraLabel(text, MyraLabel.Style.P);
+        Content = new MyraLabel(text, MyraLabel.TextStyle.P);
         Build();
     }
 
@@ -27,8 +27,9 @@ public class MyraCheckButton : CheckButton
 
     private void Build()
     {
-        CheckContentSpacing = 2;
-        Padding = new Thickness(1);
+        CheckContentSpacing = 0;
+        Padding = new Thickness(2);
+        VerticalAlignment = VerticalAlignment.Center;
     }
 
     /// <summary>

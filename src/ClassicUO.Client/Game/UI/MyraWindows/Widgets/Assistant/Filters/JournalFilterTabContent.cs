@@ -4,7 +4,6 @@ using System.Linq;
 using ClassicUO.Game.Managers;
 using ClassicUO.Utility;
 using Myra.Graphics2D.UI;
-using TextBox = Myra.Graphics2D.UI.TextBox;
 
 namespace ClassicUO.Game.UI.MyraWindows.Widgets.Assistant.Filters;
 
@@ -16,10 +15,10 @@ public static class JournalFilterTabContent
 
         root.Widgets.Add(new MyraLabel(
             "Journal Filter hides specific messages from the journal. Messages that match exactly will be filtered out.",
-            MyraLabel.Style.P));
+            MyraLabel.TextStyle.H3));
 
         var addFilterPanel = new VerticalStackPanel { Visible = false, Spacing = 4 };
-        var newFilterBox = new TextBox { HintText = "Filter text (exact match)", Width = 300 };
+        var newFilterBox = new MyraInputBox { HintText = "Filter text (exact match)", Width = 300 };
 
         var filtersPanel = new VerticalStackPanel { Spacing = 2 };
 
@@ -30,17 +29,12 @@ public static class JournalFilterTabContent
 
             if (filters.Count == 0)
             {
-                filtersPanel.Widgets.Add(new MyraLabel("No filters configured.", MyraLabel.Style.P));
+                filtersPanel.Widgets.Add(new MyraLabel("No filters configured.", MyraLabel.TextStyle.H3));
                 return;
             }
 
             var grid = new MyraGrid();
-            grid.AddColumn(new Proportion(ProportionType.Fill));
-            grid.AddColumn(new Proportion(ProportionType.Auto));
-            MyraStyle.ApplyStandardGridStyling(grid);
-
-            grid.AddWidget(new MyraLabel("Filter Text", MyraLabel.Style.H3), 0, 0);
-            grid.AddWidget(new MyraLabel("Del", MyraLabel.Style.H3), 0, 1);
+            grid.SetupWithHeaders(GridColumnInfo.Fill("Filter Text"), GridColumnInfo.Auto("Actions"));
 
             int dataRow = 1;
             for (int i = filters.Count - 1; i >= 0; i--)
@@ -49,7 +43,7 @@ public static class JournalFilterTabContent
 
                 // Track current value so we can remove-old/add-new on every edit
                 string[] current = { filter };
-                var filterBox = new TextBox { Text = filter };
+                var filterBox = new MyraInputBox { Text = filter };
                 filterBox.TextChangedByUser += (_, _) =>
                 {
                     string newVal = filterBox.Text ?? "";
@@ -63,7 +57,7 @@ public static class JournalFilterTabContent
                 };
                 grid.AddWidget(filterBox, dataRow, 0);
 
-                grid.AddWidget(MyraStyle.ApplyButtonDangerStyle(new MyraButton("X", () =>
+                grid.AddWidget(MyraStyle.ApplyButtonDangerStyle(new MyraButton("Delete", () =>
                 {
                     JournalFilterManager.Instance.RemoveFilter(current[0]);
                     JournalFilterManager.Instance.Save(false);
@@ -96,11 +90,11 @@ public static class JournalFilterTabContent
         }));
 
         var addFieldRow = new HorizontalStackPanel { Spacing = 4 };
-        addFieldRow.Widgets.Add(new MyraLabel("Filter Text:", MyraLabel.Style.P)
+        addFieldRow.Widgets.Add(new MyraLabel("Filter Text:", MyraLabel.TextStyle.P)
             { Tooltip = "Must match the journal entry exactly. Partial matches not supported." });
         addFieldRow.Widgets.Add(newFilterBox);
 
-        addFilterPanel.Widgets.Add(new MyraLabel("Add New Filter:", MyraLabel.Style.H3));
+        addFilterPanel.Widgets.Add(new MyraLabel("Add New Filter:", MyraLabel.TextStyle.H3));
         addFilterPanel.Widgets.Add(addFieldRow);
         addFilterPanel.Widgets.Add(addConfirmRow);
 
@@ -124,7 +118,7 @@ public static class JournalFilterTabContent
 
         root.Widgets.Add(actionRow);
         root.Widgets.Add(addFilterPanel);
-        root.Widgets.Add(new MyraLabel("Current Journal Filters:", MyraLabel.Style.H3));
+        root.Widgets.Add(new MyraLabel("Current Journal Filters:", MyraLabel.TextStyle.H3));
         BuildFilterList();
         root.Widgets.Add(new ScrollViewer { Height = 250, Content = filtersPanel });
 

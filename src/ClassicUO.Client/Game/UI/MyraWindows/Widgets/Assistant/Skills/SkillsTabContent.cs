@@ -18,7 +18,7 @@ public static class SkillsTabContent
     {
         Skill[]? skills = World.Instance?.Player?.Skills;
         if (skills == null)
-            return new MyraLabel("Not connected", MyraLabel.Style.P);
+            return new MyraLabel("Not connected", MyraLabel.TextStyle.P);
 
         PlayerMobile player = World.Instance!.Player!;
         int count = skills.Length;
@@ -64,7 +64,7 @@ public static class SkillsTabContent
                     row, 0);
             }
 
-            var name = new MyraLabel(skill.Name, MyraLabel.Style.P);
+            var name = new MyraLabel(skill.Name, MyraLabel.TextStyle.P);
             if (skill.IsClickable)
             {
                 name.TouchDoubleClick += (_, _) => UIManager.Add(new SkillButtonGump(World.Instance, skill,
@@ -72,36 +72,32 @@ public static class SkillsTabContent
                 name.Tooltip = $"Double click to create a skill button for {skill.Name}";
             }
             grid.AddWidget(name, row, 1);
-            grid.AddWidget(new MyraLabel(skill.Value.ToString("F1"), MyraLabel.Style.P), row, 2);
-            grid.AddWidget(new MyraLabel(skill.Base.ToString("F1"), MyraLabel.Style.P), row, 3);
-            grid.AddWidget(new MyraLabel(skill.Cap.ToString("F1"), MyraLabel.Style.P), row, 4);
+            grid.AddWidget(new MyraLabel(skill.Value.ToString("F1"), MyraLabel.TextStyle.P), row, 2);
+            grid.AddWidget(new MyraLabel(skill.Base.ToString("F1"), MyraLabel.TextStyle.P), row, 3);
+            grid.AddWidget(new MyraLabel(skill.Cap.ToString("F1"), MyraLabel.TextStyle.P), row, 4);
 
             float delta = skill.Base - skill.BaseAtLogin;
             string deltaStr;
             if (delta > 0f)       deltaStr = $"+{delta:F1}";
             else if (delta < 0f)  deltaStr = $"{delta:F1}";
             else                  deltaStr = "0.0";
-            grid.AddWidget(new MyraLabel(deltaStr, MyraLabel.Style.P), row, 5);
+            grid.AddWidget(new MyraLabel(deltaStr, MyraLabel.TextStyle.P), row, 5);
 
             var lockWrapper = new HorizontalStackPanel();
             void BuildLockBtn()
             {
                 lockWrapper.Widgets.Clear();
-                string lockText = skill.Lock switch
-                {
-                    Lock.Up     => "Up",
-                    Lock.Down   => "Dn",
-                    Lock.Locked => "==",
-                    _           => "?"
-                };
                 int capturedSkillIdx = skill.Index;
-                lockWrapper.Widgets.Add(new MyraButton(lockText, () =>
+
+                var btn = new MyraButton("", () =>
                 {
                     byte nextLock = (byte)(((byte)skill.Lock + 1) % 3);
                     GameActions.ChangeSkillLockStatus((ushort)capturedSkillIdx, nextLock);
                     AsyncNetClient.Socket.Send_SkillsRequest(player.Serial);
                     BuildLockBtn();
-                }) { Tooltip = $"Lock: {skill.Lock}. Click to cycle." });
+                });
+                btn.Tooltip = $"Lock: {skill.Lock}. Click to cycle.";
+                lockWrapper.Widgets.Add(MyraStyle.ApplySkillButtonStyle(btn, skill.Lock));
             }
             BuildLockBtn();
             grid.AddWidget(lockWrapper, row, 6);
@@ -148,7 +144,7 @@ public static class SkillsTabContent
                     return sortAscending ? cmp : -cmp;
                 });
 
-                var groupHeader = new MyraLabel($"── {group.Name} ({groupTotal:F1}) ──", MyraLabel.Style.H3);
+                var groupHeader = new MyraLabel($"── {group.Name} ({groupTotal:F1}) ──", MyraLabel.TextStyle.H3);
                 mainGrid.AddWidget(groupHeader, dataRow, 0);
                 Grid.SetColumnSpan(groupHeader, 7);
                 dataRow++;
@@ -166,16 +162,12 @@ public static class SkillsTabContent
             gridPanel.Widgets.Clear();
 
             var grid = new MyraGrid();
-            grid.AddColumn(new Proportion(ProportionType.Auto)); // Use
-            grid.AddColumn(new Proportion(ProportionType.Fill)); // Name
-            grid.AddColumn(new Proportion(ProportionType.Auto)); // Value
-            grid.AddColumn(new Proportion(ProportionType.Auto)); // Base
-            grid.AddColumn(new Proportion(ProportionType.Auto)); // Cap
-            grid.AddColumn(new Proportion(ProportionType.Auto)); // +/-
-            grid.AddColumn(new Proportion(ProportionType.Auto)); // Lock
+            grid.AddColumn();
+            grid.AddColumn(new Proportion(ProportionType.Fill));
+            grid.AddColumn(null, 5);
             MyraStyle.ApplyStandardGridStyling(grid);
 
-            grid.AddWidget(new MyraLabel("Use", MyraLabel.Style.H3), 0, 0);
+            grid.AddWidget(new MyraLabel("Use", MyraLabel.TextStyle.TableHeader), 0, 0);
 
             void AddSortHeader(string name, int col, int gridCol)
             {
@@ -232,7 +224,7 @@ public static class SkillsTabContent
             AsyncNetClient.Socket.Send_SkillsRequest(player.Serial);
         }));
 
-        toolbar.Widgets.Add(new MyraLabel("|", MyraLabel.Style.P));
+        toolbar.Widgets.Add(new MyraLabel("|", MyraLabel.TextStyle.P));
 
         toolbar.Widgets.Add(new MyraButton("Reset +/-", () =>
         {
@@ -265,7 +257,7 @@ public static class SkillsTabContent
             GameActions.Print("Skills copied to clipboard.", Constants.HUE_SUCCESS);
         }) { Tooltip = "Copy all skills to clipboard as tab-separated text" });
 
-        toolbar.Widgets.Add(new MyraLabel("|", MyraLabel.Style.P));
+        toolbar.Widgets.Add(new MyraLabel("|", MyraLabel.TextStyle.P));
 
         toolbar.Widgets.Add(MyraCheckButton.CreateWithCallback(false, b =>
         {
@@ -273,12 +265,12 @@ public static class SkillsTabContent
             BuildGrid();
         }, "Show Groups"));
 
-        toolbar.Widgets.Add(new MyraLabel("|", MyraLabel.Style.P));
+        toolbar.Widgets.Add(new MyraLabel("|", MyraLabel.TextStyle.P));
 
         float baseSum = 0f, capSum = 0f;
         for (int i = 0; i < skills.Length; i++)
             if (skills[i] != null) { baseSum += skills[i].Base; capSum += skills[i].Cap; }
-        toolbar.Widgets.Add(new MyraLabel($"Total: {baseSum:F1} / {capSum:F1}", MyraLabel.Style.P));
+        toolbar.Widgets.Add(new MyraLabel($"Total: {baseSum:F1} / {capSum:F1}", MyraLabel.TextStyle.P));
 
         SortSkills();
         BuildGrid();

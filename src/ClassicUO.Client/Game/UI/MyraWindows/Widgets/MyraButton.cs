@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using Myra.Graphics2D.UI;
+using Myra.Graphics2D;
 
 namespace ClassicUO.Game.UI.MyraWindows.Widgets;
 
@@ -14,6 +15,8 @@ public class MyraButton : Button
     {
         _onClick = onClick;
         Text = text;
+        Margin = new Thickness(2);
+        VerticalAlignment = VerticalAlignment.Center;
 
         Build();
     }
@@ -24,5 +27,5 @@ public class MyraButton : Button
         _onClick?.Invoke();
     }
 
-    private void Build() => Content = new MyraLabel(Text, MyraLabel.Style.P);
+    private void Build() => Content = new MyraLabel(Text, MyraLabel.TextStyle.P);
 }

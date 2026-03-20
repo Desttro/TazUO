@@ -1,9 +1,8 @@
 #nullable enable
 using System;
-using System.Globalization;
 using ClassicUO.Configuration;
+using ClassicUO.Utility;
 using Myra.Graphics2D.UI;
-using TextBox = Myra.Graphics2D.UI.TextBox;
 
 namespace ClassicUO.Game.UI.MyraWindows.Widgets.Assistant.Agents;
 
@@ -13,13 +12,13 @@ public static class BandageAgentTabContent
     {
         Profile? profile = ProfileManager.CurrentProfile;
         if (profile == null)
-            return new MyraLabel("Profile not loaded", MyraLabel.Style.P);
+            return new MyraLabel("Profile not loaded", MyraLabel.TextStyle.P);
 
         var root = new VerticalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
 
         root.Widgets.Add(new MyraLabel(
             "Automatically use bandages to heal when HP drops below threshold.",
-            MyraLabel.Style.P));
+            MyraLabel.TextStyle.H3));
 
         var enableRow = new HorizontalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
         enableRow.Widgets.Add(MyraCheckButton.CreateWithCallback(
@@ -29,7 +28,8 @@ public static class BandageAgentTabContent
         enableRow.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentBandageFriends,
             b => profile.BandageAgentBandageFriends = b,
-            "Bandage friends"));
+            "Bandage friends",
+            "Bandage mobiles in Friends list"));
         enableRow.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.BandageAgentBandageAllies,
             b => profile.BandageAgentBandageAllies = b,
@@ -44,11 +44,11 @@ public static class BandageAgentTabContent
             "When enabled, bandage agent will only heal friends and not yourself"));
 
         // Delay
-        var delayBox = new TextBox
+        var delayBox = new MyraInputBox
         {
             Text = profile.BandageAgentDelay.ToString(),
+            Tooltip = "Delay between bandage attempts in milliseconds (50-30000)",
             Width = 80,
-            Tooltip = "Delay between bandage attempts in milliseconds (50-30000)"
         };
         delayBox.TextChangedByUser += (_, _) =>
         {
@@ -60,7 +60,7 @@ public static class BandageAgentTabContent
         };
         var delayRow = new HorizontalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
         delayRow.Widgets.Add(delayBox);
-        delayRow.Widgets.Add(new MyraLabel("Delay (ms)", MyraLabel.Style.P));
+        delayRow.Widgets.Add(new MyraLabel("Delay (ms)", MyraLabel.TextStyle.P));
         root.Widgets.Add(new MyraSpacer(15, 1));
         root.Widgets.Add(delayRow);
 
@@ -104,29 +104,23 @@ public static class BandageAgentTabContent
             "Skip bandage if yellow hits"));
 
         // Bandage graphic
-        var graphicBox = new TextBox
+        var graphicBox = new MyraInputBox
         {
             Text = $"0x{profile.BandageAgentGraphic:X4}",
+            Tooltip = "Graphic ID of bandages to use (default: 0x0E21). Accepts hex (0x0E21) or decimal (3617)",
             Width = 80,
-            Tooltip = "Graphic ID of bandages to use (default: 0x0E21). Accepts hex (0x0E21) or decimal (3617)"
         };
         graphicBox.TextChangedByUser += (_, _) =>
         {
-            if (TryParseBandageGraphic(graphicBox.Text, out ushort graphic))
-                profile.BandageAgentGraphic = graphic;
+            if (StringHelper.TryParseInt(graphicBox.Text, out int graphic) && graphic >= 0 && graphic <= ushort.MaxValue)
+                profile.BandageAgentGraphic = (ushort)graphic;
         };
         var graphicRow = new HorizontalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
-        graphicRow.Widgets.Add(new MyraLabel("Bandage graphic ID:", MyraLabel.Style.P));
+        graphicRow.Widgets.Add(new MyraLabel("Bandage graphic ID:", MyraLabel.TextStyle.P));
         graphicRow.Widgets.Add(graphicBox);
         root.Widgets.Add(graphicRow);
 
         return root;
     }
 
-    private static bool TryParseBandageGraphic(string text, out ushort graphic)
-    {
-        if (text.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-            return ushort.TryParse(text[2..], NumberStyles.HexNumber, CultureInfo.InvariantCulture, out graphic);
-        return ushort.TryParse(text, out graphic);
-    }
 }

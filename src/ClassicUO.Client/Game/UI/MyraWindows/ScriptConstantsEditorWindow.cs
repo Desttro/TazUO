@@ -9,7 +9,6 @@ using ClassicUO.Game.UI.Controls;
 using ClassicUO.Game.UI.MyraWindows.Widgets;
 using ClassicUO.LegionScripting;
 using Myra.Graphics2D.UI;
-using TextBox = Myra.Graphics2D.UI.TextBox;
 
 namespace ClassicUO.Game.UI.MyraWindows;
 
@@ -55,7 +54,7 @@ public class ScriptConstantsEditorWindow : MyraControl
     {
         var toolbar = new HorizontalStackPanel { Spacing = 4 };
 
-        var filterBox = new TextBox { HintText = "Filter constants...", Width = 175, Text = _filterText };
+        var filterBox = new MyraInputBox { HintText = "Filter constants...", Width = 175, Text = _filterText };
         filterBox.TextChangedByUser += (_, _) =>
         {
             _filterText = filterBox.Text ?? "";
@@ -66,10 +65,10 @@ public class ScriptConstantsEditorWindow : MyraControl
         toolbar.Widgets.Add(new MyraButton("Refresh", RefreshConstants));
         toolbar.Widgets.Add(new MyraButton("Save", SaveConstants));
 
-        _statusLabel = new MyraLabel("", MyraLabel.Style.P) { Visible = false };
+        _statusLabel = new MyraLabel("", MyraLabel.TextStyle.P) { Visible = false };
         toolbar.Widgets.Add(_statusLabel);
 
-        _countLabel = new MyraLabel("", MyraLabel.Style.P);
+        _countLabel = new MyraLabel("", MyraLabel.TextStyle.P);
         toolbar.Widgets.Add(_countLabel);
         UpdateCountLabel();
 
@@ -105,30 +104,27 @@ public class ScriptConstantsEditorWindow : MyraControl
         {
             if (string.IsNullOrWhiteSpace(_filterText))
             {
-                _constantsPanel.Widgets.Add(new MyraLabel("No constants found in script.\nConstants must be top-level assignments with UPPERCASE names.\nExample:  MAX_DISTANCE = 10", MyraLabel.Style.P));
+                _constantsPanel.Widgets.Add(new MyraLabel("No constants found in script.\nConstants must be top-level assignments with UPPERCASE names.\nExample:  MAX_DISTANCE = 10", MyraLabel.TextStyle.P));
             }
             else
             {
-                _constantsPanel.Widgets.Add(new MyraLabel("No constants match the filter.", MyraLabel.Style.P));
+                _constantsPanel.Widgets.Add(new MyraLabel("No constants match the filter.", MyraLabel.TextStyle.P));
             }
             return;
         }
 
         var grid = new MyraGrid();
-        grid.AddColumn(new Proportion(ProportionType.Auto));  // Name
-        grid.AddColumn(new Proportion(ProportionType.Fill));  // Value
-        grid.AddColumn(new Proportion(ProportionType.Auto));  // Line
-        MyraStyle.ApplyStandardGridStyling(grid);
-
-        grid.AddWidget(new MyraLabel("Constant", MyraLabel.Style.H3), 0, 0);
-        grid.AddWidget(new MyraLabel("Value",    MyraLabel.Style.H3), 0, 1);
-        grid.AddWidget(new MyraLabel("Line",     MyraLabel.Style.H3), 0, 2);
+        grid.SetupWithHeaders(
+            GridColumnInfo.Auto("Constant"),
+            GridColumnInfo.Fill("Value"),
+            GridColumnInfo.Auto("Line")
+        );
 
         int row = 1;
         foreach (ConstantEntry c in list)
         {
             ConstantEntry captured = c;
-            grid.AddWidget(new MyraLabel(c.Name, MyraLabel.Style.P), row, 0);
+            grid.AddWidget(new MyraLabel(c.Name, MyraLabel.TextStyle.P), row, 0);
 
             if (IsBooleanValue(c.EditValue))
                 grid.AddWidget(BuildBooleanEditor(captured), row, 1);
@@ -137,7 +133,7 @@ public class ScriptConstantsEditorWindow : MyraControl
             else
                 grid.AddWidget(BuildTextEditor(captured), row, 1);
 
-            grid.AddWidget(new MyraLabel($"{c.LineNumber + 1}", MyraLabel.Style.P), row, 2);
+            grid.AddWidget(new MyraLabel($"{c.LineNumber + 1}", MyraLabel.TextStyle.P), row, 2);
             row++;
         }
 
@@ -147,7 +143,7 @@ public class ScriptConstantsEditorWindow : MyraControl
     private Widget BuildTextEditor(ConstantEntry constant)
     {
         string original = constant.OriginalValue;
-        var box = new TextBox { Text = constant.EditValue };
+        var box = new MyraInputBox { Text = constant.EditValue };
         box.TextChangedByUser += (_, _) =>
         {
             constant.EditValue = box.Text ?? "";
@@ -184,7 +180,7 @@ public class ScriptConstantsEditorWindow : MyraControl
     {
         string original = constant.OriginalValue;
         var row = new HorizontalStackPanel { Spacing = 4 };
-        var readonlyBox = new TextBox { Text = constant.EditValue, Enabled = false };
+        var readonlyBox = new MyraInputBox { Text = constant.EditValue, Enabled = false };
         if (constant.OriginalValue != constant.EditValue)
             readonlyBox.Tooltip = $"Original: {original}";
         row.Widgets.Add(readonlyBox);
@@ -206,8 +202,8 @@ public class ScriptConstantsEditorWindow : MyraControl
             {
                 int idx = i;
                 var eRow = new HorizontalStackPanel { Spacing = 4 };
-                eRow.Widgets.Add(new MyraLabel($"[{idx}]", MyraLabel.Style.P));
-                var eBox = new TextBox { Text = elementsCopy[idx], MinWidth = 180 };
+                eRow.Widgets.Add(new MyraLabel($"[{idx}]", MyraLabel.TextStyle.P));
+                var eBox = new MyraInputBox { Text = elementsCopy[idx], MinWidth = 180 };
                 eBox.TextChangedByUser += (_, _) => elementsCopy[idx] = eBox.Text ?? "";
                 eRow.Widgets.Add(eBox);
                 eRow.Widgets.Add(MyraStyle.ApplyButtonDangerStyle(new MyraButton("X", () =>
@@ -227,7 +223,7 @@ public class ScriptConstantsEditorWindow : MyraControl
         BuildElements();
 
         var content = new VerticalStackPanel { Spacing = 4 };
-        content.Widgets.Add(new MyraLabel($"Editing: {constant.Name}", MyraLabel.Style.H3));
+        content.Widgets.Add(new MyraLabel($"Editing: {constant.Name}", MyraLabel.TextStyle.H3));
         content.Widgets.Add(new ScrollViewer { MaxHeight = 300, Content = elementsPanel });
 
         new MyraDialog($"Array Editor: {constant.Name}", content, ok =>

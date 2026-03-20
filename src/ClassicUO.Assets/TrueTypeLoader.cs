@@ -1,4 +1,4 @@
-﻿#region license
+#region license
 
 // Copyright (c) 2021, jaedan
 // All rights reserved.
@@ -43,6 +43,7 @@ namespace ClassicUO.Assets
     public class TrueTypeLoader
     {
         public const string EMBEDDED_FONT = "Roboto-Regular";
+        public const string MONO_FONT = "Roboto-Mono";
 
         private readonly Dictionary<string, FontSystem> _fonts = new();
 

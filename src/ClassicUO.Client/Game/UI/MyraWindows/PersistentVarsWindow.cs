@@ -9,7 +9,6 @@ using ClassicUO.LegionScripting;
 using Microsoft.Xna.Framework;
 using Myra.Graphics2D.Brushes;
 using Myra.Graphics2D.UI;
-using TextBox = Myra.Graphics2D.UI.TextBox;
 
 namespace ClassicUO.Game.UI.MyraWindows;
 
@@ -20,7 +19,7 @@ public class PersistentVarsWindow : MyraControl
     private string? _editingKey;
     private string _editingValue = "";
 
-    private readonly VerticalStackPanel _varsPanel   = new() { Spacing = 2 };
+    private readonly VerticalStackPanel _varsPanel = new() { Spacing = 2 };
     private readonly HorizontalStackPanel _scopeButtonRow = new() { Spacing = 4 };
     private readonly HorizontalStackPanel _scopeDescPanel = new() { Spacing = 4 };
 
@@ -50,7 +49,7 @@ public class PersistentVarsWindow : MyraControl
 
         // Scope selector
         var scopeRow = new HorizontalStackPanel { Spacing = 8, VerticalAlignment = VerticalAlignment.Center };
-        scopeRow.Widgets.Add(new MyraLabel("Scope:", MyraLabel.Style.P));
+        scopeRow.Widgets.Add(new MyraLabel("Scope:", MyraLabel.TextStyle.P));
         BuildScopeButtons();
         scopeRow.Widgets.Add(_scopeButtonRow);
         BuildScopeDesc();
@@ -102,14 +101,14 @@ public class PersistentVarsWindow : MyraControl
     private void BuildScopeDesc()
     {
         _scopeDescPanel.Widgets.Clear();
-        _scopeDescPanel.Widgets.Add(new MyraLabel($"({GetScopeDescription()})", MyraLabel.Style.P));
+        _scopeDescPanel.Widgets.Add(new MyraLabel($"({GetScopeDescription()})", MyraLabel.TextStyle.P));
     }
 
     private Widget BuildToolbar()
     {
         var toolbar = new HorizontalStackPanel { Spacing = 4 };
 
-        var filterBox = new TextBox { HintText = "Filter variables...", Width = 200, Text = _filterText };
+        var filterBox = new MyraInputBox { Text = _filterText, HintText = "Filter variables...", Width = 200 };
         filterBox.TextChangedByUser += (_, _) =>
         {
             _filterText = filterBox.Text ?? "";
@@ -144,19 +143,16 @@ public class PersistentVarsWindow : MyraControl
 
         if (variables.Count == 0)
         {
-            _varsPanel.Widgets.Add(new MyraLabel("No variables found.", MyraLabel.Style.P));
+            _varsPanel.Widgets.Add(new MyraLabel("No variables found.", MyraLabel.TextStyle.P));
             return;
         }
 
         var grid = new MyraGrid();
-        grid.AddColumn(new Proportion(ProportionType.Auto));  // Key
-        grid.AddColumn(new Proportion(ProportionType.Fill));  // Value
-        grid.AddColumn(new Proportion(ProportionType.Auto));  // Actions
-        MyraStyle.ApplyStandardGridStyling(grid);
-
-        grid.AddWidget(new MyraLabel("Key",     MyraLabel.Style.H3), 0, 0);
-        grid.AddWidget(new MyraLabel("Value",   MyraLabel.Style.H3), 0, 1);
-        grid.AddWidget(new MyraLabel("Actions", MyraLabel.Style.H3), 0, 2);
+        grid.SetupWithHeaders(
+            GridColumnInfo.Auto("Key"),
+            GridColumnInfo.Fill("Value"),
+            GridColumnInfo.Auto("Actions")
+        );
 
         int dataRow = 1;
         foreach (KeyValuePair<string, string> kvp in variables)
@@ -164,11 +160,11 @@ public class PersistentVarsWindow : MyraControl
             string key   = kvp.Key;
             string value = kvp.Value;
 
-            grid.AddWidget(new MyraLabel(key, MyraLabel.Style.P), dataRow, 0);
+            grid.AddWidget(new MyraLabel(key, MyraLabel.TextStyle.P), dataRow, 0);
 
             if (_editingKey == key)
             {
-                var editBox = new TextBox { Text = _editingValue, MinWidth = 180 };
+                var editBox = new MyraInputBox { Text = _editingValue, MinWidth = 180 };
                 editBox.TextChangedByUser += (_, _) => _editingValue = editBox.Text ?? "";
                 grid.AddWidget(editBox, dataRow, 1);
 
@@ -192,7 +188,7 @@ public class PersistentVarsWindow : MyraControl
             }
             else
             {
-                grid.AddWidget(new MyraLabel(value, MyraLabel.Style.P) { Tooltip = value }, dataRow, 1);
+                grid.AddWidget(new MyraLabel(value, MyraLabel.TextStyle.P) { Tooltip = value }, dataRow, 1);
 
                 var actionRow = new HorizontalStackPanel { Spacing = 2 };
                 actionRow.Widgets.Add(new MyraButton("Edit", () =>
@@ -214,14 +210,14 @@ public class PersistentVarsWindow : MyraControl
 
     private void ShowAddDialog()
     {
-        var keyBox   = new TextBox { HintText = "Key name...", Width = 300 };
-        var valueBox = new TextBox { HintText = "Value...",    Width = 300 };
+        var keyBox   = new MyraInputBox { HintText = "Key name...", Width = 300 };
+        var valueBox = new MyraInputBox { HintText = "Value...",    Width = 300 };
 
         var form = new VerticalStackPanel { Spacing = 4 };
-        form.Widgets.Add(new MyraLabel($"Add new variable to {_selectedScope} scope:", MyraLabel.Style.P));
-        form.Widgets.Add(new MyraLabel("Key:",   MyraLabel.Style.P));
+        form.Widgets.Add(new MyraLabel($"Add new variable to {_selectedScope} scope:", MyraLabel.TextStyle.P));
+        form.Widgets.Add(new MyraLabel("Key:",   MyraLabel.TextStyle.P));
         form.Widgets.Add(keyBox);
-        form.Widgets.Add(new MyraLabel("Value:", MyraLabel.Style.P));
+        form.Widgets.Add(new MyraLabel("Value:", MyraLabel.TextStyle.P));
         form.Widgets.Add(valueBox);
 
         new MyraDialog("Add Variable", form, ok =>
@@ -234,7 +230,7 @@ public class PersistentVarsWindow : MyraControl
 
     private void ShowDeleteDialog(string key) =>
         new MyraDialog("Confirm Delete",
-            new MyraLabel($"Delete variable '{key}'?", MyraLabel.Style.P),
+            new MyraLabel($"Delete variable '{key}'?", MyraLabel.TextStyle.P),
             ok =>
             {
                 if (!ok) return;

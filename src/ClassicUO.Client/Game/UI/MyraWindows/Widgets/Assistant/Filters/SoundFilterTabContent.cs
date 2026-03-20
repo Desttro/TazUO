@@ -6,7 +6,6 @@ using System.Text.Json;
 using ClassicUO.Game.Managers;
 using ClassicUO.Utility;
 using Myra.Graphics2D.UI;
-using TextBox = Myra.Graphics2D.UI.TextBox;
 
 namespace ClassicUO.Game.UI.MyraWindows.Widgets.Assistant.Filters;
 
@@ -18,7 +17,7 @@ public static class SoundFilterTabContent
 
         root.Widgets.Add(new MyraLabel(
             "Sound Filter allows you to mute specific in-game sounds by their ID.",
-            MyraLabel.Style.P));
+            MyraLabel.TextStyle.H3));
 
         var lastSoundPanel = new VerticalStackPanel { Spacing = 2 };
         var filtersPanel = new VerticalStackPanel { Spacing = 2 };
@@ -30,11 +29,11 @@ public static class SoundFilterTabContent
 
             if (filterList.Count == 0)
             {
-                filtersPanel.Widgets.Add(new MyraLabel("No sounds filtered.", MyraLabel.Style.P));
+                filtersPanel.Widgets.Add(new MyraLabel("No sounds filtered.", MyraLabel.TextStyle.P));
                 return;
             }
 
-            filtersPanel.Widgets.Add(new MyraLabel($"Total: {filterList.Count} sound(s) filtered", MyraLabel.Style.P));
+            filtersPanel.Widgets.Add(new MyraLabel($"Total: {filterList.Count} sound(s) filtered", MyraLabel.TextStyle.P));
 
             filtersPanel.Widgets.Add(MyraStyle.ApplyButtonDangerStyle(new MyraButton("Clear All Filters", () =>
             {
@@ -43,14 +42,10 @@ public static class SoundFilterTabContent
             })));
 
             var grid = new MyraGrid();
-            grid.AddColumn(new Proportion(ProportionType.Auto));
-            grid.AddColumn(new Proportion(ProportionType.Auto));
-            grid.AddColumn(new Proportion(ProportionType.Auto));
-            MyraStyle.ApplyStandardGridStyling(grid);
-
-            grid.AddWidget(new MyraLabel("Sound ID", MyraLabel.Style.H3), 0, 0);
-            grid.AddWidget(new MyraLabel("Actions", MyraLabel.Style.H3), 0, 1);
-            grid.AddWidget(new MyraLabel("Del", MyraLabel.Style.H3), 0, 2);
+            grid.SetupWithHeaders(
+                GridColumnInfo.Auto("Sound ID"),
+                GridColumnInfo.Fill("Actions")
+            );
 
             int dataRow = 1;
             for (int i = filterList.Count - 1; i >= 0; i--)
@@ -59,7 +54,7 @@ public static class SoundFilterTabContent
 
                 // Track current ID so we can remove-old/add-new on edit without rebuilding
                 int[] current = { soundId };
-                var soundBox = new TextBox { Text = soundId.ToString(), Width = 80 };
+                var soundBox = new MyraInputBox { Text = soundId.ToString() };
                 soundBox.TextChangedByUser += (_, _) =>
                 {
                     if (int.TryParse(soundBox.Text, out int newId))
@@ -76,17 +71,31 @@ public static class SoundFilterTabContent
                 grid.AddWidget(soundBox, dataRow, 0);
 
                 int capturedId = soundId;
-                var actionsPanel = new HorizontalStackPanel { Spacing = 2 };
-                actionsPanel.Widgets.Add(new MyraButton("Play", () =>
-                    Client.Game.Audio.PlaySound(current[0], true))
-                { Tooltip = "Test play this sound (bypasses filter)" });
+                var actionsPanel = new HorizontalStackPanel { Spacing = 4 };
+                actionsPanel.Widgets.Add(
+                    new MyraButton("Play", () => Client.Game.Audio.PlaySound(current[0], true))
+                    {
+                        Tooltip = "Test play this sound (bypasses filter)",
+                    }
+                );
+                actionsPanel.Widgets.Add(
+                    MyraStyle.ApplyButtonDangerStyle(
+                        new MyraButton(
+                            "Delete",
+                            () =>
+                            {
+                                SoundFilterManager.Instance.RemoveFilter(current[0]);
+                                BuildFilterList();
+                            }
+                        )
+                        {
+                            Tooltip = "Delete this filter",
+                        }
+                    )
+                );
+
                 grid.AddWidget(actionsPanel, dataRow, 1);
 
-                grid.AddWidget(MyraStyle.ApplyButtonDangerStyle(new MyraButton("X", () =>
-                {
-                    SoundFilterManager.Instance.RemoveFilter(current[0]);
-                    BuildFilterList();
-                }) { Tooltip = "Delete this filter" }), dataRow, 2);
 
                 dataRow++;
             }
@@ -97,13 +106,13 @@ public static class SoundFilterTabContent
         void BuildLastSoundSection()
         {
             lastSoundPanel.Widgets.Clear();
-            lastSoundPanel.Widgets.Add(new MyraLabel("Last Sound Played:", MyraLabel.Style.H3));
+            lastSoundPanel.Widgets.Add(new MyraLabel("Last Sound Played:", MyraLabel.TextStyle.H3));
 
             int lastSoundId = Client.Game.Audio.LastPlayedSoundId;
             if (lastSoundId >= 0)
             {
                 var row = new HorizontalStackPanel { Spacing = 4 };
-                row.Widgets.Add(new MyraLabel($"Sound ID: {lastSoundId}", MyraLabel.Style.P));
+                row.Widgets.Add(new MyraLabel($"Sound ID: {lastSoundId}", MyraLabel.TextStyle.P));
                 row.Widgets.Add(new MyraButton("Add Filter", () =>
                 {
                     SoundFilterManager.Instance.AddFilter(lastSoundId);
@@ -117,12 +126,12 @@ public static class SoundFilterTabContent
                 lastSoundPanel.Widgets.Add(row);
                 lastSoundPanel.Widgets.Add(new MyraLabel(
                     "Tip: Play a sound in-game to see its ID above, then click Add Filter.",
-                    MyraLabel.Style.P));
+                    MyraLabel.TextStyle.P));
             }
             else
             {
                 var row = new HorizontalStackPanel { Spacing = 4 };
-                row.Widgets.Add(new MyraLabel("No sound played yet.", MyraLabel.Style.P));
+                row.Widgets.Add(new MyraLabel("No sound played yet.", MyraLabel.TextStyle.P));
                 row.Widgets.Add(new MyraButton("Refresh", () => BuildLastSoundSection())
                     { Tooltip = "Refresh last played sound display" });
                 lastSoundPanel.Widgets.Add(row);
@@ -130,7 +139,7 @@ public static class SoundFilterTabContent
         }
 
         var addFilterPanel = new VerticalStackPanel { Visible = false, Spacing = 4 };
-        var newSoundBox = new TextBox { HintText = "Sound ID (0-65535)", Width = 120 };
+        var newSoundBox = new MyraInputBox { HintText = "Sound ID (0-65535)", Width = 120 };
 
         var addConfirmRow = new HorizontalStackPanel { Spacing = 4 };
         addConfirmRow.Widgets.Add(new MyraButton("Add", () =>
@@ -156,11 +165,11 @@ public static class SoundFilterTabContent
         }));
 
         var addFieldRow = new HorizontalStackPanel { Spacing = 4 };
-        addFieldRow.Widgets.Add(new MyraLabel("Sound ID:", MyraLabel.Style.P)
+        addFieldRow.Widgets.Add(new MyraLabel("Sound ID:", MyraLabel.TextStyle.P)
             { Tooltip = "Enter the numeric ID of the sound to filter (0-65535)" });
         addFieldRow.Widgets.Add(newSoundBox);
 
-        addFilterPanel.Widgets.Add(new MyraLabel("Add Sound Filter:", MyraLabel.Style.H3));
+        addFilterPanel.Widgets.Add(new MyraLabel("Add Sound Filter:", MyraLabel.TextStyle.H3));
         addFilterPanel.Widgets.Add(addFieldRow);
         addFilterPanel.Widgets.Add(addConfirmRow);
 
@@ -221,7 +230,7 @@ public static class SoundFilterTabContent
         root.Widgets.Add(lastSoundPanel);
         root.Widgets.Add(actionRow);
         root.Widgets.Add(addFilterPanel);
-        root.Widgets.Add(new MyraLabel("Filtered Sounds:", MyraLabel.Style.H3));
+        root.Widgets.Add(new MyraLabel("Filtered Sounds:", MyraLabel.TextStyle.H3));
         BuildFilterList();
         root.Widgets.Add(new ScrollViewer { Height = 250, Content = filtersPanel });
 

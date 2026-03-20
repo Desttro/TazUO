@@ -1,12 +1,10 @@
 #nullable enable
 using System.Collections.Generic;
 using ClassicUO.Configuration;
-using ClassicUO.Game;
 using ClassicUO.Game.GameObjects;
 using ClassicUO.Game.Managers;
 using ClassicUO.Utility;
 using Myra.Graphics2D.UI;
-using TextBox = Myra.Graphics2D.UI.TextBox;
 
 namespace ClassicUO.Game.UI.MyraWindows.Widgets.Assistant.Agents;
 
@@ -16,14 +14,14 @@ public static class AutoSellAgentTabContent
     {
         Profile? profile = ProfileManager.CurrentProfile;
         if (profile == null)
-            return new MyraLabel("Profile not loaded", MyraLabel.Style.P);
+            return new MyraLabel("Profile not loaded", MyraLabel.TextStyle.P);
 
         var root = new VerticalStackPanel { Spacing = 6 };
 
         root.Widgets.Add(MyraCheckButton.CreateWithCallback(
             profile.SellAgentEnabled, b => profile.SellAgentEnabled = b, "Enable Auto Sell"));
 
-        root.Widgets.Add(new MyraLabel("Options:", MyraLabel.Style.H3));
+        root.Widgets.Add(new MyraLabel("Options:", MyraLabel.TextStyle.H3));
         root.Widgets.Add(MyraHSlider.SliderWithLabel(
             "Max total items",
             out _,
@@ -37,7 +35,7 @@ public static class AutoSellAgentTabContent
             0, 100,
             profile.SellAgentMaxUniques));
 
-        root.Widgets.Add(new MyraLabel("Entries:", MyraLabel.Style.H3));
+        root.Widgets.Add(new MyraLabel("Entries:", MyraLabel.TextStyle.H3));
 
         var entriesPanel = new VerticalStackPanel { Spacing = 4 };
 
@@ -48,21 +46,20 @@ public static class AutoSellAgentTabContent
 
             if (entries.Count == 0)
             {
-                entriesPanel.Widgets.Add(new MyraLabel("No entries configured.", MyraLabel.Style.P));
+                entriesPanel.Widgets.Add(new MyraLabel("No entries configured.", MyraLabel.TextStyle.H3));
                 return;
             }
 
             var grid = new MyraGrid();
-            grid.AddColumn(null, 7);
-            MyraStyle.ApplyStandardGridStyling(grid);
-
-            grid.AddWidget(new MyraLabel("Art", MyraLabel.Style.H3), 0, 0);
-            grid.AddWidget(new MyraLabel("Graphic", MyraLabel.Style.H3), 0, 1);
-            grid.AddWidget(new MyraLabel("Hue", MyraLabel.Style.H3), 0, 2);
-            grid.AddWidget(new MyraLabel("Max Amount", MyraLabel.Style.H3), 0, 3);
-            grid.AddWidget(new MyraLabel("Min on Hand", MyraLabel.Style.H3), 0, 4);
-            grid.AddWidget(new MyraLabel("Enabled", MyraLabel.Style.H3), 0, 5);
-            grid.AddWidget(new MyraLabel("Actions", MyraLabel.Style.H3), 0, 6);
+            grid.SetupWithHeaders(
+                GridColumnInfo.Auto("Art"),
+                GridColumnInfo.Fill("Graphic"),
+                GridColumnInfo.Fill("Hue"),
+                GridColumnInfo.Fill("Max Amount"),
+                GridColumnInfo.Fill("Min on Hand"),
+                GridColumnInfo.Auto("Enabled"),
+                GridColumnInfo.Auto("Actions")
+            );
 
             int dataRow = 1;
             for (int i = entries.Count - 1; i >= 0; i--)
@@ -72,7 +69,7 @@ public static class AutoSellAgentTabContent
                 if (entry.Graphic > 0)
                     grid.AddWidget(new MyraArtTexture((uint)entry.Graphic), dataRow, 0);
 
-                var graphicBox = new TextBox { Text = entry.Graphic.ToString(), Width = 60 };
+                var graphicBox = new MyraInputBox { Text = entry.Graphic.ToString() };
                 graphicBox.TextChangedByUser += (_, _) =>
                 {
                     if (StringHelper.TryParseInt(graphicBox.Text, out int g) && g is > 0 and <= ushort.MaxValue)
@@ -80,24 +77,19 @@ public static class AutoSellAgentTabContent
                 };
                 grid.AddWidget(graphicBox, dataRow, 1);
 
-                var hueBox = new TextBox
-                {
-                    Text = entry.Hue == ushort.MaxValue ? "-1" : entry.Hue.ToString(),
-                    Width = 50,
-                    Tooltip = "Set to -1 to match any hue."
-                };
+                var hueBox = MyraInputBox.Hue(entry.Hue);
+                hueBox.Width = null;
                 hueBox.TextChangedByUser += (_, _) =>
                 {
-                    if (hueBox.Text == "-1") entry.Hue = ushort.MaxValue;
-                    else if (ushort.TryParse(hueBox.Text, out ushort h)) entry.Hue = h;
+                    if (MyraInputBox.TryParseHue(hueBox.Text, out ushort hue))
+                        entry.Hue = hue;
                 };
                 grid.AddWidget(hueBox, dataRow, 2);
 
-                var maxAmountBox = new TextBox
+                var maxAmountBox = new MyraInputBox
                 {
                     Text = entry.MaxAmount == ushort.MaxValue ? "0" : entry.MaxAmount.ToString(),
-                    Width = 60,
-                    Tooltip = "Set to 0 for unlimited."
+                    Tooltip = "Set to 0 for unlimited.",
                 };
                 maxAmountBox.TextChangedByUser += (_, _) =>
                 {
@@ -106,11 +98,10 @@ public static class AutoSellAgentTabContent
                 };
                 grid.AddWidget(maxAmountBox, dataRow, 3);
 
-                var restockBox = new TextBox
+                var restockBox = new MyraInputBox
                 {
                     Text = entry.RestockUpTo.ToString(),
-                    Width = 60,
-                    Tooltip = "Minimum amount to keep on hand (0 = disabled)."
+                    Tooltip = "Minimum amount to keep on hand (0 = disabled).",
                 };
                 restockBox.TextChangedByUser += (_, _) =>
                 {
@@ -118,7 +109,9 @@ public static class AutoSellAgentTabContent
                 };
                 grid.AddWidget(restockBox, dataRow, 4);
 
-                grid.AddWidget(MyraCheckButton.CreateWithCallback(entry.Enabled, b => entry.Enabled = b), dataRow, 5);
+                var cb = MyraCheckButton.CreateWithCallback(entry.Enabled, b => entry.Enabled = b);
+                cb.HorizontalAlignment = HorizontalAlignment.Center;
+                grid.AddWidget(cb, dataRow, 5);
 
                 grid.AddWidget(MyraStyle.ApplyButtonDangerStyle(new MyraButton("Delete", () =>
                 {
@@ -136,21 +129,21 @@ public static class AutoSellAgentTabContent
 
         // Inline add entry panel
         var addEntryPanel = new VerticalStackPanel { Visible = false, Spacing = 4 };
-        var newGraphicBox = new TextBox { HintText = "Graphic ID", Width = 80 };
-        var newHueBox = new TextBox { HintText = "Hue (-1=any)", Width = 80 };
-        var newMaxAmountBox = new TextBox { HintText = "Max Amount (0=unlimited)", Width = 130 };
-        var newRestockBox = new TextBox { HintText = "Min on Hand (0=disabled)", Width = 130 };
+        var newGraphicBox = new MyraInputBox { HintText= "Graphic ID", Width= 80 };
+        var newHueBox = MyraInputBox.Hue(ushort.MaxValue, 80, "Hue (-1=any)");
+        var newMaxAmountBox = new MyraInputBox { HintText = "Max Amount (0=unlimited)", Width = 130 };
+        var newRestockBox = new MyraInputBox { HintText = "Min on Hand (0=disabled)", Width = 130 };
 
         var addFieldsRow1 = new HorizontalStackPanel { Spacing = 4 };
-        addFieldsRow1.Widgets.Add(new MyraLabel("Graphic:", MyraLabel.Style.P));
+        addFieldsRow1.Widgets.Add(new MyraLabel("Graphic:", MyraLabel.TextStyle.P));
         addFieldsRow1.Widgets.Add(newGraphicBox);
-        addFieldsRow1.Widgets.Add(new MyraLabel("Hue:", MyraLabel.Style.P));
+        addFieldsRow1.Widgets.Add(new MyraLabel("Hue:", MyraLabel.TextStyle.P));
         addFieldsRow1.Widgets.Add(newHueBox);
 
         var addFieldsRow2 = new HorizontalStackPanel { Spacing = 4 };
-        addFieldsRow2.Widgets.Add(new MyraLabel("Max Amount:", MyraLabel.Style.P));
+        addFieldsRow2.Widgets.Add(new MyraLabel("Max Amount:", MyraLabel.TextStyle.P));
         addFieldsRow2.Widgets.Add(newMaxAmountBox);
-        addFieldsRow2.Widgets.Add(new MyraLabel("Min on Hand:", MyraLabel.Style.P));
+        addFieldsRow2.Widgets.Add(new MyraLabel("Min on Hand:", MyraLabel.TextStyle.P));
         addFieldsRow2.Widgets.Add(newRestockBox);
 
         void ClearAddFields()
@@ -169,10 +162,8 @@ public static class AutoSellAgentTabContent
                 BuySellItemConfig newConfig = BuySellAgent.Instance.NewSellConfig();
                 newConfig.Graphic = (ushort)graphic;
 
-                if (!string.IsNullOrEmpty(newHueBox.Text) && newHueBox.Text != "-1")
-                {
-                    if (ushort.TryParse(newHueBox.Text, out ushort hue)) newConfig.Hue = hue;
-                }
+                if (MyraInputBox.TryParseHue(newHueBox.Text, out ushort hue))
+                    newConfig.Hue = hue;
                 else
                     newConfig.Hue = ushort.MaxValue;
 
@@ -193,7 +184,7 @@ public static class AutoSellAgentTabContent
             ClearAddFields();
         }));
 
-        addEntryPanel.Widgets.Add(new MyraLabel("Add New Entry:", MyraLabel.Style.H3));
+        addEntryPanel.Widgets.Add(new MyraLabel("Add New Entry:", MyraLabel.TextStyle.H3));
         addEntryPanel.Widgets.Add(addFieldsRow1);
         addEntryPanel.Widgets.Add(addFieldsRow2);
         addEntryPanel.Widgets.Add(addConfirmRow);
