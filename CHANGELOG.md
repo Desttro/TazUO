@@ -55,6 +55,7 @@ All notable changes to TazUO will be recorded here.
 * Auto sell now has Add from container and Clear all buttons - ([bittiez](https://github.com/bittiez))
 * Allow setting custom item names via the item database - ([bittiez](https://github.com/bittiez))
 * Added an option to auto bandage ally's in bandage manager - ([bittiez](https://github.com/bittiez))
+* UI styling overhaul of new Myra windows - ([fspy](https://github.com/fspy))
 
 ### Fixes
 
