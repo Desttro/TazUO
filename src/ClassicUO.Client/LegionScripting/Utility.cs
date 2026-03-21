@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -273,6 +273,8 @@ internal static class Utility
 
         return Color.Black;
     }
+
+
 
     /// <summary>
     ///     Converts the given values into an array of <see cref="LegionAPI.Notoriety" />
