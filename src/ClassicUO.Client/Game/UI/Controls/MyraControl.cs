@@ -66,8 +66,12 @@ public class MyraControl : IGui
     }
 
     #region Event Handlers
-    private void UIManagerOnTopMostChanged(object sender, EventArgs e) =>
+    private void UIManagerOnTopMostChanged(object sender, EventArgs e)
+    {
         _desktop.Opacity = UIManager.TopMostControl == this ? 1f : 0.8f;
+        if (UIManager.TopMostControl != this && Mouse.LButtonPressed)
+            _keepRendering = true;
+    }
 
     private void OnRootWindowOnClosed(object s, EventArgs a)
     {
@@ -126,6 +130,7 @@ public class MyraControl : IGui
     #region Fields
     protected Rectangle _bounds = new();
     protected bool _disposeRequested = false;
+    private bool _keepRendering = false;
     #endregion
 
     #region Properties
@@ -251,8 +256,12 @@ public class MyraControl : IGui
 
         batcher.FlushBatch(); //Required to draw myra on top of already drawn gumps
 
-        if (UIManager.TopMostControl == this)
+        if (UIManager.TopMostControl == this || _keepRendering)
+        {
             _desktop.Render();
+            if (_keepRendering && !Mouse.LButtonPressed)
+                _keepRendering = false;
+        }
         else
         {
             _desktop.UpdateLayout();
