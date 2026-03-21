@@ -60,7 +60,7 @@ public static class MyraStyle
         _skillDownButton = new TextureRegion(ModernUIConstants.ModernUISkillDown);
         _skillLockBtn = new TextureRegion(ModernUIConstants.ModernUISkillLock);
 
-        _uiFont = TrueTypeLoader.Instance.GetFont(TrueTypeLoader.EMBEDDED_FONT, 16);
+        _uiFont = TrueTypeLoader.Instance.GetFont("ibm-plex", 16);
 
         //Window style
         WindowStyle style = Stylesheet.Current.WindowStyle;
@@ -68,7 +68,7 @@ public static class MyraStyle
         style.Background = _ninePatchPanel;
         style.Padding = new Thickness(6);
         style.TitleStyle.Padding = new Thickness(3);
-        style.TitleStyle.Font = TrueTypeLoader.Instance.GetFont("Roboto-Bold", 18);
+        style.TitleStyle.Font = TrueTypeLoader.Instance.GetFont("ibm-plex", 18);
 
         //Labels
         Stylesheet.Current.LabelStyle.Font = _uiFont;

@@ -1522,7 +1522,7 @@ def GetAvailableDressOutfits() -> "list[str]":
     """
     pass
 
-def DressItems(serials: "list[int]", kr: "bool" = False) -> None:
+def DressItems(serials: "Any", kr: "bool" = False) -> None:
     """
      Dress items by serial
      example:
@@ -2247,7 +2247,7 @@ def ItemNameAndProps(serial: "int", wait: "bool" = False, timeout: "int" = 10) -
     """
     pass
 
-def RequestOPLData(serials: "list[int]") -> None:
+def RequestOPLData(serials: "Any") -> None:
     """
      Requests Object Property List (OPL) data for the specified serials.
      If the OPL data doesn't already exist, it will be requested from the server.

@@ -40,8 +40,9 @@ All notable changes to TazUO will be recorded here.
 * Added `ApiItem.OnGround` to see if an item is on the ground or not - ([bittiez](https://github.com/bittiez))
 * Generate py builtins file when updating API to negate the need for import API - ([bittiez](https://github.com/bittiez))
 * `ApiGameObject` position(X, Y, Z) are now pulled directly to reflect live changes - ([bittiez](https://github.com/bittiez))
-* Incorporate cancellation token to avoid continueing to process api calls after a script has stopped. - ([bittiez](https://github.com/bittiez))
-* Added `API.DressItems` to use the dress agent from scripts. - ([fspy](https://github.com/fspy))
+* Incorporate cancellation token to avoid continueing to process api calls after a script has stopped - ([bittiez](https://github.com/bittiez))
+* Added `API.DressItems` to use the dress agent from scripts - ([fspy](https://github.com/fspy))
+* Fix IronPython type mismatch crash when passing serial lists to API - ([fspy](https://github.com/fspy))
 
 ### Assistant
 
@@ -56,6 +57,7 @@ All notable changes to TazUO will be recorded here.
 * Allow setting custom item names via the item database - ([bittiez](https://github.com/bittiez))
 * Added an option to auto bandage ally's in bandage manager - ([bittiez](https://github.com/bittiez))
 * UI styling overhaul of new Myra windows - ([fspy](https://github.com/fspy))
+* Auto loot now allows reordering and renaming when using -1 for any graphic - ([bittiez](https://github.com/bittiez))
 
 ### Fixes
 

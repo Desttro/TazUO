@@ -844,7 +844,7 @@ You can now type `-updateapi` in game to download the latest API.py file.
 
 | Name | Type | Optional | Description |
 | --- | --- | --- | --- |
-| `serials` | `IList<int>` | ❌ No | The list of serials to dress |
+| `serials` | `IEnumerable` | ❌ No | The list of serials to dress |
 | `kr` | `bool` | ✅ Yes | True to use the faster KR packet (not supported everywhere) |
 
 **Return Type:** `void` *(Does not return anything)*
@@ -2035,7 +2035,7 @@ You can now type `-updateapi` in game to download the latest API.py file.
 
 | Name | Type | Optional | Description |
 | --- | --- | --- | --- |
-| `serials` | `IList<int>` | ❌ No | A list of object serials to request OPL data for |
+| `serials` | `IEnumerable` | ❌ No | A list of object serials to request OPL data for |
 
 **Return Type:** `void` *(Does not return anything)*
 

@@ -90,6 +90,7 @@ public static class AutoLootAgentTabContent
                 GridColumnInfo.Auto("Regex"),
                 GridColumnInfo.Auto("Priority"),
                 GridColumnInfo.Fill("Destination"),
+                GridColumnInfo.Auto("Order"),
                 GridColumnInfo.Auto("Actions")
             );
 
@@ -99,8 +100,20 @@ public static class AutoLootAgentTabContent
                 AutoLootManager.AutoLootConfigEntry entry = entries[i];
 
                 // Art image (col 0)
-                if(entry.Graphic > 0)
+                if (entry.Graphic > 0)
                     grid.AddWidget(new MyraArtTexture((uint)entry.Graphic) { Tooltip = entry.Name, Margin = new Thickness(2, 0) }, dataRow, 0);
+                else
+                {
+                    var nameBox = new MyraInputBox
+                    {
+                        Text = entry.Name,
+                        HintText = "Name",
+                        Tooltip = "Display name for this entry.",
+                        MinWidth = 80,
+                    };
+                    nameBox.TextChangedByUser += (_, _) => entry.Name = nameBox.Text;
+                    grid.AddWidget(nameBox, dataRow, 0);
+                }
 
                 // Graphic
                 var graphicBox = new MyraInputBox
@@ -190,13 +203,41 @@ public static class AutoLootAgentTabContent
                 }) { Tooltip = "Target a container to use as the destination for this entry." });
                 grid.AddWidget(destCell, dataRow, 5);
 
+                // Up / Down reorder buttons (col 6)
+                // Display is reversed: i = entries.Count-1 is top row, i=0 is bottom row.
+                // "Up" in display = swap with i+1 in list; "Down" = swap with i-1.
+                var orderRow = new HorizontalStackPanel { Spacing = 2 };
+                var upBtn = new MyraButton("<", () =>
+                {
+                    int idx = entries.IndexOf(entry);
+                    if (idx < entries.Count - 1)
+                    {
+                        (entries[idx], entries[idx + 1]) = (entries[idx + 1], entries[idx]);
+                        BuildEntriesList();
+                    }
+                }) { Tooltip = "Move up" };
+                var downBtn = new MyraButton(">", () =>
+                {
+                    int idx = entries.IndexOf(entry);
+                    if (idx > 0)
+                    {
+                        (entries[idx], entries[idx - 1]) = (entries[idx - 1], entries[idx]);
+                        BuildEntriesList();
+                    }
+                }) { Tooltip = "Move down" };
+                if (i == entries.Count - 1) upBtn.Enabled = false;
+                if (i == 0) downBtn.Enabled = false;
+                orderRow.Widgets.Add(upBtn);
+                orderRow.Widgets.Add(downBtn);
+                grid.AddWidget(orderRow, dataRow, 6);
+
                 var delBtn = new MyraButton("Delete", () =>
                 {
                     AutoLootManager.Instance.TryRemoveAutoLootEntry(entry.Uid);
                     BuildEntriesList();
                 });
                 delBtn.VerticalAlignment = VerticalAlignment.Center;
-                grid.AddWidget(MyraStyle.ApplyButtonDangerStyle(delBtn), dataRow, 6);
+                grid.AddWidget(MyraStyle.ApplyButtonDangerStyle(delBtn), dataRow, 7);
 
                 dataRow += 1;
             }
