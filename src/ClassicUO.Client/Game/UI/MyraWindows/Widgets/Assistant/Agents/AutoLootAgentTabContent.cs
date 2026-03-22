@@ -100,7 +100,7 @@ public static class AutoLootAgentTabContent
                 AutoLootManager.AutoLootConfigEntry entry = entries[i];
 
                 // Art image (col 0)
-                if (entry.Graphic > 0)
+                if (entry.Graphic is > 0 and < ushort.MaxValue)
                     grid.AddWidget(new MyraArtTexture((uint)entry.Graphic) { Tooltip = entry.Name, Margin = new Thickness(2, 0) }, dataRow, 0);
                 else
                 {
@@ -118,13 +118,13 @@ public static class AutoLootAgentTabContent
                 // Graphic
                 var graphicBox = new MyraInputBox
                 {
-                    Text = entry.Graphic.ToString(),
+                    Text = entry.Graphic == ushort.MaxValue ? "-1" : entry.Graphic.ToString(),
                     Tooltip = "Item graphic ID. Set to -1 to match any graphic.",
                 };
                 graphicBox.TextChangedByUser += (_, _) =>
                 {
                     if (StringHelper.TryParseInt(graphicBox.Text, out int g))
-                        entry.Graphic = g;
+                        entry.Graphic = g == -1 ? ushort.MaxValue : g;
                 };
                 grid.AddWidget(graphicBox, dataRow, 1);
 
@@ -249,11 +249,14 @@ public static class AutoLootAgentTabContent
 
         // Add entry inline panel
         var addEntryPanel = new VerticalStackPanel { Visible = false, Spacing = 4 };
-        var newGraphicBox = new MyraInputBox { HintText = "Graphic ID", Width = 100 /*, Font = TrueTypeLoader.Instance.GetFont(TrueTypeLoader.EMBEDDED_FONT, 16) */};
+        var newNameBox = new MyraInputBox { HintText = "Name", Width = 100 };
+        var newGraphicBox = new MyraInputBox { HintText = "Graphic ID", Width = 100, Tooltip = "Graphic (-1 = any)" };
         var newHueBox = MyraInputBox.Hue(ushort.MaxValue, 100, "Hue (-1 = any)");
         var newRegexBox = new MyraInputBox { HintText = "Regex (optional)", Width = 200 };
 
         var addFieldsRow = new HorizontalStackPanel { Spacing = 4 };
+        addFieldsRow.Widgets.Add(new MyraLabel("Name:", MyraLabel.TextStyle.P));
+        addFieldsRow.Widgets.Add(newNameBox);
         addFieldsRow.Widgets.Add(new MyraLabel("Graphic:", MyraLabel.TextStyle.P));
         addFieldsRow.Widgets.Add(newGraphicBox);
         addFieldsRow.Widgets.Add(new MyraLabel("Hue:", MyraLabel.TextStyle.P));
@@ -266,15 +269,19 @@ public static class AutoLootAgentTabContent
         {
             if (StringHelper.TryParseInt(newGraphicBox.Text, out int graphic))
             {
-                if (graphic < 0 || graphic > ushort.MaxValue)
+                if (graphic > ushort.MaxValue)
                     return;
+
+                if(graphic == -1)
+                    graphic = ushort.MaxValue;
 
                 if (!MyraInputBox.TryParseHue(newHueBox.Text, out ushort hue))
                     hue = ushort.MaxValue;
 
-                AutoLootManager.AutoLootConfigEntry? entry = AutoLootManager.Instance.AddAutoLootEntry((ushort)graphic, hue, "");
+                AutoLootManager.AutoLootConfigEntry? entry = AutoLootManager.Instance.AddAutoLootEntry((ushort)graphic, hue, newNameBox.Text);
                 entry.RegexSearch = newRegexBox.Text;
 
+                newNameBox.Text = "";
                 newGraphicBox.Text = "";
                 newHueBox.Text = "";
                 newRegexBox.Text = "";

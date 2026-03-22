@@ -93,6 +93,7 @@ public static class SkillsTabContent
                 {
                     byte nextLock = (byte)(((byte)skill.Lock + 1) % 3);
                     GameActions.ChangeSkillLockStatus((ushort)capturedSkillIdx, nextLock);
+                    skill.Lock = (Lock)nextLock;
                     AsyncNetClient.Socket.Send_SkillsRequest(player.Serial);
                     BuildLockBtn();
                 });

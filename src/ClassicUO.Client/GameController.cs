@@ -738,7 +738,7 @@ namespace ClassicUO
                         Plugin.OnFocusLost();
                     break;
 
-                case SDL_EventType.SDL_EVENT_KEY_DOWN:
+                case SDL_EventType.SDL_EVENT_KEY_DOWN when Scene is not null:
                     Keyboard.OnKeyDown(sdlEvent->key);
 
                     if (Plugin.ProcessHotkeys(
@@ -764,7 +764,7 @@ namespace ClassicUO
 
                     break;
 
-                case SDL_EventType.SDL_EVENT_KEY_UP:
+                case SDL_EventType.SDL_EVENT_KEY_UP when Scene is not null:
                     var key = (SDL_Keycode)sdlEvent->key.key;
 
                     Keyboard.OnKeyUp(sdlEvent->key);
@@ -808,7 +808,7 @@ namespace ClassicUO
 
                     break;
 
-                case SDL_EventType.SDL_EVENT_TEXT_INPUT:
+                case SDL_EventType.SDL_EVENT_TEXT_INPUT when Scene is not null:
                     if (_ignoreNextTextInput)
                     {
                         break;
@@ -834,7 +834,7 @@ namespace ClassicUO
 
                     break;
 
-                case SDL_EventType.SDL_EVENT_MOUSE_MOTION:
+                case SDL_EventType.SDL_EVENT_MOUSE_MOTION when Scene is not null:
 
                     if (UO.GameCursor != null && !UO.GameCursor.AllowDrawSDLCursor)
                     {
@@ -854,7 +854,7 @@ namespace ClassicUO
 
                     break;
 
-                case SDL_EventType.SDL_EVENT_MOUSE_WHEEL:
+                case SDL_EventType.SDL_EVENT_MOUSE_WHEEL when Scene is not null:
                     Mouse.Update();
                     bool isScrolledUp = sdlEvent->wheel.y > 0;
 
@@ -868,7 +868,7 @@ namespace ClassicUO
 
                     break;
 
-                case SDL_EventType.SDL_EVENT_MOUSE_BUTTON_DOWN:
+                case SDL_EventType.SDL_EVENT_MOUSE_BUTTON_DOWN when Scene is not null:
                     {
                         SDL_MouseButtonEvent mouse = sdlEvent->button;
 
@@ -969,7 +969,7 @@ namespace ClassicUO
                         break;
                     }
 
-                case SDL_EventType.SDL_EVENT_MOUSE_BUTTON_UP:
+                case SDL_EventType.SDL_EVENT_MOUSE_BUTTON_UP when Scene is not null:
                     {
                         SDL_MouseButtonEvent mouse = sdlEvent->button;
 
@@ -1018,7 +1018,7 @@ namespace ClassicUO
                         break;
                     }
 
-                case SDL_EventType.SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+                case SDL_EventType.SDL_EVENT_GAMEPAD_BUTTON_DOWN when Scene is not null:
                     if (!IsActive || ProfileManager.CurrentProfile == null || !ProfileManager.CurrentProfile.ControllerEnabled)
                     {
                         break;
@@ -1055,7 +1055,7 @@ namespace ClassicUO
                     }
                     break;
 
-                case SDL_EventType.SDL_EVENT_GAMEPAD_BUTTON_UP:
+                case SDL_EventType.SDL_EVENT_GAMEPAD_BUTTON_UP when Scene is not null:
                     if (!IsActive || ProfileManager.CurrentProfile == null || !ProfileManager.CurrentProfile.ControllerEnabled)
                     {
                         break;
@@ -1080,7 +1080,7 @@ namespace ClassicUO
                     }
                     break;
 
-                case SDL_EventType.SDL_EVENT_GAMEPAD_AXIS_MOTION: //Work around because sdl doesn't see trigger buttons as buttons, they are axis probably for pressure support
+                case SDL_EventType.SDL_EVENT_GAMEPAD_AXIS_MOTION when Scene is not null: //Work around because sdl doesn't see trigger buttons as buttons, they are axis probably for pressure support
                                                                   //GameActions.Print(typeof(SDL_GamepadButton).GetEnumName((SDL_GamepadButton)sdlEvent->gbutton.button));
                     if (!IsActive || ProfileManager.CurrentProfile == null || !ProfileManager.CurrentProfile.ControllerEnabled)
                     {

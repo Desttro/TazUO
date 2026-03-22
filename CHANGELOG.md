@@ -77,6 +77,7 @@ All notable changes to TazUO will be recorded here.
 * Various bug fixes from CUO
 * Bulletin board now only shows 9 messages instead of 11
 * Fixes for Hide Hud feature(ImGui -> Myra) - ([bittiez](https://github.com/bittiez))
+* Fix a crash when handling io input while loading the game - ([bittiez](https://github.com/bittiez))
 
 ### Misc
 
