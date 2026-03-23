@@ -91,5 +91,6 @@ All notable changes to TazUO will be recorded here.
 * Only send metrics login once per session(Swapping chars won't count as additional logins) - ([bittiez](https://github.com/bittiez))
 * Changed mobile movement to use packet receive time to determine mobile speed instead of fixed values - ([bittiez](https://github.com/bittiez))
 * Added a voice to text option via Vosk - ([bittiez](https://github.com/bittiez))
+* Added an option(enabled by default) to single click mobiles to set them as last target - ([bittiez](https://github.com/bittiez))
 
 ---

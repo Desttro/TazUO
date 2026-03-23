@@ -475,6 +475,9 @@ namespace ClassicUO.Game.Scenes
 
                 if (UIManager.TopMostControl is MyraControl)
                     UIManager.TopMostControl = null;
+
+                if (ProfileManager.CurrentProfile.SingleClickMobileSetsLastTarget && SelectedObject.Object is Mobile m)
+                    World.Instance.TargetManager.LastTargetInfo.SetEntity(m);
             }
 
             return true;
