@@ -15,6 +15,7 @@ using Microsoft.Xna.Framework;
 using SDL3;
 using MathHelper = ClassicUO.Utility.MathHelper;
 using ClassicUO.Assets;
+using ClassicUO.Common.Enums;
 using ClassicUO.Game.UI.Controls;
 
 namespace ClassicUO.Game.Scenes
