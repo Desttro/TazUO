@@ -79,6 +79,7 @@ All notable changes to TazUO will be recorded here.
 * Fixes for Hide Hud feature(ImGui -> Myra) - ([bittiez](https://github.com/bittiez))
 * Fix a crash when handling io input while loading the game - ([bittiez](https://github.com/bittiez))
 * Fix for double clicks accidentally registering as two single clicks sometimes - ([bittiez](https://github.com/bittiez))
+* Make renderedtext pool thread safe to prevent rare crashes where the returned value is null - ([bittiez](https://github.com/bittiez)) 
 
 ### Misc
 
