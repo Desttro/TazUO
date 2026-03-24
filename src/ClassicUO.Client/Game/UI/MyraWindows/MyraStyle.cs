@@ -135,7 +135,7 @@ public static class MyraStyle
         comboStyle.ListBoxStyle.Background = new SolidBrush("#242941");
         comboStyle.LabelStyle.Font = _uiFont;
 
-        var comboItemStyle = comboStyle.ListBoxStyle.ListItemStyle;
+        ImageTextButtonStyle comboItemStyle = comboStyle.ListBoxStyle.ListItemStyle;
         comboItemStyle.Background = new SolidBrush(Color.Transparent);
         comboItemStyle.OverBackground = new SolidBrush(new Color(170, 105, 13, 80));
         comboItemStyle.PressedBackground = new SolidBrush(new Color(170, 105, 13, 160));
@@ -143,7 +143,7 @@ public static class MyraStyle
         comboItemStyle.Padding = new Thickness(2);
         comboItemStyle.LabelStyle.Font = _uiFont;
 
-        var menuStyle = Stylesheet.Current.VerticalMenuStyle;
+        MenuStyle menuStyle = Stylesheet.Current.VerticalMenuStyle;
         menuStyle.Padding = new Thickness(0);
         menuStyle.Margin = new Thickness(0);
         menuStyle.Background = new SolidBrush("#242941");

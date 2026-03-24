@@ -109,5 +109,6 @@ public enum MacroType
     CastMasterySpell,
     ToggleAutoLoot,
     ToggleVoiceRecognition,
-    SetLastTarget
+    SetLastTarget,
+    ToggleAutoWalk
 }

@@ -48,7 +48,7 @@ public class MyraGrid : Grid
 
         for (int i = 0; i < columns.Length; i++)
         {
-            var col = columns[i];
+            GridColumnInfo col = columns[i];
             AddWidget(new MyraLabel(col.Label, MyraLabel.TextStyle.TableHeader,
                 col.AlignRight ? MyraLabel.AlignMode.Right : MyraLabel.AlignMode.Left), 0, i);
         }

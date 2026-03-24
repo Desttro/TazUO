@@ -78,6 +78,7 @@ All notable changes to TazUO will be recorded here.
 * Bulletin board now only shows 9 messages instead of 11
 * Fixes for Hide Hud feature(ImGui -> Myra) - ([bittiez](https://github.com/bittiez))
 * Fix a crash when handling io input while loading the game - ([bittiez](https://github.com/bittiez))
+* Fix for double clicks accidentally registering as two single clicks sometimes - ([bittiez](https://github.com/bittiez))
 
 ### Misc
 
@@ -93,5 +94,6 @@ All notable changes to TazUO will be recorded here.
 * Added a voice to text option via Vosk - ([bittiez](https://github.com/bittiez))
 * Added an option(enabled by default) to single click mobiles to set them as last target - ([bittiez](https://github.com/bittiez))
 * Added a set last target macro - ([bittiez](https://github.com/bittiez))
+* Added a toggle auto walk macro - ([bittiez](https://github.com/bittiez))
 
 ---

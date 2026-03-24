@@ -2392,6 +2392,10 @@ namespace ClassicUO.Game.Managers
                             SetLastTarget(e);
                     });
                     break;
+
+                case MacroType.ToggleAutoWalk:
+                    GameScene.Instance.ToggleAutoWalk(null);
+                    break;
             }
 
             return result;

@@ -36,6 +36,12 @@ namespace ClassicUO.Game.Scenes
             _selectionEnd;
         private int AnchorOffset => ProfileManager.CurrentProfile.DragSelectAsAnchor ? 0 : 2;
 
+        /// <summary>
+        /// Toggle auto walk on/off
+        /// </summary>
+        /// <param name="on">Use null to toggle on/off, or set explicitely</param>
+        internal void ToggleAutoWalk(bool? on = true) => _continueRunning = on.HasValue ? on.Value : !_continueRunning;
+
         private bool MoveCharacterByMouseInput()
         {
             if ((_rightMousePressed || _continueRunning) && _world.InGame) // && !Pathfinder.AutoWalking)
@@ -526,7 +532,7 @@ namespace ClassicUO.Game.Scenes
 
             if (!ProfileManager.CurrentProfile.DisableAutoMove && _rightMousePressed)
             {
-                _continueRunning = true;
+                ToggleAutoWalk();
             }
 
             BaseGameObject lastObj = SelectedObject.Object;
