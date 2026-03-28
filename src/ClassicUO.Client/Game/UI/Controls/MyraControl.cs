@@ -66,12 +66,7 @@ public class MyraControl : IGui
     }
 
     #region Event Handlers
-    private void UIManagerOnTopMostChanged(object sender, EventArgs e)
-    {
-        _desktop.Opacity = UIManager.TopMostControl == this ? 1f : 0.8f;
-        if (UIManager.TopMostControl != this && Mouse.LButtonPressed)
-            _keepRendering = true;
-    }
+    private void UIManagerOnTopMostChanged(object sender, EventArgs e) => _desktop.Opacity = UIManager.TopMostControl == this ? 1f : 0.8f;
 
     private void OnRootWindowOnClosed(object s, EventArgs a)
     {
@@ -130,7 +125,6 @@ public class MyraControl : IGui
     #region Fields
     protected Rectangle _bounds = new();
     protected bool _disposeRequested = false;
-    private bool _keepRendering = false;
     #endregion
 
     #region Properties
@@ -177,6 +171,11 @@ public class MyraControl : IGui
     public bool HasKeyboardFocus => UIManager.KeyboardFocusControl == this;
     public bool ModalClickOutsideAreaClosesThisControl { get; } = true;
     #endregion
+
+    /// <summary>
+    /// Do not set this manually, should only be set by UIManager
+    /// </summary>
+    public bool IsTopMost { get; set; }
 
     protected void MinMaximize()
     {
@@ -256,11 +255,9 @@ public class MyraControl : IGui
 
         batcher.FlushBatch(); //Required to draw myra on top of already drawn gumps
 
-        if (UIManager.TopMostControl == this || _keepRendering)
+        if (IsTopMost)
         {
             _desktop.Render();
-            if (_keepRendering && !Mouse.LButtonPressed)
-                _keepRendering = false;
         }
         else
         {

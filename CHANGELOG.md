@@ -58,6 +58,7 @@ All notable changes to TazUO will be recorded here.
 * Added an option to auto bandage ally's in bandage manager - ([bittiez](https://github.com/bittiez))
 * UI styling overhaul of new Myra windows - ([fspy](https://github.com/fspy))
 * Auto loot now allows reordering and renaming when using -1 for any graphic - ([bittiez](https://github.com/bittiez))
+* Buy agent now has an option to include sub containers in item counts - ([bittiez](https://github.com/bittiez))
 
 ### Fixes
 
