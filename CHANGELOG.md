@@ -82,6 +82,7 @@ All notable changes to TazUO will be recorded here.
 * Fix for double clicks accidentally registering as two single clicks sometimes - ([bittiez](https://github.com/bittiez))
 * Make renderedtext pool thread safe to prevent rare crashes where the returned value is null - ([bittiez](https://github.com/bittiez)) 
 * Fix autoloot regex json export to support special characters - ([bittiez](https://github.com/bittiez))
+* Fix drag select positioning when zooming in or out - ([bittiez](https://github.com/bittiez))
 
 ### Misc
 
