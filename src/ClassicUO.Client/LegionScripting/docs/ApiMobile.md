@@ -97,6 +97,13 @@ description:  Represents a Python-accessible mobile (NPC, creature, or player ch
 
 **Type:** `bool`
 
+### `Direction`
+
+**Type:** `string`
+
+ Get this mobiles direction as a string, for example: "west", "east", etc
+
+
 ### `Notoriety`
 
 **Type:** `Notoriety`

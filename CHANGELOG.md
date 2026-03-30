@@ -26,6 +26,7 @@ All notable changes to TazUO will be recorded here.
 * Added built-in IRC support and channel - [P.R 366](https://github.com/PlayTazUO/TazUO/pull/366) ([bittiez](https://github.com/bittiez))
 * Added Auto-Loot priority tiers (High/Normal/Low) - [P.R 363](https://github.com/PlayTazUO/TazUO/pull/363) ([crameep](https://github.com/crameep))
 * Added `ToggleAutoLoot` macro to quickly enable/disable autolooting - ([bittiez](https://github.com/bittiez))
+* Added a server prompt UI for when servers request input(like naming a rune) - ([bittiez](https://github.com/bittiez))
 
 ### API
 

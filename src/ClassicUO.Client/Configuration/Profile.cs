@@ -396,6 +396,8 @@ namespace ClassicUO.Configuration
 
         public bool DisableSystemChat { get; set; } = false;
 
+        public bool UsePromptPopup { get; set; } = true;
+
         public uint SetFavoriteMoveBagSerial { get; set; } = 0;
 
         #region GRID CONTAINER
