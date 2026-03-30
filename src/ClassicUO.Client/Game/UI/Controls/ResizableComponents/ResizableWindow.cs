@@ -431,7 +431,7 @@ public class ResizableWindow : Window, IDisposable
         var panel = new Panel
         {
             // Note that if the scroll component's height/width changes post-construction, that won't be reflected. Might improve later.
-            Padding = new Thickness(scroller.VerticalScrollbarWidth(), scroller.HorizontalScrollbarHeight())
+            //Padding = new Thickness(scroller.VerticalScrollbarWidth(), scroller.HorizontalScrollbarHeight())
         };
         panel.Widgets.Add(widget);
 

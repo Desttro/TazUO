@@ -79,6 +79,7 @@ public static class MyraStyle
         tabControlStyle.ContentStyle.Background = new SolidBrush(Color.Transparent);
         tabControlStyle.ContentStyle.Border = new SolidBrush(new Color(0, 0, 0, STANDARD_BORDER_ALPHA));
         tabControlStyle.ContentStyle.BorderThickness = new Thickness(1);
+        tabControlStyle.TabItemStyle.LabelStyle.Font = _uiFont;
 
         ImageTextButtonStyle tabItemStyle = tabControlStyle.TabItemStyle;
         tabItemStyle.Background = new SolidBrush(Color.Transparent);
@@ -110,6 +111,7 @@ public static class MyraStyle
         s.MinWidth = 1;
         s.MinHeight = 1;
         s.Padding = new Thickness(5);
+        s.LabelStyle.Font = _uiFont;
 
         //Checkbox style
         ImageTextButtonStyle cbStyle = Stylesheet.Current.CheckBoxStyle;
@@ -122,7 +124,7 @@ public static class MyraStyle
         inputStyle.Border = new SolidBrush(new Color(21, 21, 21, STANDARD_BORDER_ALPHA));
         inputStyle.BorderThickness = new Thickness(1);
         inputStyle.Padding = new Thickness(3);
-        // inputStyle.Font = _uiFont;
+        inputStyle.Font = _uiFont;
 
         ScrollViewerStyle svStyle = Stylesheet.Current.ScrollViewerStyle;
         svStyle.VerticalScrollBackground = new TextureRegion(ModernUIConstants.ModernUIVerticalScrollbar);
