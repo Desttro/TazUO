@@ -650,6 +650,11 @@ internal static class GumpHelpers
                             gump.AddUserMarker("SOS", (int)location.X, (int)location.Y, world.Map.Index);
                         }));
 
+                        menu.ContextMenu.Add(new ContextMenuItemEntry("Create arrow pointing to location", () =>
+                        {
+                            UIManager.Add(new QuestArrowGump(world, 0, (int)location.X, (int)location.Y) { CanCloseWithRightClick = true });
+                        }));
+
                         menu.ContextMenu.Add(new ContextMenuItemEntry("Close", () =>
                         {
                             gump.Dispose();

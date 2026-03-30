@@ -104,6 +104,20 @@ namespace ClassicUO.Game.UI.Gumps
                     }
                 }
             }));
+            menu.ContextMenu.Add(new ContextMenuItemEntry("Create arrow pointing to location", () =>
+            {
+                if (foundMapLoc)
+                {
+                    WorldMapGump map = UIManager.GetGump<WorldMapGump>();
+                    if (map != null)
+                    {
+                        if (mapFacet != World.MapIndex)
+                            GameActions.Print(World, "You're on the wrong facet!", 32);
+                        else
+                            UIManager.Add(new QuestArrowGump(world, 0, mapX, mapY) { CanCloseWithRightClick = true });
+                    }
+                }
+            }));
             menu.ContextMenu.Add(new ContextMenuItemEntry("Try to pathfind", () =>
             {
                 if (foundMapLoc)

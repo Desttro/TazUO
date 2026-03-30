@@ -85,6 +85,7 @@ All notable changes to TazUO will be recorded here.
 * Make renderedtext pool thread safe to prevent rare crashes where the returned value is null - ([bittiez](https://github.com/bittiez)) 
 * Fix autoloot regex json export to support special characters - ([bittiez](https://github.com/bittiez))
 * Fix drag select positioning when zooming in or out - ([bittiez](https://github.com/bittiez))
+* Fixed quest arrow positioning - ([bittiez](https://github.com/bittiez))
 
 ### Misc
 
@@ -101,5 +102,6 @@ All notable changes to TazUO will be recorded here.
 * Added an option(enabled by default) to single click mobiles to set them as last target - ([bittiez](https://github.com/bittiez))
 * Added a set last target macro - ([bittiez](https://github.com/bittiez))
 * Added a toggle auto walk macro - ([bittiez](https://github.com/bittiez))
+* Added optional quest arrow to tmap and sos bottles - ([bittiez](https://github.com/bittiez))
 
 ---
