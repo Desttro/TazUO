@@ -52,7 +52,7 @@ public class ScriptEditorWindow : MyraControl
 
     private void Build(string content)
     {
-        SpriteFontBase? monoFont = TrueTypeLoader.Instance.GetFont(TrueTypeLoader.MONO_FONT, 18);
+        SpriteFontBase? monoFont = TrueTypeLoader.Instance.GetFont(EmbeddedFontNames.ROBOTO_MONO, 18);
 
         _lines = new MyraInputBox
         {

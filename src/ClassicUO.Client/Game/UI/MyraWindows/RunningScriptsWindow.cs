@@ -14,6 +14,13 @@ public class RunningScriptsWindow : MyraControl
 
     public RunningScriptsWindow() : base("Running Scripts")
     {
+        const int startingWidth = 240;
+        const int startingHeight = 130;
+        _rootWindow.Props.Resize.MinHeight = startingHeight;
+        _rootWindow.Props.Resize.MinWidth = startingWidth;
+        _rootWindow.Height = startingHeight;
+        _rootWindow.Width = startingWidth;
+
         CanBeSaved = true;
         Build();
         CenterInViewPort();
