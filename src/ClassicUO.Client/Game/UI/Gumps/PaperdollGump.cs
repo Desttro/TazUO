@@ -259,7 +259,7 @@ namespace ClassicUO.Game.UI.Gumps
                 profileX += _profilePic.Width;
                 _profilePic.MouseDoubleClick += Profile_MouseDoubleClickEvent;
 
-                Add(_partyManifestPic = new GumpPic(profileX, Settings.Position_Y_Profile, Settings.Graphic_Button_Party, 0));
+                Add(_partyManifestPic = new GumpPic(profileX - 4, Settings.Position_Y_Profile, Settings.Graphic_Button_Party, 0));
                 _partyManifestPic.MouseDoubleClick += PartyManifest_MouseDoubleClickEvent;
 
                 _hitBox = new HitBox(Settings.Position_X_MinimizeButton, Settings.Position_Y_MinimizeButton, Settings.Size_Width_MinimizeButton, Settings.Size_Height_MinimizeButton, alpha: 0f);

@@ -1220,12 +1220,12 @@ namespace ClassicUO.Game.GameObjects
                     Item pants = mobile.FindItemByLayer(Layer.Pants);
                     Item robe;
 
-                    if (
-                        mobile.FindItemByLayer(Layer.Legs) != null
+                    //Eventine ignores pants layers
+                    if ((Settings.GlobalSettings.CustomServer != Settings.CustomServers.Eventine && mobile.FindItemByLayer(Layer.Legs) != null)
                         || pants != null
-                            && (
-                                pants.Graphic == 0x1411 /*|| pants.Graphic == 0x141A*/
-                            )
+                        && (
+                            pants.Graphic == 0x1411 /*|| pants.Graphic == 0x141A*/
+                        )
                     )
                     {
                         return true;
@@ -1250,8 +1250,8 @@ namespace ClassicUO.Game.GameObjects
                     robe = mobile.FindItemByLayer(Layer.Robe);
                     pants = mobile.FindItemByLayer(Layer.Pants);
 
-                    if (
-                        mobile.FindItemByLayer(Layer.Legs) != null
+                    //Eventine ignores pants layers
+                    if ((Settings.GlobalSettings.CustomServer != Settings.CustomServers.Eventine && mobile.FindItemByLayer(Layer.Legs) != null)
                         || robe != null && robe.Graphic == 0x0504
                     )
                     {
