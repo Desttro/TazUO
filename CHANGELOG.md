@@ -43,6 +43,7 @@ All notable changes to TazUO will be recorded here.
 * Incorporate cancellation token to avoid continueing to process api calls after a script has stopped - ([bittiez](https://github.com/bittiez))
 * Added `API.DressItems` to use the dress agent from scripts - ([fspy](https://github.com/fspy))
 * Fix IronPython type mismatch crash when passing serial lists to API - ([fspy](https://github.com/fspy))
+* Added ApiMobile.Direction to see the direction a mob is facing - ([bittiez](https://github.com/bittiez))
 
 ### Assistant
 

@@ -33,6 +33,10 @@ public class ApiMobile : ApiEntity
     public bool IsMounted => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsMounted ?? false);
     public bool IsDrivingBoat => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsDrivingBoat ?? false);
     public bool IsRunning => MainThreadQueue.InvokeOnMainThread(() => GetMobileUnsafe()?.IsRunning ?? false);
+    /// <summary>
+    /// Get this mobiles direction as a string, for example: "west", "east", etc
+    /// </summary>
+    public string Direction => MainThreadQueue.InvokeOnMainThread(() => Utility.GetDirectionString(GetMobileUnsafe().Direction));
     public Notoriety Notoriety => MainThreadQueue.InvokeOnMainThread(() =>
     {
         Mobile mob = GetMobileUnsafe();
