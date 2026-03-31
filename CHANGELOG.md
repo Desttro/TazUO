@@ -86,6 +86,9 @@ All notable changes to TazUO will be recorded here.
 * Fix autoloot regex json export to support special characters - ([bittiez](https://github.com/bittiez))
 * Fix drag select positioning when zooming in or out - ([bittiez](https://github.com/bittiez))
 * Fixed quest arrow positioning - ([bittiez](https://github.com/bittiez))
+* Fixed the occasional X button stuck after logging in - ([bittiez](https://github.com/bittiez))
+* Fixed a crash when a server side gump fails to render text - ([bittiez](https://github.com/bittiez))
+
 
 ### Misc
 

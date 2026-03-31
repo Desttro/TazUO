@@ -286,6 +286,9 @@ namespace ClassicUO
         public void SetScene(Scene scene)
         {
             Scene?.Dispose();
+
+            UIManager.Clear(); //Ensure we clear out all UI from previous scene
+
             Scene = scene;
             Scene?.Load();
 

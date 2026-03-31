@@ -1453,11 +1453,11 @@ namespace ClassicUO.Game.Scenes
 
             // Convert to viewport-relative then to game space so the rectangle
             // renders at the correct position after Camera.ViewTransformMatrix is applied.
-            var selStart = Camera.ScreenToWorld(new Point(
+            Point selStart = Camera.ScreenToWorld(new Point(
                 Math.Min(_selectionStart.X, Mouse.Position.X) - Camera.Bounds.X,
                 Math.Min(_selectionStart.Y, Mouse.Position.Y) - Camera.Bounds.Y
             ));
-            var selEnd = Camera.ScreenToWorld(new Point(
+            Point selEnd = Camera.ScreenToWorld(new Point(
                 Math.Max(_selectionStart.X, Mouse.Position.X) - Camera.Bounds.X,
                 Math.Max(_selectionStart.Y, Mouse.Position.Y) - Camera.Bounds.Y
             ));

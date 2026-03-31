@@ -248,7 +248,7 @@ namespace ClassicUO.Game.UI.Controls
 
                 int offset = HasBackground ? 4 : 0;
 
-                _gameText.Draw
+                _gameText?.Draw
                 (
                     batcher,
                     x + offset,

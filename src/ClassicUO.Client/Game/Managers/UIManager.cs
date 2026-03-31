@@ -522,6 +522,7 @@ namespace ClassicUO.Game.Managers
             {
                 s.Dispose();
             }
+            Gumps.Clear();
 
             _gumpTypeList.Clear();
         }
