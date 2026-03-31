@@ -51,7 +51,7 @@ namespace ClassicUO.Configuration
 
 
 
-    public sealed class Profile
+    public sealed partial class Profile
     {
         [JsonIgnore] public string Username { get; set; }
         [JsonIgnore] public string ServerName { get; set; }
@@ -697,124 +697,52 @@ namespace ClassicUO.Configuration
             set;
         }
 
+        // SQL-backed settings — property implementations are source-generated into Profile.SqlSettings.g.cs
         [JsonIgnore]
-        public bool DisableWeather
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ =Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.DISABLE_WEATHER, value);
-
-                field = value;
-            }
-        }
+        [SqlSetting(SettingsScope.Global, Constants.SqlSettings.DISABLE_WEATHER, false)]
+        public partial bool DisableWeather { get; set; }
 
         [JsonIgnore]
-        public bool EnablePetScaling
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Char, Constants.SqlSettings.SCALE_PETS_ENABLED, value);
-
-                field = value;
-            }
-        }
+        [SqlSetting(SettingsScope.Char, Constants.SqlSettings.SCALE_PETS_ENABLED, false)]
+        public partial bool EnablePetScaling { get; set; }
 
         [JsonIgnore]
-        public bool AutoUnequipForActions
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ =Client.Settings.SetAsync(SettingsScope.Char, Constants.SqlSettings.AUTO_UNEQUIP_FOR_ACTIONS, value);
-
-                field = value;
-            }
-        }
+        [SqlSetting(SettingsScope.Char, Constants.SqlSettings.AUTO_UNEQUIP_FOR_ACTIONS, false)]
+        public partial bool AutoUnequipForActions { get; set; }
 
         [JsonIgnore]
-        public int MinGumpMoveDistance
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.MIN_GUMP_MOVE_DIST, value);
-
-                field = value;
-            }
-        } = 5;
+        [SqlSetting(SettingsScope.Global, Constants.SqlSettings.MIN_GUMP_MOVE_DIST, 5)]
+        public partial int MinGumpMoveDistance { get; set; }
 
         [JsonIgnore]
-        public int QuickHealSpell
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Char, Constants.SqlSettings.QUICK_HEAL_SPELL, value);
-
-                field = value;
-            }
-        } = 29;
+        [SqlSetting(SettingsScope.Char, Constants.SqlSettings.QUICK_HEAL_SPELL, 29)]
+        public partial int QuickHealSpell { get; set; }
 
         [JsonIgnore]
-        public int QuickCureSpell
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Char, Constants.SqlSettings.QUICK_CURE_SPELL, value);
-
-                field = value;
-            }
-        } = 11;
-
+        [SqlSetting(SettingsScope.Char, Constants.SqlSettings.QUICK_CURE_SPELL, 11)]
+        public partial int QuickCureSpell { get; set; }
 
         [JsonIgnore]
-        public bool QueueManualItemMoves
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.QUEUE_MANUAL_ITEM_MOVES, value);
-
-                field = value;
-            }
-        }
+        [SqlSetting(SettingsScope.Global, Constants.SqlSettings.QUEUE_MANUAL_ITEM_MOVES, false)]
+        public partial bool QueueManualItemMoves { get; set; }
 
         [JsonIgnore]
-        public bool QueueManualItemUses
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.QUEUE_MANUAL_ITEM_USES, value);
-
-                field = value;
-            }
-        }
+        [SqlSetting(SettingsScope.Global, Constants.SqlSettings.QUEUE_MANUAL_ITEM_USES, false)]
+        public partial bool QueueManualItemUses { get; set; }
 
         [JsonIgnore]
-        public bool HueCorpseAfterAutoloot
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.HUE_CORPSE_AFTER_AUTOLOOT, value);
+        [SqlSetting(SettingsScope.Global, Constants.SqlSettings.HUE_CORPSE_AFTER_AUTOLOOT, false)]
+        public partial bool HueCorpseAfterAutoloot { get; set; }
 
-                field = value;
-            }
-        }
+        [JsonIgnore]
+        [SqlSetting(SettingsScope.Global, Constants.SqlSettings.PATH_Z_LEVEL, 10)]
+        public partial int PathfindingZLevelDiff { get; set; }
 
+        [JsonIgnore]
+        [SqlSetting(SettingsScope.Global, Constants.SqlSettings.SINGLE_CLICK_SET_LAST_TARG, true)]
+        public partial bool SingleClickMobileSetsLastTarget { get; set; }
+
+        // Hand-written: has side-effect beyond SetAsync
         [JsonIgnore]
         public bool OutlineMobilesNotoriety
         {
@@ -828,6 +756,7 @@ namespace ClassicUO.Configuration
             }
         }
 
+        // Hand-written: has side-effect (TazUOChatManager.Init)
         [JsonIgnore]
         public bool DisableConnectToIrcOnLogin
         {
@@ -843,33 +772,6 @@ namespace ClassicUO.Configuration
                 field = value;
             }
         }
-
-        [JsonIgnore]
-        public int PathfindingZLevelDiff
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.PATH_Z_LEVEL, value);
-
-                field = value;
-            }
-        } = 10;
-
-        [JsonIgnore]
-        public bool SingleClickMobileSetsLastTarget
-        {
-            get;
-            set
-            {
-                if (field != value)
-                    _ = Client.Settings.SetAsync(SettingsScope.Global, Constants.SqlSettings.SINGLE_CLICK_SET_LAST_TARG,
-                        value);
-
-                field = value;
-            }
-        } = true;
 
         private long lastSave;
 
@@ -887,29 +789,11 @@ namespace ClassicUO.Configuration
                 Dictionary<string, string> kvp = t.Result;
                 MainThreadQueue.EnqueueAction(() =>
                 {
-                    if (kvp.TryGetValue(Constants.SqlSettings.MIN_GUMP_MOVE_DIST, out string val) && int.TryParse(val, out int v))
-                        MinGumpMoveDistance = v;
+                    LoadGeneratedGlobalSqlSettings(kvp);
 
-                    if (kvp.TryGetValue(Constants.SqlSettings.DISABLE_WEATHER, out val) && bool.TryParse(val, out bool b))
-                        DisableWeather = b;
-
-                    if (kvp.TryGetValue(Constants.SqlSettings.QUEUE_MANUAL_ITEM_MOVES, out val) && bool.TryParse(val, out b))
-                        QueueManualItemMoves = b;
-
-                    if (kvp.TryGetValue(Constants.SqlSettings.QUEUE_MANUAL_ITEM_USES, out val) && bool.TryParse(val, out b))
-                        QueueManualItemUses = b;
-
-                    if (kvp.TryGetValue(Constants.SqlSettings.HUE_CORPSE_AFTER_AUTOLOOT, out val) && bool.TryParse(val, out b))
-                        HueCorpseAfterAutoloot = b;
-
-                    if (kvp.TryGetValue(Constants.SqlSettings.IRC_AUTO_CONNECT, out val) && bool.TryParse(val, out b))
+                    // Hand-written: IRC has a side-effect in its setter
+                    if (kvp.TryGetValue(Constants.SqlSettings.IRC_AUTO_CONNECT, out string val) && bool.TryParse(val, out bool b))
                         DisableConnectToIrcOnLogin = b;
-
-                    if (kvp.TryGetValue(Constants.SqlSettings.PATH_Z_LEVEL, out val) && int.TryParse(val, out v))
-                        PathfindingZLevelDiff = v;
-
-                    if (kvp.TryGetValue(Constants.SqlSettings.SINGLE_CLICK_SET_LAST_TARG, out val) && bool.TryParse(val, out b))
-                        SingleClickMobileSetsLastTarget = b;
                 });
             });
 
@@ -931,12 +815,8 @@ namespace ClassicUO.Configuration
                 return;
             }
 
-            //When we get enough settings here, it will be better to use Settings.GetAllAsync and grab them manually
             //Load Char-scoped settings after player is created (when serial is available)
-            _ = Client.Settings.GetAsyncOnMainThread(SettingsScope.Char, Constants.SqlSettings.SCALE_PETS_ENABLED, false, b => { EnablePetScaling = b; });
-            _ = Client.Settings.GetAsyncOnMainThread(SettingsScope.Char, Constants.SqlSettings.AUTO_UNEQUIP_FOR_ACTIONS, false, b => { AutoUnequipForActions = b; });
-            _ = Client.Settings.GetAsyncOnMainThread(SettingsScope.Char, Constants.SqlSettings.QUICK_HEAL_SPELL, 29, b => { QuickHealSpell = b; });
-            _ = Client.Settings.GetAsyncOnMainThread(SettingsScope.Char, Constants.SqlSettings.QUICK_CURE_SPELL, 11, b => { QuickCureSpell = b; });
+            LoadGeneratedCharSqlSettings();
         }
 
         internal void Save(World world, string path, bool saveGumps = true)
