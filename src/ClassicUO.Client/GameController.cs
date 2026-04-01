@@ -696,10 +696,7 @@ namespace ClassicUO
                     viewport.Y = 0;
                 }
                 else
-                {
-                    // Ensure regular viewports stay within bounds when window resizes
                     viewport.OnWindowResized();
-                }
             }
         }
 

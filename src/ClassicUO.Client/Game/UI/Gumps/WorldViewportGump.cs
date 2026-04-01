@@ -402,7 +402,7 @@ namespace ClassicUO.Game.UI.Gumps
         public void OnWindowResized()
         {
             // Clamp viewport to new window bounds
-            ClampViewportToWindowBounds();
+            //ClampViewportToWindowBounds(); //Disabled, too many people complained =/
 
             // Update internal state
             _lastSize.X = _scene.Camera.Bounds.Width;
