@@ -11,6 +11,7 @@ using ClassicUO.Utility.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -626,20 +627,63 @@ namespace ClassicUO.Game
             return null;
         }
 
-        private class ULFileMul : MMFileReader
+        private class ULFileMul : FileReader
         {
+            private readonly BinaryReader _reader;
             private readonly BinaryWriter _writer;
+            private readonly object _ioLock = new object();
 
             public ULFileMul(FileStream stream) : base(stream)
             {
+                _reader = new BinaryReader(stream);
                 _writer = new BinaryWriter(stream);
+            }
+
+            public override BinaryReader Reader => _reader;
+
+            // ULFileMul files can grow dynamically (statics appended), so MMFileReader's
+            // fixed-size memory-mapped view is unsafe. Use a lock to serialize all
+            // Seek+Read pairs and Seek+Write pairs on the shared FileStream.
+            public override T ReadAt<T>(long offset)
+            {
+                AssetValidDereference(offset);
+
+                lock (_ioLock)
+                {
+                    Seek(offset, SeekOrigin.Begin);
+                    return Read<T>();
+                }
+            }
+
+            public override void ReadAt(long offset, Span<byte> buffer)
+            {
+                AssetValidDereference(offset);
+
+                lock (_ioLock)
+                {
+                    Seek(offset, SeekOrigin.Begin);
+                    Read(buffer);
+                }
+            }
+
+            [Conditional("DEBUG")]
+            private void AssetValidDereference(long offset)
+            {
+                if (_reader == null)
+                    throw new InvalidOperationException("File reader is not initialized.");
+
+                if (offset < 0 || offset >= Length)
+                    throw new ArgumentOutOfRangeException(nameof(offset), $"Offset is out of range. Offset: {offset}, Length: {Length}");
             }
 
             public void WriteArray(long position, ReadOnlySpan<byte> array)
             {
-                _writer.Seek((int)position, SeekOrigin.Begin);
-                _writer.Write(array);
-                _writer.Flush();
+                lock (_ioLock)
+                {
+                    _writer.Seek((int)position, SeekOrigin.Begin);
+                    _writer.Write(array);
+                    _writer.Flush();
+                }
             }
 
             public override void Dispose()
