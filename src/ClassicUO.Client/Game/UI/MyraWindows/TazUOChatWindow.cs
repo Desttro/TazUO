@@ -2,6 +2,7 @@
 using ClassicUO.Configuration;
 using ClassicUO.Game.Managers;
 using ClassicUO.Game.UI.Controls;
+using ClassicUO.Game.UI.Controls.ResizableComponents;
 using ClassicUO.Game.UI.MyraWindows.Widgets;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -23,6 +24,7 @@ public class TazUOChatWindow : MyraControl
     private string _selectedChannel = "";
     private int    _lastChannelCount = -1;
     private int    _lastMessageCount = -1;
+    private int    _lastUserCount    = -1;
     private bool   _wasConnected;
     private bool   _pendingScroll;
 
@@ -53,13 +55,19 @@ public class TazUOChatWindow : MyraControl
         _rootWindow.TitlePanel.Widgets.Insert(2, _titleNickName);
 
         _nickName = _manager.CurrentNick;
+
+        //_rootWindow.Resized += RootWindowOnResized;
     }
+
+    //private void RootWindowOnResized(object? sender, ResizeEventArgs e) => RebuildContent();
 
     public static void Show()
     {
-        foreach (IGui gump in UIManager.Gumps)
+        TazUOChatWindow? chat = UIManager.GetGump<TazUOChatWindow>();
+        if (chat != null)
         {
-            if (gump is TazUOChatWindow w) { w.BringOnTop(); return; }
+            chat.BringOnTop();
+            return;
         }
         UIManager.Add(new TazUOChatWindow());
     }
@@ -80,6 +88,12 @@ public class TazUOChatWindow : MyraControl
 
         if (_manager.TotalChannelCount != _lastChannelCount)
             RebuildChannels();
+
+        if (_manager.TotalUserUpdates != _lastUserCount)
+        {
+            _lastUserCount = _manager.TotalUserUpdates;
+            RebuildUsers();
+        }
 
         if (_manager.TotalMessageCount != _lastMessageCount)
         {
@@ -106,6 +120,7 @@ public class TazUOChatWindow : MyraControl
         _chatInput      = null;
         _lastChannelCount = -1;
         _lastMessageCount = -1;
+        _lastUserCount    = -1;
         _pendingScroll  = false;
 
         var root = new VerticalStackPanel { Spacing = MyraStyle.STANDARD_SPACING };
@@ -139,9 +154,9 @@ public class TazUOChatWindow : MyraControl
         _messagesPanel = new VerticalStackPanel { Spacing = 1 };
         _usersPanel    = new VerticalStackPanel { Spacing = 1 };
 
-        var channelScroll = new ScrollViewer { Width = CHANNEL_WIDTH, Height = PANEL_HEIGHT, Content = _channelsPanel};
-        _messageScroll    = new ScrollViewer { Width = MSG_WIDTH,     Height = PANEL_HEIGHT, Content = _messagesPanel, Border = new SolidBrush(new Color(0, 0, 0, MyraStyle.STANDARD_BORDER_ALPHA)), BorderThickness = new Thickness(1)  };
-        var userScroll    = new ScrollViewer { Width = USER_WIDTH,    Height = PANEL_HEIGHT, Content = _usersPanel  };
+        var channelScroll = new ScrollViewer { MinHeight = PANEL_HEIGHT, Content = _channelsPanel};
+        _messageScroll    = new ScrollViewer { Width = MSG_WIDTH, MinHeight = PANEL_HEIGHT, Content = _messagesPanel, Border = new SolidBrush(new Color(0, 0, 0, MyraStyle.STANDARD_BORDER_ALPHA)), BorderThickness = new Thickness(1)  };
+        var userScroll    = new ScrollViewer { MinHeight = PANEL_HEIGHT, Content = _usersPanel  };
 
         var row = new HorizontalStackPanel { Spacing = 3 };
         row.Widgets.Add(channelScroll);
@@ -158,12 +173,6 @@ public class TazUOChatWindow : MyraControl
             Width = MSG_WIDTH + CHANNEL_WIDTH + 3
         };
         _chatInput.KeyDown += (_, args) => { if (args.Data == Keys.Enter) TrySend(); };
-
-        // Profile? profile = ProfileManager.CurrentProfile;
-        // var checkbox = MyraCheckButton.CreateWithCallback(
-        //     profile?.ConnectToIrcOnLogin ?? false,
-        //     v => { if (profile != null) profile.ConnectToIrcOnLogin = v; },
-        //     "Connect on login");
 
         var row = new HorizontalStackPanel { Spacing = 4 };
         row.Widgets.Add(_chatInput);
@@ -273,6 +282,8 @@ public class TazUOChatWindow : MyraControl
         {
             _usersPanel.Widgets.Add(new MyraLabel("Users", MyraLabel.TextStyle.P));
         }
+
+        _lastUserCount = _manager.TotalUserUpdates;
     }
 
     private void TrySend()
@@ -291,4 +302,10 @@ public class TazUOChatWindow : MyraControl
         _manager.JoinChannel(ch);
         joinBox.Text = "";
     }
+
+    // public override void Dispose()
+    // {
+    //     _rootWindow.Resized -= RootWindowOnResized;
+    //     base.Dispose();
+    // }
 }

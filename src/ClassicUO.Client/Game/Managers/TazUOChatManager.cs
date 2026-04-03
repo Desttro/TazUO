@@ -33,6 +33,9 @@ public class TazUOChatManager
     /// <summary>Incremented each time a channel is joined/left. Used by the UI to detect new channels.</summary>
     public volatile int TotalChannelCount = 0;
 
+    /// <summary>Incremented each time the user list for any channel changes. Used by the UI to detect user list updates.</summary>
+    public volatile int TotalUserUpdates = 0;
+
     public bool IsConnected => _client != null && _client.IsConnected;
 
     private TazUOChatManager(){}
@@ -183,11 +186,14 @@ public class TazUOChatManager
             if (!ReceivedMessages.ContainsKey(e.Channel))
                 ReceivedMessages[e.Channel] = [];
         }
+
         lock (_usersLock)
             GetOrCreateUsers(e.Channel).Add(e.Nick);
+
         StoreMessage(e.Channel, $"*** {e.Nick} has joined {e.Channel}");
 
         Interlocked.Increment(ref TotalChannelCount);
+        Interlocked.Increment(ref TotalUserUpdates);
     }
 
     private void ChannelParted(object sender, IrcChannelPartedEventArgs e)
@@ -204,6 +210,7 @@ public class TazUOChatManager
             StoreMessage(e.Channel, $"*** {e.Nick} has left {e.Channel}");
 
         Interlocked.Decrement(ref TotalChannelCount);
+        Interlocked.Increment(ref TotalUserUpdates);
     }
 
     private void UserQuit(object sender, IrcUserQuitEventArgs e)
@@ -227,6 +234,7 @@ public class TazUOChatManager
                 : $"*** {e.Nick} has quit ({e.Reason})";
             foreach (string channel in affectedChannels)
                 StoreMessage(channel, msg);
+            Interlocked.Increment(ref TotalUserUpdates);
         }
     }
 
@@ -239,10 +247,11 @@ public class TazUOChatManager
             {
                 // Strip mode prefixes (@, +, %, ~, &)
                 string clean = nick.TrimStart('@', '+', '%', '~', '&');
-                if (!string.IsNullOrEmpty(clean))
+                if (!string.IsNullOrEmpty(clean) && !users.Contains(clean))
                     users.Add(FormatNickname(clean));
             }
         }
+        Interlocked.Increment(ref TotalUserUpdates);
     }
 
     private HashSet<string> GetOrCreateUsers(string channel)

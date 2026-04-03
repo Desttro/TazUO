@@ -322,33 +322,8 @@ namespace ClassicUO.Game.Managers
             Add(ContextMenu);
         }
 
-        public static T GetGump<T>(uint? serial = null) where T : Gump
+        public static T GetGump<T>(uint? serial = null) where T : class, IGui
         {
-            // if (serial.HasValue)
-            // {
-            //     for (LinkedListNode<IGui> last = Gumps.Last; last != null; last = last.Previous)
-            //     {
-            //         Control c = last.Value;
-            //
-            //         if (!c.IsDisposed && c.LocalSerial == serial.Value && c is T t)
-            //         {
-            //             return t;
-            //         }
-            //     }
-            // }
-            // else
-            // {
-            //     for (LinkedListNode<IGui> first = Gumps.First; first != null; first = first.Next)
-            //     {
-            //         Control c = first.Value;
-            //
-            //         if (!c.IsDisposed && c is T t)
-            //         {
-            //             return t;
-            //         }
-            //     }
-            // }
-
             if (!_gumpTypeList.TryGetValue(typeof(T), out List<IGui> list))
                 return null;
 
