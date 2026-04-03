@@ -71,12 +71,14 @@ namespace ClassicUO.Game.UI.Gumps
                 {
                     _isMinimized = value;
 
-                    _picBase.Dispose();
-                    _picBase = new GumpPic(0, 0, value ? Settings.Graphic_Button_Minimized : (LocalSerial == World.Player ? Settings.Graphic_Background_Player : Settings.Graphic_Background_Other), 0);
-                    _picBase.MouseDoubleClick += _picBase_MouseDoubleClick;
-                    Insert(0, _picBase);
+                    _picBase.Graphic =
+                        value
+                            ? Settings.Graphic_Button_Minimized
+                            : (LocalSerial == World.Player
+                                ? Settings.Graphic_Background_Player
+                                : Settings.Graphic_Background_Other);
 
-                    foreach (Control c in Children)
+                    foreach (IGui c in Children)
                     {
                         c.IsVisible = !value;
                     }
