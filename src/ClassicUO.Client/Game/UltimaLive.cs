@@ -631,18 +631,14 @@ namespace ClassicUO.Game
             return null;
         }
 
-        private class ULFileMul : FileReader
+        private class ULFileMul : MMFileReader
         {
-            private readonly BinaryReader _reader;
             private readonly BinaryWriter _writer;
 
             public ULFileMul(FileStream stream) : base(stream)
             {
-                _reader = new BinaryReader(stream);
                 _writer = new BinaryWriter(stream);
             }
-
-            public override BinaryReader Reader => _reader;
 
             public void WriteArray(long position, ReadOnlySpan<byte> array)
             {
