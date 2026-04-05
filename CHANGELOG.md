@@ -3,7 +3,7 @@ All notable changes to TazUO will be recorded here.
 
 ---
 
-## Currently in `dev channel`
+## V5.0.0
 
 ### Breaking Changes
 
