@@ -9,7 +9,6 @@ namespace ClassicUO.Game.Managers
 {
     public class SoundFilterManager
     {
-        private static SoundFilterManager _instance;
         private HashSet<int> _filteredSounds;
         private bool _isLoaded;
 
@@ -17,9 +16,8 @@ namespace ClassicUO.Game.Managers
         {
             get
             {
-                if (_instance == null)
-                    _instance = new SoundFilterManager();
-                return _instance;
+                field ??= new SoundFilterManager();
+                return field;
             }
         }
 

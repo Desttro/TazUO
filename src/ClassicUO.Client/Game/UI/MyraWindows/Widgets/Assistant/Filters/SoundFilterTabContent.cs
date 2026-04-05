@@ -106,29 +106,35 @@ public static class SoundFilterTabContent
         void BuildLastSoundSection()
         {
             lastSoundPanel.Widgets.Clear();
-            lastSoundPanel.Widgets.Add(new MyraLabel("Last Sound Played:", MyraLabel.TextStyle.H3));
+            lastSoundPanel.Widgets.Add(new MyraLabel("Recently played:", MyraLabel.TextStyle.H3));
 
-            int lastSoundId = Client.Game.Audio.LastPlayedSoundId;
-            if (lastSoundId >= 0)
+            int c = 0;
+            foreach ((int, string) sound in Client.Game.Audio.LastPlayedSounds.GetItems())
             {
+                c++;
+
+                int id = sound.Item1;
+
                 var row = new HorizontalStackPanel { Spacing = 4 };
-                row.Widgets.Add(new MyraLabel($"Sound ID: {lastSoundId}", MyraLabel.TextStyle.P));
+                row.Widgets.Add(new MyraLabel($"Sound ID: {id} ({sound.Item2})", MyraLabel.TextStyle.P));
                 row.Widgets.Add(new MyraButton("Add Filter", () =>
                 {
-                    SoundFilterManager.Instance.AddFilter(lastSoundId);
+                    SoundFilterManager.Instance.AddFilter(id);
                     BuildFilterList();
                 }) { Tooltip = "Add this sound to the filter list" });
                 row.Widgets.Add(new MyraButton("Play Again", () =>
-                    Client.Game.Audio.PlaySound(lastSoundId, true))
-                { Tooltip = "Play this sound again" });
-                row.Widgets.Add(new MyraButton("Refresh", () => BuildLastSoundSection())
-                    { Tooltip = "Refresh last played sound display" });
+                    Client.Game.Audio.PlaySound(id, true)) { Tooltip = "Play this sound again" });
                 lastSoundPanel.Widgets.Add(row);
-                lastSoundPanel.Widgets.Add(new MyraLabel(
-                    "Tip: Play a sound in-game to see its ID above, then click Add Filter.",
-                    MyraLabel.TextStyle.P));
             }
-            else
+
+            lastSoundPanel.Widgets.Add(new MyraButton("Refresh", () => BuildLastSoundSection())
+            {
+                Tooltip = "Refresh last played sound display"
+            }.PlaceBefore(new MyraLabel(
+                                          "Tip: Play a sound in-game to see its ID above, then click Add Filter.",
+                                          MyraLabel.TextStyle.P)));
+
+            if(c == 0)
             {
                 var row = new HorizontalStackPanel { Spacing = 4 };
                 row.Widgets.Add(new MyraLabel("No sound played yet.", MyraLabel.TextStyle.P));

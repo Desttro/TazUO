@@ -24,8 +24,11 @@ namespace ClassicUO.Game.Managers
         private readonly int[] _currentMusicIndices = { 0, 0 };
         public int LoginMusicIndex { get; private set; }
         public int DeathMusicIndex { get; } = 42;
-        private int _lastPlayedSoundId = -1;
-        public int LastPlayedSoundId => _lastPlayedSoundId;
+
+        /// <summary>
+        /// Index, Name
+        /// </summary>
+        public LimitedFIFOCollection<(int, string)> LastPlayedSounds { get; } = new(5);
 
         public void Initialize()
         {
@@ -111,9 +114,6 @@ namespace ClassicUO.Game.Managers
                 return;
             }
 
-            // Track last played sound
-            _lastPlayedSoundId = index;
-
             float volume = currentProfile.SoundVolume / SOUND_DELTA;
 
             if (Client.Game.IsActive)
@@ -142,6 +142,9 @@ namespace ClassicUO.Game.Managers
 
             if (sound != null)
             {
+                // Track last played sound
+                LastPlayedSounds.Add((index, sound.Name));
+
                 try
                 {
                     if (sound.Play(Time.Ticks, volume))
@@ -173,9 +176,6 @@ namespace ClassicUO.Game.Managers
             {
                 return;
             }
-
-            // Track last played sound
-            _lastPlayedSoundId = index;
 
             int distX = Math.Abs(x - world.Player.X);
             int distY = Math.Abs(y - world.Player.Y);
@@ -210,6 +210,9 @@ namespace ClassicUO.Game.Managers
 
             if (sound != null)
             {
+                // Track last played sound
+                LastPlayedSounds.Add((index, sound.Name));
+
                 try
                 {
                     if (sound.Play(Time.Ticks, volume, distanceFactor))
