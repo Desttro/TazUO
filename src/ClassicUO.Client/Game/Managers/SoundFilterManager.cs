@@ -10,7 +10,9 @@ namespace ClassicUO.Game.Managers
     public class SoundFilterManager
     {
         private HashSet<int> _filteredSounds;
+        private HashSet<int> _filteredMusic;
         private bool _isLoaded;
+        private bool _isMusicLoaded;
 
         public static SoundFilterManager Instance
         {
@@ -30,21 +32,41 @@ namespace ClassicUO.Game.Managers
             }
         }
 
-        private SoundFilterManager()
+        public HashSet<int> FilteredMusic
         {
-            _filteredSounds = new HashSet<int>();
-            _isLoaded = false;
-        }
-
-        private void EnsureLoaded()
-        {
-            if (!_isLoaded)
+            get
             {
-                Load();
+                EnsureMusicLoaded();
+                return _filteredMusic;
             }
         }
 
-        public void Load()
+        private SoundFilterManager()
+        {
+            _filteredSounds = new HashSet<int>();
+            _filteredMusic = new HashSet<int>();
+            _isLoaded = false;
+            _isMusicLoaded = false;
+        }
+
+        private void EnsureLoaded(bool isMusic = false)
+        {
+            if (isMusic)
+                EnsureMusicLoaded();
+            else
+            {
+                if (!_isLoaded)
+                    Load();
+            }
+        }
+
+        private void EnsureMusicLoaded()
+        {
+            if (!_isMusicLoaded)
+                LoadMusic();
+        }
+
+        private void Load()
         {
             if (Client.Settings == null)
             {
@@ -59,14 +81,10 @@ namespace ClassicUO.Game.Managers
                 string json = Client.Settings.Get(SettingsScope.Account, Constants.SqlSettings.SOUND_FILTER_IDS, "[]");
 
                 if (!string.IsNullOrWhiteSpace(json))
-                {
                     _filteredSounds = JsonSerializer.Deserialize(json, HashSetIntContext.Default.HashSetInt32)
-                        ?? new HashSet<int>();
-                }
+                                      ?? new HashSet<int>();
                 else
-                {
                     _filteredSounds = new HashSet<int>();
-                }
             }
             catch (Exception ex)
             {
@@ -77,7 +95,36 @@ namespace ClassicUO.Game.Managers
             _isLoaded = true;
         }
 
-        public void Save()
+        private void LoadMusic()
+        {
+            if (Client.Settings == null)
+            {
+                Log.Warn("SQLSettings not available for SoundFilterManager (music)");
+                _filteredMusic = new HashSet<int>();
+                _isMusicLoaded = true;
+                return;
+            }
+
+            try
+            {
+                string json = Client.Settings.Get(SettingsScope.Account, Constants.SqlSettings.MUSIC_FILTER_IDS, "[]");
+
+                if (!string.IsNullOrWhiteSpace(json))
+                    _filteredMusic = JsonSerializer.Deserialize(json, HashSetIntContext.Default.HashSetInt32)
+                                     ?? new HashSet<int>();
+                else
+                    _filteredMusic = new HashSet<int>();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Failed to load music filters: {ex.Message}");
+                _filteredMusic = new HashSet<int>();
+            }
+
+            _isMusicLoaded = true;
+        }
+
+        public void Save(bool isMusic = false)
         {
             if (Client.Settings == null)
             {
@@ -87,50 +134,86 @@ namespace ClassicUO.Game.Managers
 
             try
             {
-                string json = JsonSerializer.Serialize(_filteredSounds, HashSetIntContext.Default.HashSetInt32);
-                Client.Settings.Set(SettingsScope.Account, Constants.SqlSettings.SOUND_FILTER_IDS, json);
+                if (isMusic)
+                {
+                    string json = JsonSerializer.Serialize(_filteredMusic, HashSetIntContext.Default.HashSetInt32);
+                    _ = Client.Settings.SetAsync(SettingsScope.Account, Constants.SqlSettings.MUSIC_FILTER_IDS, json);
+                }
+                else
+                {
+                    string json = JsonSerializer.Serialize(_filteredSounds, HashSetIntContext.Default.HashSetInt32);
+                    _ = Client.Settings.SetAsync(SettingsScope.Account, Constants.SqlSettings.SOUND_FILTER_IDS, json);
+                }
             }
             catch (Exception ex)
             {
-                Log.Error($"Failed to save sound filters: {ex.Message}");
+                Log.Error($"Failed to save {(isMusic ? "music" : "sound")} filters: {ex.Message}");
             }
         }
 
-        public void AddFilter(int soundId)
+        public void AddFilter(int soundId, bool isMusic = false)
         {
-            EnsureLoaded();
-            if (_filteredSounds.Add(soundId))
+            EnsureLoaded(isMusic);
+            if (isMusic)
             {
+                if (_filteredMusic.Add(soundId))
+                    Save(isMusic: true);
+            }
+            else
+            {
+                if (_filteredSounds.Add(soundId))
+                    Save();
+            }
+        }
+
+        public void RemoveFilter(int soundId, bool isMusic = false)
+        {
+            EnsureLoaded(isMusic);
+            if (isMusic)
+            {
+                if (_filteredMusic.Remove(soundId))
+                    Save(isMusic: true);
+            }
+            else
+            {
+                if (_filteredSounds.Remove(soundId))
+                    Save();
+            }
+        }
+
+        public bool IsSoundFiltered(int soundId, bool isMusic = false)
+        {
+            EnsureLoaded(isMusic);
+            return isMusic ? _filteredMusic.Contains(soundId) : _filteredSounds.Contains(soundId);
+        }
+
+        public void Clear(bool isMusic = false)
+        {
+            EnsureLoaded(isMusic);
+            if (isMusic)
+            {
+                _filteredMusic.Clear();
+                Save(isMusic: true);
+            }
+            else
+            {
+                _filteredSounds.Clear();
                 Save();
             }
         }
 
-        public void RemoveFilter(int soundId)
+        public void Reset(bool isMusic = false)
         {
-            EnsureLoaded();
-            if (_filteredSounds.Remove(soundId))
+            if (isMusic)
             {
-                Save();
+                _isMusicLoaded = false;
+                _filteredMusic.Clear();
             }
-        }
-
-        public bool IsSoundFiltered(int soundId)
-        {
-            EnsureLoaded();
-            return _filteredSounds.Contains(soundId);
-        }
-
-        public void Clear()
-        {
-            EnsureLoaded();
-            _filteredSounds.Clear();
-            Save();
-        }
-
-        public void Reset()
-        {
-            _isLoaded = false;
-            _filteredSounds.Clear();
+            else
+            {
+                _isLoaded = false;
+                _filteredSounds.Clear();
+            }
         }
     }
 
