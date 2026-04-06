@@ -3,11 +3,14 @@ All notable changes to TazUO will be recorded here.
 
 ---
 
-## In Development
+## V5.1.0
 
 ### Assistant
 * Expanded sound filter to show last 5 sounds, and sound names to make them easier to identify - ([bittiez](https://github.com/bittiez))
 * Added music filter similar to sound filter - ([bittiez](https://github.com/bittiez))
+
+### Fixes
+* Fix accidentally broken game viewport - ([bittiez](https://github.com/bittiez))
 
 ## V5.0.0
 
