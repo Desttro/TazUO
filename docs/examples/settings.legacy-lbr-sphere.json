@@ -6,7 +6,7 @@
   "ultimaonlinedirectory": "/absolute/path/to/your/UO/files",
   "clientversion": "3.0.6m",
   "lang": "ENU",
-  "encryption": 0,
+  "encryption": 5,
   "autologin": false,
   "saveaccount": true,
   "ignore_relay_ip": true,

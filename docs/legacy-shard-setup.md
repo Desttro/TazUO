@@ -63,7 +63,7 @@ file in the same directory as the `TazUO` binary:
   "ultimaonlinedirectory": "/absolute/path/to/your/UO/files",
   "clientversion": "3.0.6m",
   "lang": "ENU",
-  "encryption": 0,
+  "encryption": 5,
   "autologin": false,
   "saveaccount": true,
   "ignore_relay_ip": true,
@@ -82,31 +82,42 @@ A ready-made template lives at
 | `ultimaonlinedirectory` | Absolute path to your UO files. Validated on startup by checking for `tiledata.mul`. Bad path → "could not find the UO directory" error (`src/ClassicUO.Client/Main.cs:171`). |
 | `clientversion` | Free-form `MAJOR.MINOR.BUILD[letter]` string. Drives **both** protocol feature flags (`src/ClassicUO.Client/Client.cs:111-189`) and login encryption derivation. Must match what the shard expects; mismatches produce silent login failures or garbled packets. |
 | `ip` / `port` | Shard address. `port` defaults to `2593`. |
-| `encryption` | `0` means auto-detect from `clientversion`. Leave it 0 — see the encryption section below. |
+| `encryption` | **Must be non-zero to enable encryption at all.** `0` means *no encryption* — `AsyncNetClient.Load` only constructs the `EncryptionHelper` when this byte is non-zero (`src/ClassicUO.Client/Network/AsyncNetClient.cs:228-246`). Set to `5` (TWOFISH_MD5) for a 3.0.x shard. The helper then auto-derives the correct scheme/keys from `clientversion`; the numeric value itself is only the "enable" flag. |
 | `ignore_relay_ip` | See the **Relay-IP** section below. `true` is the right default for SphereServer and most private shards. |
 | `autologin` / `saveaccount` | Self-explanatory. Leave `username`/`password` blank and fill them in the login screen if you don't want credentials on disk. |
 | `lastservernum` / `last_server_name` | Pre-selects the shard in the server list, making login one click instead of two. |
 | `lang` | Three-letter language code used for cliloc lookups. `ENU` is the default English dictionary. |
 
-### Encryption — let TazUO pick it
+### Encryption — set it to 5, let TazUO pick the scheme
 
-`EncryptionHelper.CalculateEncryption` in
-`src/ClassicUO.Client/Network/Encryption/Encryption.cs:39-70` maps client
-versions to encryption schemes:
+The `encryption` byte in `settings.json` is **the enable flag** —
+`AsyncNetClient.Load` (`src/ClassicUO.Client/Network/AsyncNetClient.cs:228-246`)
+only constructs the `EncryptionHelper` when this byte is non-zero.
+A value of `0` means *no encryption at all*: packets go out cleartext,
+and any shard with encryption turned on will reject the login packet
+with a `0x82` `LoginDeny` / "Communication problem" (code 4).
 
-| Client version | Scheme |
-|---|---|
-| `< 1.25.35` | `OLD_BFISH` |
-| `= 1.25.36` | `BLOWFISH__1_25_36` |
-| `<= 2.0.0` | `BLOWFISH` |
-| `<= 2.0.3` | `BLOWFISH__2_0_3` |
-| `> 2.0.3`  | `TWOFISH_MD5` |
+Once it's enabled, the *scheme* is derived automatically from
+`clientversion` by `EncryptionHelper.CalculateEncryption`
+(`src/ClassicUO.Client/Network/Encryption/Encryption.cs:39-70`):
 
-A `3.0.6m` client lands in `TWOFISH_MD5` — which is what SphereServer 99z
-expects for a 3.0.x shard. **Do not hardcode a non-zero `encryption`
-value** unless you are explicitly forcing a mismatched scheme for a
-non-standard server: the keys are derived from the version bytes and will
-be out of sync with the shard.
+| Client version | Scheme | `encryption` value |
+|---|---|---|
+| `< 1.25.35`  | `OLD_BFISH`          | `1` |
+| `= 1.25.36`  | `BLOWFISH__1_25_36`  | `2` |
+| `<= 2.0.0`   | `BLOWFISH`           | `3` |
+| `<= 2.0.3`   | `BLOWFISH__2_0_3`    | `4` |
+| `> 2.0.3`    | `TWOFISH_MD5`        | `5` |
+
+A 3.0.6m client lands in `TWOFISH_MD5`. Use `"encryption": 5` — this
+both enables encryption and matches what the helper would derive anyway
+(so you won't see a mismatch warning). For shards running an even older
+client, pick the corresponding value from the table.
+
+> **Heads-up for modern shards:** official UO clients past ~7.0 removed
+> encryption entirely, so most modern private shards work fine with
+> `encryption: 0`. It's specifically old pre-7.0 / SphereServer 99z-class
+> shards where you need a non-zero value.
 
 ### `ignore_relay_ip` — why it is `true` here
 
@@ -181,7 +192,8 @@ Notable ones for debugging:
 | `"could not find the UO directory"` | `ultimaonlinedirectory` missing or does not contain `tiledata.mul`. Use an absolute path. |
 | `"Your UO client version is invalid"` | `clientversion` string malformed (needs `MAJOR.MINOR.BUILD[letter]`). Or, if blank, TazUO tried to read `client.exe` and failed — set it explicitly. |
 | Login hangs / disconnects after selecting shard | Relay-IP issue. Toggle `ignore_relay_ip`. |
-| Connects but server immediately boots you | Wrong `clientversion` for the shard's expected version, or encryption mismatch. Confirm version string with shard operator; leave `encryption: 0`. |
+| Login dialog shows **"Communication problem."** | Shard requires encryption but `encryption: 0` disables it entirely (`AsyncNetClient.cs:232`). Set to `5` (or the matching value for your `clientversion` — see encryption table above). |
+| Connects but server immediately boots you | Wrong `clientversion` for the shard's expected version, or scheme mismatch. Confirm version string with shard operator and match the `encryption` value to the version band. |
 | `Failed to play music ... MP3Sharp ...` warning | Cosmetic. Login music only — gameplay is unaffected. |
 
 ## Platform support matrix (verified)
