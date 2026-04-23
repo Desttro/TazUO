@@ -267,3 +267,5 @@ __pycache__/
 external/FNA
 external/MP3Sharp
 .claude/settings.local.json
+CLAUDE.local.md
+.claude/hooks/*.log

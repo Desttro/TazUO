@@ -1,6 +1,6 @@
 ---
 name: debug-investigator
-description: Use this agent when the user reports crashes, runtime errors, unexpected behavior, malfunctions, or provides crash logs/stack traces for investigation. Also use when the user asks for help understanding why something isn't working as expected or when they need assistance tracing the root cause of a bug.\n\nExamples:\n- <example>\n  user: "The game is crashing when I try to open the script editor. Here's the stack trace: [stack trace]"\n  assistant: "I'm going to use the Task tool to launch the debug-investigator agent to analyze this crash."\n  <commentary>The user has reported a crash with a stack trace, which is exactly what the debug-investigator agent is designed to handle.</commentary>\n</example>\n- <example>\n  user: "Something weird is happening - my grid containers aren't saving their positions after I restart the client."\n  assistant: "Let me use the debug-investigator agent to help trace this malfunction."\n  <commentary>This is a reported malfunction/bug that needs investigation, perfect for the debug-investigator agent.</commentary>\n</example>\n- <example>\n  user: "I'm getting a NullReferenceException in the PacketHandlers.cs file but I can't figure out why."\n  assistant: "I'll launch the debug-investigator agent to help analyze this exception."\n  <commentary>The user needs help debugging a specific exception, which the debug-investigator agent specializes in.</commentary>\n</example>
+description: Investigates crashes, runtime errors, unexpected behavior, and malfunctions in TazUO. Parses stack traces, traces root causes, and recommends fixes. Invoke when the user reports a crash, a bug, or provides a stack trace.
 model: sonnet
 color: red
 ---
@@ -86,7 +86,7 @@ Structure your analysis as:
 - Be thorough but concise - focus on actionable insights
 - Admit uncertainty when the evidence is insufficient
 - Request additional information when needed (logs, reproduction steps, environment details)
-- Provide code examples that follow TazUO conventions (no license headers, proper .NET 9 patterns)
+- Provide code examples that follow TazUO conventions (no license headers, proper .NET 10 patterns)
 - Consider backward compatibility and existing user scripts when suggesting changes
 - Always verify your hypotheses against the actual codebase using the Read tool
 

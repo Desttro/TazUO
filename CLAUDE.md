@@ -1,213 +1,87 @@
-# TazUO Project Guide for Claude
+# TazUO — Claude Code Guide
 
-## Project Overview
+TazUO is a feature-rich fork of ClassicUO, an open-source Ultima Online client. C# targeting **.NET 10**. Cross-platform: Windows (primary), macOS, Linux. Uses FNA for rendering and IronPython for scripting.
 
-**TazUO** is a feature-rich fork of ClassicUO, an open-source implementation of the Ultima Online Classic Client. Originally forked to add quality-of-life features requested by users, TazUO has evolved into an independent project that selectively incorporates updates from the original ClassicUO while focusing on enhanced gameplay features.
+## Build / Test / Run
 
-- **Repository**: https://github.com/PlayTazUO/TazUO
-- **Language**: C# targeting .NET 10
-- **Platform**: Windows with support for Mac and Linux via Mono
-- **License**: Based on ClassicUO's open-source license
+Run these exactly:
 
-## Architecture Overview
-
-### Solution Structure
-The project is organized as a Visual Studio solution with the following main components:
-
-```
-ClassicUO.sln
-├── src/
-│   ├── ClassicUO.Client/          # Main executable - game client logic
-│   ├── ClassicUO.Assets/          # Asset loading (animations, art, sounds, etc.)
-│   ├── ClassicUO.Renderer/        # Rendering engine using FNA
-│   ├── ClassicUO.IO/             # I/O operations for UO file formats
-│   └── ClassicUO.Utility/        # Common utilities and helpers
-├── external/                     # Third-party dependencies
-├── tests/                       # Unit tests
-└── tools/                      # Build and development tools
-```
-
-### Key Dependencies
-- **FNA**: XNA reimplementation for cross-platform graphics
-- **FontStashSharp**: Advanced font rendering
-- **MP3Sharp**: MP3 audio decoding
-- **IronPython**: Python scripting integration
-- **Discord SDK**: Discord rich presence integration
-
-## Core Features
-
-### Python Scripting System
-TazUO includes a powerful Python scripting system:
-
-- **Python Integration** (`external/iplib/`)
-  - Full IronPython runtime included
-  - Python API classes in `src/ClassicUO.Client/LegionScripting/PyClasses/`
-  - Auto-generated documentation via `src/APIToMarkdown/`
-  - Commands for movement, combat, item manipulation, UI interaction, and more
-
-### Enhanced UI Features
-- **Grid Containers**: Visual inventory management with customizable layouts
-- **Modern UI Elements**: Updated gumps and controls
-- **Custom Fonts**: TTF font support for better readability
-- **Buff Bars**: Customizable status effect displays
-- **Cooldown Bars**: Visual cooldown tracking
-
-### Quality of Life Improvements
-- **Auto Loot System**: Configurable item collection
-- **Grid Highlighting**: Item property-based highlighting
-- **Tooltip Overrides**: Customizable item information display
-- **Controller Support**: Gamepad integration
-- **Enhanced Journal**: Improved chat and message organization
-
-## Build System
-
-### Build Configuration
-- **Framework**: .NET 10
-- **Platform**: x64 only (`Directory.Build.props`)
-- **Configurations**: Debug and Release
-- **Output**: `bin/Debug/` or `bin/Release/`
-
-### Build Process
-1. Restores NuGet packages
-2. Builds all projects in dependency order
-3. Copies external dependencies (native libraries)
-4. Generates scripting API documentation
-5. Packages for distribution
-
-### External Dependencies Management
-The build system automatically copies platform-specific native libraries:
-- `external/x64/` → Windows x64 libraries
-- `external/lib64/` → Linux x64 libraries  
-- `external/osx/` → macOS libraries
-
-## Development Workflow
-
-### Common File Locations
-
-#### Configuration & Settings
-- `src/ClassicUO.Client/Configuration/` - Game settings and profiles
-- `Directory.Build.props` - MSBuild configuration
-- `ClassicUO.sln.DotSettings` - ReSharper/Rider settings
-
-#### Core Game Logic
-- `src/ClassicUO.Client/Game/` - Main game systems
-- `src/ClassicUO.Client/Game/Managers/` - Game feature managers
-- `src/ClassicUO.Client/Game/UI/Gumps/` - User interface windows
-
-#### Asset Management
-- `src/ClassicUO.Assets/` - UO file format loaders
-- `src/ClassicUO.Client/Resources/` - Embedded resources
-
-#### Network Layer  
-- `src/ClassicUO.Client/Network/` - Client-server communication
-- Includes packet handlers and encryption
-
-### Testing
-- **Unit Tests**: `tests/ClassicUO.UnitTests/`
-- **Test Framework**: MSTest
-- **Coverage**: Primarily utility and I/O functions
-
-## Scripting System Details
-
-### Python Integration
-- **Runtime**: IronPython 3.4.2
-- **API Classes**: `PyClasses/` directory contains C# wrappers
-- **Documentation**: Auto-generated markdown files in `LegionScripting/docs/`
-
-### Script Management
-- **Editor**: Built-in script editor (`ScriptEditor.cs`)
-- **Browser**: Script file browser (`ScriptBrowser.cs`)
-- **Manager**: Script execution manager (`ScriptManagerWindow.cs`)
-
-## Asset System
-
-### UO File Support
-TazUO reads original Ultima Online data files:
-- **Art**: Static and item graphics
-- **Animations**: Character and creature animations
-- **Maps**: World geography data
-- **Audio**: Music and sound effects
-- **Fonts**: Game fonts and text rendering
-
-### Custom Assets
-- `src/ClassicUO.Assets/gumpartassets/` - Custom UI graphics
-- `src/ClassicUO.Assets/fonts/` - Additional font files
-- Modern UI replacements for legacy UO interface elements
-
-## Network Protocol
-
-### Packet Handling
-- **Location**: `src/ClassicUO.Client/Network/`
-- **Handlers**: `PacketHandlers.cs` - Server message processing
-- **Outgoing**: `OutgoingPackets.cs` - Client message generation
-- **Enhanced**: Custom packet extensions for TazUO features
-
-### Encryption Support
-- Multiple encryption methods supported
-- Legacy and modern UO server compatibility
-
-## Performance Considerations
-
-### Rendering
-- FNA-based rendering pipeline for cross-platform compatibility
-- Texture atlas system for efficient sprite batching
-- Customizable graphics effects (XBR scaling, lighting)
-
-### Memory Management
-- Object pooling for frequently allocated objects
-- Efficient collection management for game entities
-- Asset caching and lazy loading
-
-## Debugging and Troubleshooting
-
-### Debug Features
-- Network statistics display
-- Performance profiler
-- Debug gumps for internal state inspection
-- Comprehensive logging system
-
-## Contributing Guidelines
-
-### Code Style
-- Follow existing C# conventions
-- Use meaningful variable and method names
-- Document public APIs
-- Maintain cross-platform compatibility
-
-### Feature Development
-- Scripting features should expose Python APIs for automation
-- Test on multiple platforms when possible
-
-### Testing
-- Add unit tests for utility functions
-- Test UI changes with different resolutions
-- Verify script API changes don't break existing scripts
-
-## Useful Commands
-
-### Building
 ```bash
-# Build release version
+dotnet restore
 dotnet build -c Release
-
-# Build debug version  
-dotnet build -c Debug
+dotnet test tests/ClassicUO.UnitTests --verbosity normal
+./format.sh                          # format all tracked src/ projects
+./tools/generate-docs.sh             # regenerate Python API markdown
 ```
 
-### Testing
-```bash
-dotnet test tests/ClassicUO.UnitTests/
+The canonical build command matches CI (`.github/workflows/build-test.yml`). Test framework is xUnit + FluentAssertions.
+
+## Project Layout
+
+```
+src/
+  ClassicUO.Client/             main executable (entry point)
+    Game/                       game systems, managers, UI gumps
+    Network/                    packet handlers and outgoing packets
+    LegionScripting/            IronPython integration + PyClasses
+      PyClasses/                C# wrappers exposed to Python
+      docs/                     auto-generated API markdown
+  ClassicUO.Assets/             UO file-format loaders
+  ClassicUO.Renderer/           FNA-based rendering
+  ClassicUO.IO/                 I/O for UO formats
+  ClassicUO.Utility/            shared utilities
+  ClassicUO.SourceGenerators/   Roslyn source generators
+tests/ClassicUO.UnitTests/      xUnit tests
+tools/                          build helpers (generate-docs, increment-version)
+external/                       vendored dependencies — do not edit
 ```
 
-### Documentation Generation
-The scripting API documentation is automatically generated during build via the `APIToMarkdown` project.
+## Coding Rules
 
-## External Resources
+Enforced by `.editorconfig` (severity: error) — obey these when writing C#:
 
-- **Original ClassicUO**: https://github.com/andreakarasho/ClassicUO
-- **FNA Documentation**: https://fna-xna.github.io/
-- **Ultima Online Technical Resources**: Various community sites for UO file format documentation
-- **Discord Community**: Active development and user community
+- Use expression-bodied members for methods and properties where applicable.
+- Prefer pattern matching over `is` / `as` checks.
+- Prefer object/collection initializers.
+- **Do not** use `var` for built-in types (write `int`, `string`, etc. explicitly).
+- Use `var` **only** when the type is apparent from the right-hand side.
+- Interfaces are `IName`. Types and non-field members are `PascalCase`.
+- LF line endings. 4-space indent for C#. 2-space for XML/JSON/YAML.
+- UTF-8 encoding for files under `src/`.
 
-- All json serialize and deserialize need to have context generated for them.
-- Don't put a licsense at the top of files you create.
+## Hot-Path Rules
+
+Code in the game loop, renderer, packet dispatch, and Python bridge runs thousands of times per second. In those paths:
+
+- Do not allocate in `Update`/`Draw` loops — pool objects.
+- Do not use LINQ in per-frame code — use `for` / `foreach` over concrete collections.
+- Do not concatenate strings in loops — use `StringBuilder` or `Span<char>`.
+- Watch for boxing: generic constraints, `object` params, `Enum` without `HasFlag` alternatives.
+- Dispose `IDisposable` (textures, streams, native handles). Unsubscribe events in `OnDispose`.
+- Validate packet buffer bounds before reading.
+
+## Python Subsystem
+
+The IronPython runtime exposes C# wrapper classes (`Py*`) in `src/ClassicUO.Client/LegionScripting/PyClasses/`. When you add or change a `Py*` class, regenerate docs with `./tools/generate-docs.sh`. Auto-generated docs are in `src/ClassicUO.Client/LegionScripting/docs/`.
+
+## JSON Context Generation
+
+All JSON serialize/deserialize **must** have a JsonSerializerContext generated (`[JsonSerializable]`). The project uses source-generated context for AOT compatibility. Do not use reflection-based JSON serialization.
+
+## What Not to Touch
+
+- `external/**` — vendored third-party code (FNA, iplib, Myra, MP3Sharp). Submit upstream instead.
+- `bin/**`, `obj/**` — build artifacts.
+- `ClassicUO.sln.DotSettings` — Rider/ReSharper settings.
+- `*.csproj`, `ClassicUO.sln`, `Directory.Build.props` — require user approval (permissions `ask` list).
+
+## License Headers
+
+Do not add a license header to files you create. The project applies `ClassicUO.licenseheader` via tooling.
+
+## Tooling Available to You
+
+- **csharp-lsp** plugin is enabled — use LSP go-to-definition and find-references instead of grep when tracking types through the 500k-LOC codebase.
+- Custom agents live in `.claude/agents/` — `code-reviewer`, `debug-investigator`, `packet-handler-reviewer`, `python-api-auditor`, `test-runner`, `performance-profiler`.
+- Custom commands: `/build`, `/test`, `/format`, `/gen-docs`, `/changelog`.
+- Path-scoped rules in `.claude/rules/` load automatically when you work in the matching subsystem.

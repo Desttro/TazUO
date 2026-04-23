@@ -1,0 +1,4 @@
+[tools]
+bun = "1.3.13"
+dotnet = "10"
+node = "24"
