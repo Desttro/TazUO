@@ -1,15 +1,30 @@
 {
   "username": "",
   "password": "",
-  "ip": "your.shard.example.com",
+  "ip": "server.uoerebor.cz",
   "port": 2593,
-  "ultimaonlinedirectory": "/absolute/path/to/your/UO/files",
+  "ignore_relay_ip": true,
+  "ultimaonlinedirectory": "/Users/<you>/Downloads/Erebor",
+  "profilespath": "",
   "clientversion": "3.0.6m",
   "lang": "ENU",
-  "encryption": 5,
-  "autologin": false,
-  "saveaccount": true,
-  "ignore_relay_ip": true,
   "lastservernum": 1,
-  "last_server_name": "your.shard.example.com"
+  "last_server_name": "Erebor",
+  "fps": 60,
+  "is_win_maximized": true,
+  "saveaccount": true,
+  "autologin": false,
+  "reconnect": false,
+  "reconnect_time": 1,
+  "login_music": true,
+  "login_music_volume": 70,
+  "fixed_time_step": true,
+  "run_mouse_in_separate_thread": true,
+  "force_driver": 0,
+  "use_verdata": false,
+  "maps_layouts": null,
+  "encryption": 5,
+  "plugins": [
+    ""
+  ]
 }
