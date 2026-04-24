@@ -269,3 +269,11 @@ external/MP3Sharp
 .claude/settings.local.json
 CLAUDE.local.md
 .claude/hooks/*.log
+
+# TazUO runtime artifacts created next to the binary or at repo root when
+# running `dotnet run` from the source tree. Anchored with / so they only
+# match the repo-root paths, never src/ClassicUO.Client/Game/Data/ or
+# src/ClassicUO.Client/LegionScripting/.
+/settings.json
+/Data/
+/LegionScripts/
