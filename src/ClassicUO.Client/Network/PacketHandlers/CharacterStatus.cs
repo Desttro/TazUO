@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using ClassicUO.Configuration;
 using ClassicUO.Game;
 using ClassicUO.Game.Data;
@@ -35,10 +34,7 @@ internal static class CharacterStatus
             && string.IsNullOrEmpty(profile.CharacterName))
         {
             profile.CharacterName = entity.Name;
-            string account = profile.Username;
-            string server = world.ServerName;
-            string character = entity.Name;
-            Task.Run(() => LastCharacterManager.Save(account, server, character));
+            LastCharacterManager.Save(profile.Username, world.ServerName, entity.Name);
         }
 
         entity.Hits = p.ReadUInt16BE();
