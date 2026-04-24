@@ -7,13 +7,18 @@ and Intel). It was written and verified against a live 3.0.6m / SphereServer
 99z8 shard.
 
 If you are joining a modern (UO:HS / 7.x) shard or the official launcher,
-this guide is not for you — use the launcher from <https://tazuo.org/launcher>.
+the launcher at <https://tazuo.org/introduction/how-to-install/> is simpler.
+This guide is only needed for pre-7.0 shards (UO:LBR, SphereServer 99z-class)
+that still require login-packet encryption.
 
 ---
 
 ## Prerequisites
 
-- macOS with the .NET 10 SDK installed (`dotnet --version` reports `10.x`).
+- A TazUO build from source — follow the **Build from source** section of
+  the [README](../README.md#build-from-source) if you haven't already. For
+  this guide all shell examples assume the macOS Apple Silicon binary at
+  `bin/Release/net10.0/osx-arm64/TazUO`; substitute `osx-x64` for Intel.
 - A local copy of the shard's classic UO data files (e.g. UO:LBR installation),
   containing at minimum `tiledata.mul`. The folder also normally contains
   `anim.mul`, `art.mul`, `map0.mul`, `client.exe`, etc.
@@ -22,31 +27,18 @@ this guide is not for you — use the launcher from <https://tazuo.org/launcher>
 
 ## 1. Build the client
 
-From the repo root:
+See [Build from source](../README.md#build-from-source) in the README. On
+macOS the build target automatically copies the native runtime libraries
+(SDL3, FNA3D, FAudio, MoltenVK, Vulkan loader, theorafile) into the
+`osx-arm/` and `osx/` subdirectories of the output folder — no manual
+dylib wrangling required.
 
-```bash
-dotnet restore
-dotnet build -c Release
-```
-
-The macOS build output lands under:
-
-```
-bin/Release/net10.0/osx-arm64/TazUO            # Apple Silicon
-bin/Release/net10.0/osx-x64/TazUO              # Intel (if built for osx-x64)
-```
-
-Verify the executable is there:
+Quick check the executable is there:
 
 ```bash
 file bin/Release/net10.0/osx-arm64/TazUO
 # -> Mach-O 64-bit executable arm64
 ```
-
-The build target automatically copies the native runtime libraries
-(SDL3, FNA3D, FAudio, MoltenVK, Vulkan loader, theorafile) into the
-`osx-arm/` and `osx/` subdirectories of the output folder — no manual
-dylib wrangling required.
 
 ## 2. Create `settings.json` next to the binary
 

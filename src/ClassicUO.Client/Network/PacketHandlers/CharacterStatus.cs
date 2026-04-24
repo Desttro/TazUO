@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using ClassicUO.Configuration;
 using ClassicUO.Game;
 using ClassicUO.Game.Data;
@@ -24,6 +25,22 @@ internal static class CharacterStatus
         string oldName = entity.Name;
         ushort oldHits = entity.Hits;
         entity.Name = p.ReadASCII(30);
+
+        // Legacy SphereServer/99z shards skip the character-list step and
+        // jump straight to EnterWorld, so the client never recorded the
+        // selected name. Back-fill from the first local-player status packet.
+        if (serial == world.Player.Serial
+            && !string.IsNullOrEmpty(entity.Name)
+            && ProfileManager.CurrentProfile is { } profile
+            && string.IsNullOrEmpty(profile.CharacterName))
+        {
+            profile.CharacterName = entity.Name;
+            string account = profile.Username;
+            string server = world.ServerName;
+            string character = entity.Name;
+            Task.Run(() => LastCharacterManager.Save(account, server, character));
+        }
+
         entity.Hits = p.ReadUInt16BE();
         entity.HitsMax = p.ReadUInt16BE();
 
