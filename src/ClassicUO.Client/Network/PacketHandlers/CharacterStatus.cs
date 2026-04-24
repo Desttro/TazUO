@@ -24,6 +24,19 @@ internal static class CharacterStatus
         string oldName = entity.Name;
         ushort oldHits = entity.Hits;
         entity.Name = p.ReadASCII(30);
+
+        // Legacy SphereServer/99z shards skip the character-list step and
+        // jump straight to EnterWorld, so the client never recorded the
+        // selected name. Back-fill from the first local-player status packet.
+        if (serial == world.Player.Serial
+            && !string.IsNullOrEmpty(entity.Name)
+            && ProfileManager.CurrentProfile is { } profile
+            && string.IsNullOrEmpty(profile.CharacterName))
+        {
+            profile.CharacterName = entity.Name;
+            LastCharacterManager.Save(profile.Username, world.ServerName, entity.Name);
+        }
+
         entity.Hits = p.ReadUInt16BE();
         entity.HitsMax = p.ReadUInt16BE();
 

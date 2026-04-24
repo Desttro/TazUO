@@ -90,11 +90,6 @@ namespace ClassicUO.Configuration
                 throw new InvalidDataException();
             }
 
-            if (string.IsNullOrEmpty(profile.CharacterName))
-            {
-                throw new InvalidDataException();
-            }
-
             if (profile.WindowClientBounds.X < 600)
             {
                 profile.WindowClientBounds = new Point(600, profile.WindowClientBounds.Y);

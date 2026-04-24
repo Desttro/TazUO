@@ -15,6 +15,74 @@
 # Play now
 The easiest way to play with TazUO is via our [launcher](https://github.com/PlayTazUO/TUO-Launcher/releases/latest)!
 
+# Build from source
+
+For contributors, or players on niche / legacy shards where the launcher isn't
+a fit, you can build the client directly.
+
+## Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download) — `dotnet --version` should report `10.x`.
+- `git`.
+- A local copy of your shard's UO data files (must contain at least `tiledata.mul`).
+
+## Build
+
+Works on Windows, macOS, and Linux:
+
+```bash
+git clone https://github.com/PlayTazUO/TazUO.git
+cd TazUO
+dotnet restore
+dotnet build -c Release
+```
+
+Output binaries land under `bin/Release/net10.0/<rid>/`:
+
+| OS | Binary |
+| --- | --- |
+| Windows x64 | `bin/Release/net10.0/win-x64/TazUO.exe` |
+| macOS Apple Silicon | `bin/Release/net10.0/osx-arm64/TazUO` |
+| macOS Intel | `bin/Release/net10.0/osx-x64/TazUO` |
+| Linux x64 | `bin/Release/net10.0/linux-x64/TazUO` |
+
+## Run
+
+TazUO reads `settings.json` from the directory containing the binary. A minimal
+config points at your UO files and a shard:
+
+```jsonc
+{
+  "ultimaonlinedirectory": "/absolute/path/to/UO/files",
+  "ip": "your.shard.example.com",
+  "port": 2593,
+  "clientversion": "7.0.95.0"
+}
+```
+
+You can override any of these on the command line for one-off testing:
+
+```bash
+./TazUO -uopath /path/to/UO -ip your.shard.example.com -port 2593 -clientversion 7.0.95.0
+```
+
+The full CLI flag list (including `-settings`, `-debug`, `-highdpi`) is parsed
+in `src/ClassicUO.Client/Main.cs`.
+
+## Connecting to a legacy shard
+
+Running against a **UO:LBR / SphereServer 99z-era** shard (pre-7.0 client with
+active login-packet encryption) needs a few extra fields — the `encryption`
+byte, `ignore_relay_ip`, and a correct `clientversion` string. See
+[`docs/legacy-shard-setup.md`](docs/legacy-shard-setup.md) for a full walkthrough
+(verified on macOS Apple Silicon against a live 3.0.6m / 99z8 shard).
+
+## Tests
+
+```bash
+dotnet test tests/ClassicUO.UnitTests
+```
+
 # TazUO features
 Check out our [website](https://tazuo.org) for details on all the changes TazUO has made for players!  
 
